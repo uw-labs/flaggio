@@ -1,0 +1,22 @@
+scalar Map
+
+type Evaluation {
+    flagKey: String!
+    value: Any
+    version: Int!
+    #    repeated StackTrace stack_trace = 4;
+}
+
+extend type Query {
+    evaluate(
+        flagKey: String!
+        userId: ID!
+        context: Map!
+        debug: Boolean
+    ): Evaluation!
+    evaluateAll(
+        userId: ID!
+        context: Map!
+        debug: Boolean
+    ): [Evaluation!]!
+}

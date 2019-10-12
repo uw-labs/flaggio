@@ -1,0 +1,25 @@
+input NewFlag {
+    key: String!
+    name: String!
+    description: String
+}
+
+input NewVariant {
+    key: String!
+    description: String
+    value: Any!
+    defaultWhenOn: Boolean
+    defaultWhenOff: Boolean
+}
+
+extend type Query {
+    flags: [Flag!]!
+}
+
+extend type Mutation {
+    createFlag(input: NewFlag!): Flag!
+    deleteFlag(id: ID!): Boolean!
+
+    createVariant(flagId: ID!, input: NewVariant!): Variant!
+    deleteVariant(flagId: ID!, id: ID!): Boolean!
+}

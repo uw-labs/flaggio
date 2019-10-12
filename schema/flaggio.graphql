@@ -1,0 +1,95 @@
+scalar Time
+scalar Any
+
+type Flag {
+    id: ID!
+    key: String!
+    name: String!
+    description: String
+    enabled: Boolean!
+    variants: [Variant!]!
+    rules: [FlagRule!]!
+    createdAt: Time!
+    updatedAt: Time
+}
+
+type Variant {
+    id: ID!
+    key: String!
+    description: String
+    value: Any!
+    defaultWhenOn: Boolean!
+    defaultWhenOff: Boolean!
+}
+
+type Constraint {
+    id: ID!
+    property: String!
+    operation: Operation!
+    values: [Any]!
+}
+
+type Distribution {
+    variantId: ID!
+    percentage: Int!
+}
+
+interface Ruler {
+    id: ID!
+    constraints: [Constraint!]
+}
+
+type FlagRule implements Ruler {
+    id: ID!
+    constraints: [Constraint!]
+    distributions: [Distribution!]
+}
+
+type SegmentRule implements Ruler {
+    id: ID!
+    constraints: [Constraint!]
+}
+
+type Segment {
+    id: ID!
+    key: String!
+    name: String!
+    description: String
+    rules: [SegmentRule!]!
+    createdAt: Time!
+    updatedAt: Time
+}
+
+
+enum Operation {
+    ONE_OF
+    NOT_ONE_OF
+    GREATER
+    GREATER_OR_EQUAL
+    LOWER
+    LOWER_OR_EQUAL
+    EXISTS
+    DOESNT_EXIST
+    CONTAINS
+    DOESNT_CONTAIN
+    STARTS_WITH
+    DOESNT_START_WITH
+    ENDS_WITH
+    DOESNT_END_WITH
+    MATCHES_REGEX
+    DOESNT_MATCH_REGEX
+    BEFORE_DATE
+    BEFORE_OR_SAME_DATE
+    AFTER_DATE
+    AFTER_OR_SAME_DATE
+    IS_IN_SEGMENT
+    ISNT_IN_SEGMENT
+}
+
+type Query {
+    ping: Boolean
+}
+
+type Mutation {
+    ping: Boolean
+}
