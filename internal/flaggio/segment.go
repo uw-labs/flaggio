@@ -2,8 +2,6 @@ package flaggio
 
 import (
 	"time"
-
-	"github.com/victorkohl/flaggio/internal/errors"
 )
 
 type Segment struct {
@@ -16,7 +14,11 @@ type Segment struct {
 	UpdatedAt   *time.Time
 }
 
-func (r Segment) Evaluate(usr map[string]interface{}) (EvalResult, error) {
-	// TODO: implement this
-	return EvalResult{}, errors.ErrNotImplemented
+func (s Segment) Validator(usrContext map[string]interface{}) bool {
+	for _, rl := range s.Rules {
+		if ConstraintList(rl.Constraints).Validate(usrContext) {
+			return true
+		}
+	}
+	return false
 }

@@ -1,10 +1,16 @@
 scalar Map
 
+type StackTrace {
+    type: String!
+    id: String!
+    answer: Any
+}
+
 type Evaluation {
     flagKey: String!
     value: Any
     version: Int!
-    #    repeated StackTrace stack_trace = 4;
+    stackTrace: [StackTrace!]
 }
 
 extend type Query {

@@ -19,13 +19,7 @@ type EvalResult struct {
 	previous  *EvalResult
 }
 
-type Trace struct {
-	Type   string
-	ID     string
-	Answer interface{}
-}
-
-func (r EvalResult) Stack() (stack []Trace) {
+func (r EvalResult) Stack() (stack []*StackTrace) {
 	prev := &r
 	for prev != nil {
 		var id string
@@ -33,12 +27,11 @@ func (r EvalResult) Stack() (stack []Trace) {
 		if ok {
 			id = ider.GetID()
 		}
-		trace := Trace{
+		stack = append(stack, &StackTrace{
 			Type:   fmt.Sprintf("%T", prev.evaluator),
 			ID:     id,
 			Answer: prev.Answer,
-		}
-		stack = append(stack, trace)
+		})
 		prev = prev.previous
 	}
 	return

@@ -3534,8 +3534,12 @@ func (ec *executionContext) _Ruler(ctx context.Context, sel ast.SelectionSet, ob
 	switch obj := (obj).(type) {
 	case nil:
 		return graphql.Null
+	case flaggio.FlagRule:
+		return ec._FlagRule(ctx, sel, &obj)
 	case *flaggio.FlagRule:
 		return ec._FlagRule(ctx, sel, obj)
+	case flaggio.SegmentRule:
+		return ec._SegmentRule(ctx, sel, &obj)
 	case *flaggio.SegmentRule:
 		return ec._SegmentRule(ctx, sel, obj)
 	default:

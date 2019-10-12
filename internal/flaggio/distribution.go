@@ -15,14 +15,14 @@ type Distribution struct {
 
 type DistributionList []*Distribution
 
-func (dl DistributionList) Evaluate(usr map[string]interface{}) (EvalResult, error) {
+func (dl DistributionList) Evaluate(usrContext map[string]interface{}) (EvalResult, error) {
 	ref := dl.Distribute()
-	if ref.ID == "" {
+	if ref == nil || ref.ID == "" {
 		// configuration problem, return error
 		return EvalResult{}, errors.ErrNoVariantToDistribute
 	}
 	return EvalResult{
-		Answer: ref,
+		Answer: ref.Value,
 	}, nil
 }
 

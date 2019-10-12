@@ -13,7 +13,7 @@ type flagModel struct {
 	Name        string             `bson:"name"`
 	Description *string            `bson:"description"`
 	Enabled     bool               `bson:"enabled"`
-	Version     uint64             `bson:"version"`
+	Version     int                `bson:"version"`
 	Variants    []variantModel     `bson:"variants"`
 	Rules       []flagRuleModel    `bson:"rules"`
 	CreatedAt   time.Time          `bson:"createdAt"`
@@ -28,7 +28,7 @@ func (f flagModel) asFlag() *flaggio.Flag {
 		variants[idx] = vrnt
 		variantsMap[vrnt.ID] = vrnt
 	}
-	rules := make([]*flaggio.FlagRule, len(f.Variants))
+	rules := make([]*flaggio.FlagRule, len(f.Rules))
 	for idx, rl := range f.Rules {
 		rules[idx] = rl.asRule(variantsMap)
 	}
@@ -61,8 +61,8 @@ func (v variantModel) asVariant() *flaggio.Variant {
 		Key:            v.Key,
 		Description:    v.Description,
 		Value:          v.Value,
-		DefaultWhenOn:  false,
-		DefaultWhenOff: false,
+		DefaultWhenOn:  v.DefaultWhenOn,
+		DefaultWhenOff: v.DefaultWhenOff,
 	}
 }
 
@@ -82,8 +82,10 @@ func (r flagRuleModel) asRule(vrnts map[string]*flaggio.Variant) *flaggio.FlagRu
 		distributions[idx] = dstrbtn.asDistribution(vrnts)
 	}
 	return &flaggio.FlagRule{
-		ID:            r.ID.Hex(),
-		Constraints:   constraints,
+		Rule: flaggio.Rule{
+			ID:          r.ID.Hex(),
+			Constraints: constraints,
+		},
 		Distributions: distributions,
 	}
 }
@@ -112,7 +114,7 @@ type distribution struct {
 
 func (d distribution) asDistribution(vrnts map[string]*flaggio.Variant) *flaggio.Distribution {
 	return &flaggio.Distribution{
-		// Variant:    vrnts[d.VariantID.String()],
+		Variant:    vrnts[d.VariantID.Hex()],
 		Percentage: int(d.Percentage),
 	}
 }

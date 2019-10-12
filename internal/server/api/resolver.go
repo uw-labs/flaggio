@@ -41,8 +41,28 @@ func (r *queryResolver) Ping(ctx context.Context) (*bool, error) {
 	return &pong, nil
 }
 
-func (r *queryResolver) Evaluate(ctx context.Context, flagKey string, userID string, context map[string]interface{}, debug *bool) (*flaggio.Evaluation, error) {
-	return nil, errors.ErrNotImplemented
+func (r *queryResolver) Evaluate(ctx context.Context, flagKey string, userID string, usrCtx map[string]interface{}, debug *bool) (*flaggio.Evaluation, error) {
+	flg, err := r.flagRepo.FindByKey(ctx, flagKey)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := flaggio.Evaluate(usrCtx, flg)
+	if err != nil {
+		return nil, err
+	}
+
+	eval := &flaggio.Evaluation{
+		FlagKey: flagKey,
+		Value:   res.Answer,
+		Version: flg.Version,
+	}
+
+	if debug != nil && *debug {
+		eval.StackTrace = res.Stack()
+	}
+
+	return eval, nil
 }
 
 func (r *queryResolver) EvaluateAll(ctx context.Context, userID string, context map[string]interface{}, debug *bool) ([]*flaggio.Evaluation, error) {

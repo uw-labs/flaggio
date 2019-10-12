@@ -9,25 +9,21 @@ func (r Rule) GetID() string {
 	return r.ID
 }
 
-func (r Rule) Evaluate(usr map[string]interface{}) (EvalResult, error) {
-	// op, ok := operator.FromProto(flaggio.Constraint_Operation(r.Operation))
-	// if !ok {
-	// 	// unknown operation, this is a configuration problem
-	// 	logrus.WithField("operation", r.Operation).Error("unknown operation")
-	// 	return evaluator.Result{}, errors.ErrUnknownOperator
-	// }
-	// if op.Operate(usr, r.Property, r.Values) {
-	// 	return evaluator.Result{
-	// 		Next: []evaluator.Evaluator{r.Distributions},
-	// 	}, nil
-	// }
-	// TODO: fix
-	return EvalResult{}, nil
-}
+func (r Rule) IsRuler() {}
 
 type FlagRule struct {
 	Rule
 	Distributions []*Distribution
+}
+
+func (r FlagRule) Evaluate(usrContext map[string]interface{}) (EvalResult, error) {
+	var next []Evaluator
+	if ConstraintList(r.Constraints).Validate(usrContext) {
+		next = []Evaluator{DistributionList(r.Distributions)}
+	}
+	return EvalResult{
+		Next: next,
+	}, nil
 }
 
 type SegmentRule struct {

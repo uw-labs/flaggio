@@ -58,9 +58,10 @@ type ComplexityRoot struct {
 	}
 
 	Evaluation struct {
-		FlagKey func(childComplexity int) int
-		Value   func(childComplexity int) int
-		Version func(childComplexity int) int
+		FlagKey    func(childComplexity int) int
+		StackTrace func(childComplexity int) int
+		Value      func(childComplexity int) int
+		Version    func(childComplexity int) int
 	}
 
 	Flag struct {
@@ -104,6 +105,12 @@ type ComplexityRoot struct {
 	SegmentRule struct {
 		Constraints func(childComplexity int) int
 		ID          func(childComplexity int) int
+	}
+
+	StackTrace struct {
+		Answer func(childComplexity int) int
+		ID     func(childComplexity int) int
+		Type   func(childComplexity int) int
 	}
 
 	Variant struct {
@@ -188,6 +195,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Evaluation.FlagKey(childComplexity), true
+
+	case "Evaluation.stackTrace":
+		if e.complexity.Evaluation.StackTrace == nil {
+			break
+		}
+
+		return e.complexity.Evaluation.StackTrace(childComplexity), true
 
 	case "Evaluation.value":
 		if e.complexity.Evaluation.Value == nil {
@@ -388,6 +402,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.SegmentRule.ID(childComplexity), true
 
+	case "StackTrace.answer":
+		if e.complexity.StackTrace.Answer == nil {
+			break
+		}
+
+		return e.complexity.StackTrace.Answer(childComplexity), true
+
+	case "StackTrace.id":
+		if e.complexity.StackTrace.ID == nil {
+			break
+		}
+
+		return e.complexity.StackTrace.ID(childComplexity), true
+
+	case "StackTrace.type":
+		if e.complexity.StackTrace.Type == nil {
+			break
+		}
+
+		return e.complexity.StackTrace.Type(childComplexity), true
+
 	case "Variant.defaultWhenOff":
 		if e.complexity.Variant.DefaultWhenOff == nil {
 			break
@@ -494,11 +529,17 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 var parsedSchema = gqlparser.MustLoadSchema(
 	&ast.Source{Name: "schema/api.graphql", Input: `scalar Map
 
+type StackTrace {
+    type: String!
+    id: String!
+    answer: Any
+}
+
 type Evaluation {
     flagKey: String!
     value: Any
     version: Int!
-    #    repeated StackTrace stack_trace = 4;
+    stackTrace: [StackTrace!]
 }
 
 extend type Query {
@@ -1062,6 +1103,40 @@ func (ec *executionContext) _Evaluation_version(ctx context.Context, field graph
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Evaluation_stackTrace(ctx context.Context, field graphql.CollectedField, obj *flaggio.Evaluation) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Evaluation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.StackTrace, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*flaggio.StackTrace)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOStackTrace2ᚕᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐStackTrace(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Flag_id(ctx context.Context, field graphql.CollectedField, obj *flaggio.Flag) (ret graphql.Marshaler) {
@@ -2049,6 +2124,114 @@ func (ec *executionContext) _SegmentRule_constraints(ctx context.Context, field 
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalOConstraint2ᚕᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐConstraint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _StackTrace_type(ctx context.Context, field graphql.CollectedField, obj *flaggio.StackTrace) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "StackTrace",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Type, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _StackTrace_id(ctx context.Context, field graphql.CollectedField, obj *flaggio.StackTrace) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "StackTrace",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _StackTrace_answer(ctx context.Context, field graphql.CollectedField, obj *flaggio.StackTrace) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "StackTrace",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Answer, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(interface{})
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOAny2interface(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Variant_id(ctx context.Context, field graphql.CollectedField, obj *flaggio.Variant) (ret graphql.Marshaler) {
@@ -3429,8 +3612,12 @@ func (ec *executionContext) _Ruler(ctx context.Context, sel ast.SelectionSet, ob
 	switch obj := (obj).(type) {
 	case nil:
 		return graphql.Null
+	case flaggio.FlagRule:
+		return ec._FlagRule(ctx, sel, &obj)
 	case *flaggio.FlagRule:
 		return ec._FlagRule(ctx, sel, obj)
+	case flaggio.SegmentRule:
+		return ec._SegmentRule(ctx, sel, &obj)
 	case *flaggio.SegmentRule:
 		return ec._SegmentRule(ctx, sel, obj)
 	default:
@@ -3539,6 +3726,8 @@ func (ec *executionContext) _Evaluation(ctx context.Context, sel ast.SelectionSe
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "stackTrace":
+			out.Values[i] = ec._Evaluation_stackTrace(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3808,6 +3997,40 @@ func (ec *executionContext) _SegmentRule(ctx context.Context, sel ast.SelectionS
 			}
 		case "constraints":
 			out.Values[i] = ec._SegmentRule_constraints(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var stackTraceImplementors = []string{"StackTrace"}
+
+func (ec *executionContext) _StackTrace(ctx context.Context, sel ast.SelectionSet, obj *flaggio.StackTrace) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.RequestContext, sel, stackTraceImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("StackTrace")
+		case "type":
+			out.Values[i] = ec._StackTrace_type(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "id":
+			out.Values[i] = ec._StackTrace_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "answer":
+			out.Values[i] = ec._StackTrace_answer(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -4420,6 +4643,20 @@ func (ec *executionContext) marshalNSegmentRule2ᚖgithubᚗcomᚋvictorkohlᚋf
 	return ec._SegmentRule(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNStackTrace2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐStackTrace(ctx context.Context, sel ast.SelectionSet, v flaggio.StackTrace) graphql.Marshaler {
+	return ec._StackTrace(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNStackTrace2ᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐStackTrace(ctx context.Context, sel ast.SelectionSet, v *flaggio.StackTrace) graphql.Marshaler {
+	if v == nil {
+		if !ec.HasError(graphql.GetResolverContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._StackTrace(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
 	return graphql.UnmarshalString(v)
 }
@@ -4830,6 +5067,46 @@ func (ec *executionContext) marshalODistribution2ᚕᚖgithubᚗcomᚋvictorkohl
 				defer wg.Done()
 			}
 			ret[i] = ec.marshalNDistribution2ᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐDistribution(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalOStackTrace2ᚕᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐStackTrace(ctx context.Context, sel ast.SelectionSet, v []*flaggio.StackTrace) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		rctx := &graphql.ResolverContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNStackTrace2ᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐStackTrace(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)

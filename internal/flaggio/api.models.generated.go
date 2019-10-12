@@ -3,7 +3,14 @@
 package flaggio
 
 type Evaluation struct {
-	FlagKey string      `json:"flagKey"`
-	Value   interface{} `json:"value"`
-	Version int         `json:"version"`
+	FlagKey    string        `json:"flagKey"`
+	Value      interface{}   `json:"value"`
+	Version    int           `json:"version"`
+	StackTrace []*StackTrace `json:"stackTrace"`
+}
+
+type StackTrace struct {
+	Type   string      `json:"type"`
+	ID     string      `json:"id"`
+	Answer interface{} `json:"answer"`
 }
