@@ -54,7 +54,7 @@ type ComplexityRoot struct {
 
 	Distribution struct {
 		Percentage func(childComplexity int) int
-		VariantID  func(childComplexity int) int
+		Variant    func(childComplexity int) int
 	}
 
 	Flag struct {
@@ -175,12 +175,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Distribution.Percentage(childComplexity), true
 
-	case "Distribution.variantId":
-		if e.complexity.Distribution.VariantID == nil {
+	case "Distribution.variant":
+		if e.complexity.Distribution.Variant == nil {
 			break
 		}
 
-		return e.complexity.Distribution.VariantID(childComplexity), true
+		return e.complexity.Distribution.Variant(childComplexity), true
 
 	case "Flag.createdAt":
 		if e.complexity.Flag.CreatedAt == nil {
@@ -559,7 +559,7 @@ type Constraint {
 }
 
 type Distribution {
-    variantId: ID!
+    variant: Variant!
     percentage: Int!
 }
 
@@ -898,7 +898,7 @@ func (ec *executionContext) _Constraint_values(ctx context.Context, field graphq
 	return ec.marshalNAny2ᚕinterface(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Distribution_variantId(ctx context.Context, field graphql.CollectedField, obj *flaggio.Distribution) (ret graphql.Marshaler) {
+func (ec *executionContext) _Distribution_variant(ctx context.Context, field graphql.CollectedField, obj *flaggio.Distribution) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -917,7 +917,7 @@ func (ec *executionContext) _Distribution_variantId(ctx context.Context, field g
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.VariantID, nil
+		return obj.Variant, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -929,10 +929,10 @@ func (ec *executionContext) _Distribution_variantId(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*flaggio.Variant)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNVariant2ᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Distribution_percentage(ctx context.Context, field graphql.CollectedField, obj *flaggio.Distribution) (ret graphql.Marshaler) {
@@ -3534,12 +3534,8 @@ func (ec *executionContext) _Ruler(ctx context.Context, sel ast.SelectionSet, ob
 	switch obj := (obj).(type) {
 	case nil:
 		return graphql.Null
-	case flaggio.FlagRule:
-		return ec._FlagRule(ctx, sel, &obj)
 	case *flaggio.FlagRule:
 		return ec._FlagRule(ctx, sel, obj)
-	case flaggio.SegmentRule:
-		return ec._SegmentRule(ctx, sel, &obj)
 	case *flaggio.SegmentRule:
 		return ec._SegmentRule(ctx, sel, obj)
 	default:
@@ -3604,8 +3600,8 @@ func (ec *executionContext) _Distribution(ctx context.Context, sel ast.Selection
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Distribution")
-		case "variantId":
-			out.Values[i] = ec._Distribution_variantId(ctx, field, obj)
+		case "variant":
+			out.Values[i] = ec._Distribution_variant(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}

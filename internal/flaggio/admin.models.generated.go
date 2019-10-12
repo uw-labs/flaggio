@@ -6,32 +6,11 @@ import (
 	"fmt"
 	"io"
 	"strconv"
-	"time"
 )
 
 type Ruler interface {
 	IsRuler()
 }
-
-type Constraint struct {
-	ID        string        `json:"id"`
-	Property  string        `json:"property"`
-	Operation Operation     `json:"operation"`
-	Values    []interface{} `json:"values"`
-}
-
-type Distribution struct {
-	VariantID  string `json:"variantId"`
-	Percentage int    `json:"percentage"`
-}
-
-type FlagRule struct {
-	ID            string          `json:"id"`
-	Constraints   []*Constraint   `json:"constraints"`
-	Distributions []*Distribution `json:"distributions"`
-}
-
-func (FlagRule) IsRuler() {}
 
 type NewFlag struct {
 	Key         string  `json:"key"`
@@ -45,32 +24,6 @@ type NewVariant struct {
 	Value          interface{} `json:"value"`
 	DefaultWhenOn  *bool       `json:"defaultWhenOn"`
 	DefaultWhenOff *bool       `json:"defaultWhenOff"`
-}
-
-type Segment struct {
-	ID          string         `json:"id"`
-	Key         string         `json:"key"`
-	Name        string         `json:"name"`
-	Description *string        `json:"description"`
-	Rules       []*SegmentRule `json:"rules"`
-	CreatedAt   time.Time      `json:"createdAt"`
-	UpdatedAt   *time.Time     `json:"updatedAt"`
-}
-
-type SegmentRule struct {
-	ID          string        `json:"id"`
-	Constraints []*Constraint `json:"constraints"`
-}
-
-func (SegmentRule) IsRuler() {}
-
-type Variant struct {
-	ID             string      `json:"id"`
-	Key            string      `json:"key"`
-	Description    *string     `json:"description"`
-	Value          interface{} `json:"value"`
-	DefaultWhenOn  bool        `json:"defaultWhenOn"`
-	DefaultWhenOff bool        `json:"defaultWhenOff"`
 }
 
 type Operation string

@@ -15,8 +15,3 @@ resolver:
   type: Resolver
 autobind:
   - github.com/victorkohl/flaggio/internal/flaggio
-#models:
-#  Flag:
-#    model: github.com/victorkohl/flaggio/internal/flag.Flag
-#  Variant:
-#    model: github.com/victorkohl/flaggio/internal/variant.Variant

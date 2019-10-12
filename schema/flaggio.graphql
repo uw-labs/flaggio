@@ -30,7 +30,7 @@ type Constraint {
 }
 
 type Distribution {
-    variantId: ID!
+    variant: Variant!
     percentage: Int!
 }
 
