@@ -49,6 +49,16 @@ func (r *queryResolver) Evaluate(ctx context.Context, flagKey string, userID str
 	if err != nil {
 		return nil, err
 	}
+	sgmts, err := r.segmentRepo.FindAll(ctx, nil, nil)
+	if err != nil {
+		return nil, err
+	}
+	iders := make([]flaggio.Identifier, len(sgmts))
+	for idx, sgmnt := range sgmts {
+		iders[idx] = sgmnt
+	}
+
+	flg.Populate(iders)
 
 	res, err := flaggio.Evaluate(usrCtx, flg)
 	if err != nil {

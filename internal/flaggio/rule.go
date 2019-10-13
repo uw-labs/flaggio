@@ -1,5 +1,6 @@
 package flaggio
 
+var _ Identifier = Rule{}
 var _ Evaluator = FlagRule{}
 
 type Rule struct {
@@ -7,11 +8,15 @@ type Rule struct {
 	Constraints []*Constraint
 }
 
+func (r Rule) IsRuler() {}
+
 func (r Rule) GetID() string {
 	return r.ID
 }
 
-func (r Rule) IsRuler() {}
+func (r *Rule) Populate(identifiers []Identifier) {
+	ConstraintList(r.Constraints).Populate(identifiers)
+}
 
 type FlagRule struct {
 	Rule

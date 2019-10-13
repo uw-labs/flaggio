@@ -17,12 +17,12 @@ func (o Validates) Operate(usrValue interface{}, validValues []interface{}) bool
 		return false
 	}
 	for _, v := range validValues {
-		evltr, ok := v.(Validator)
-		if !ok || evltr == nil {
+		vldtr, ok := v.(Validator)
+		if !ok || vldtr == nil {
 			logrus.WithField("value", v).Error("expected value to be an Evaluator")
 			return false
 		}
-		valid := evltr.Validate(uv)
+		valid := vldtr.Validate(uv)
 		if !valid {
 			return false
 		}

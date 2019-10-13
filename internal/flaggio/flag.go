@@ -6,6 +6,7 @@ import (
 	"github.com/victorkohl/flaggio/internal/errors"
 )
 
+var _ Identifier = Flag{}
 var _ Evaluator = Flag{}
 
 type Flag struct {
@@ -48,4 +49,10 @@ func (f Flag) Evaluate(usrContext map[string]interface{}) (EvalResult, error) {
 		Answer: answer,
 		Next:   next,
 	}, nil
+}
+
+func (f *Flag) Populate(identifiers []Identifier) {
+	for _, r := range f.Rules {
+		r.Populate(identifiers)
+	}
 }

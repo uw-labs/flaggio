@@ -34,6 +34,24 @@ func (c Constraint) Validate(usrContext map[string]interface{}) bool {
 	}
 }
 
+func (c *Constraint) Populate(identifiers []Identifier) {
+	switch c.Operation {
+	case OperationIsInSegment, OperationIsntInSegment:
+		c.populateSegments(identifiers)
+	}
+}
+
+func (c *Constraint) populateSegments(identifiers []Identifier) {
+	for idx := 0; idx < len(c.Values); idx++ {
+		id := c.Values[idx]
+		for _, ider := range identifiers {
+			if _, ok := ider.(*Segment); ok && ider.GetID() == id {
+				c.Values[idx] = ider
+			}
+		}
+	}
+}
+
 type ConstraintList []*Constraint
 
 func (l ConstraintList) Validate(usrContext map[string]interface{}) bool {
@@ -43,6 +61,12 @@ func (l ConstraintList) Validate(usrContext map[string]interface{}) bool {
 		}
 	}
 	return false
+}
+
+func (l ConstraintList) Populate(identifiers []Identifier) {
+	for _, c := range l {
+		c.Populate(identifiers)
+	}
 }
 
 var operatorMap = map[Operation]Operator{

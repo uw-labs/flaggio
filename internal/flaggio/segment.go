@@ -6,6 +6,7 @@ import (
 	"github.com/victorkohl/flaggio/internal/operator"
 )
 
+var _ Identifier = Segment{}
 var _ operator.Validator = Segment{}
 
 type Segment struct {
@@ -16,6 +17,10 @@ type Segment struct {
 	Rules       []*SegmentRule
 	CreatedAt   time.Time
 	UpdatedAt   *time.Time
+}
+
+func (s Segment) GetID() string {
+	return s.ID
 }
 
 func (s Segment) Validate(usrContext map[string]interface{}) bool {
