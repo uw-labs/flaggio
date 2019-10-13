@@ -27,6 +27,27 @@ input UpdateVariant {
     defaultWhenOff: Boolean
 }
 
+input NewConstraint {
+    property: String!
+    operation: Operation!
+    values: [Any!]!
+}
+
+input NewDistribution {
+    variantId: ID!
+    percentage: Int!
+}
+
+input NewFlagRule {
+    constraints: [NewConstraint!]!
+    distributions: [NewDistribution!]!
+}
+
+input UpdateFlagRule {
+    constraints: [NewConstraint!]!
+    distributions: [NewDistribution!]!
+}
+
 input NewSegment {
     key: String!
     name: String!
@@ -51,9 +72,13 @@ extend type Mutation {
     updateFlag(id: ID!, input: UpdateFlag!): Boolean!
     deleteFlag(id: ID!): Boolean!
 
-    createVariant(flagId: ID!, input: NewVariant!): Variant!
+    createVariant(flagId: ID!, input: NewVariant!): ID!
     updateVariant(flagId: ID!, id: ID!, input: UpdateVariant!): Boolean!
     deleteVariant(flagId: ID!, id: ID!): Boolean!
+
+    createFlagRule(flagId: ID!, input: NewFlagRule!): ID!
+    updateFlagRule(flagId: ID!, id: ID!, input: UpdateFlagRule!): Boolean!
+    deleteFlagRule(flagId: ID!, id: ID!): Boolean!
 
     createSegment(input: NewSegment!): Segment!
     updateSegment(id: ID!, input: UpdateSegment!): Boolean!

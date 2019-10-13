@@ -17,7 +17,7 @@ type VariantRepository struct {
 	flagRepo *FlagRepository
 }
 
-func (r VariantRepository) Create(ctx context.Context, flagIDHex string, v flaggio.NewVariant) (*flaggio.Variant, error) {
+func (r VariantRepository) Create(ctx context.Context, flagIDHex string, v flaggio.NewVariant) (string, error) {
 	var defaultWhenOn, defaultWhenOff bool
 	if v.DefaultWhenOn != nil {
 		defaultWhenOn = *v.DefaultWhenOn
@@ -35,7 +35,7 @@ func (r VariantRepository) Create(ctx context.Context, flagIDHex string, v flagg
 	}
 	flagID, err := primitive.ObjectIDFromHex(flagIDHex)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	// TODO: check if passing flag id is needed, add unique indexes on all _id fields
 	filter := bson.M{"_id": flagID}
@@ -45,12 +45,12 @@ func (r VariantRepository) Create(ctx context.Context, flagIDHex string, v flagg
 		"$inc":  bson.M{"version": 1},
 	})
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	if res.ModifiedCount == 0 {
-		return nil, errors.NotFound("flag")
+		return "", errors.NotFound("flag")
 	}
-	return vrntModel.asVariant(), nil
+	return vrntModel.ID.Hex(), nil
 }
 
 func (r VariantRepository) Update(ctx context.Context, flagIDHex, idHex string, v flaggio.UpdateVariant) error {

@@ -10,17 +10,20 @@ import (
 type Resolver struct {
 	flagRepo    repository.Flag
 	variantRepo repository.Variant
+	ruleRepo    repository.Rule
 	segmentRepo repository.Segment
 }
 
 func NewResolver(
 	flagRepo repository.Flag,
 	variantRepo repository.Variant,
+	ruleRepo repository.Rule,
 	segmentRepo repository.Segment,
 ) *Resolver {
 	return &Resolver{
 		flagRepo:    flagRepo,
 		variantRepo: variantRepo,
+		ruleRepo:    ruleRepo,
 		segmentRepo: segmentRepo,
 	}
 }
@@ -53,17 +56,31 @@ func (r *mutationResolver) DeleteFlag(ctx context.Context, id string) (bool, err
 	return err == nil, err
 }
 
-func (r *mutationResolver) CreateVariant(ctx context.Context, flagID string, input flaggio.NewVariant) (*flaggio.Variant, error) {
+func (r *mutationResolver) CreateVariant(ctx context.Context, flagID string, input flaggio.NewVariant) (string, error) {
 	return r.variantRepo.Create(ctx, flagID, input)
 }
 
-func (r *mutationResolver) UpdateVariant(ctx context.Context, flagID string, id string, input flaggio.UpdateVariant) (bool, error) {
+func (r *mutationResolver) UpdateVariant(ctx context.Context, flagID, id string, input flaggio.UpdateVariant) (bool, error) {
 	err := r.variantRepo.Update(ctx, flagID, id, input)
 	return err == nil, err
 }
 
 func (r *mutationResolver) DeleteVariant(ctx context.Context, flagID, id string) (bool, error) {
 	err := r.variantRepo.Delete(ctx, flagID, id)
+	return err == nil, err
+}
+
+func (r *mutationResolver) CreateFlagRule(ctx context.Context, flagID string, input flaggio.NewFlagRule) (string, error) {
+	return r.ruleRepo.CreateFlagRule(ctx, flagID, input)
+}
+
+func (r *mutationResolver) UpdateFlagRule(ctx context.Context, flagID, id string, input flaggio.UpdateFlagRule) (bool, error) {
+	err := r.ruleRepo.UpdateFlagRule(ctx, flagID, id, input)
+	return err == nil, err
+}
+
+func (r *mutationResolver) DeleteFlagRule(ctx context.Context, flagID, id string) (bool, error) {
+	err := r.ruleRepo.DeleteFlagRule(ctx, flagID, id)
 	return err == nil, err
 }
 
@@ -88,7 +105,7 @@ func (r *queryResolver) Ping(ctx context.Context) (*bool, error) {
 	return &pong, nil
 }
 
-func (r *queryResolver) Flags(ctx context.Context, offset *int, limit *int) ([]*flaggio.Flag, error) {
+func (r *queryResolver) Flags(ctx context.Context, offset, limit *int) ([]*flaggio.Flag, error) {
 	if limit == nil {
 		v := 50
 		limit = &v
@@ -109,7 +126,7 @@ func (r *queryResolver) Flag(ctx context.Context, id string) (*flaggio.Flag, err
 	return r.flagRepo.FindByID(ctx, id)
 }
 
-func (r *queryResolver) Segments(ctx context.Context, offset *int, limit *int) ([]*flaggio.Segment, error) {
+func (r *queryResolver) Segments(ctx context.Context, offset, limit *int) ([]*flaggio.Segment, error) {
 	if limit == nil {
 		v := 50
 		limit = &v

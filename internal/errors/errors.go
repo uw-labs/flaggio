@@ -15,3 +15,7 @@ var (
 func NotFound(entity string) error {
 	return errors.Errorf("%s not found", entity)
 }
+
+func New(format string, args ...interface{}) error {
+	return errors.Errorf(format, args...)
+}

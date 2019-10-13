@@ -109,7 +109,7 @@ func (c constraintModel) asConstraint() *flaggio.Constraint {
 type distributionModel struct {
 	ID         primitive.ObjectID `bson:"_id"`
 	VariantID  primitive.ObjectID `bson:"variantId"`
-	Percentage uint32             `bson:"percentage"`
+	Percentage int                `bson:"percentage"`
 }
 
 func (d distributionModel) asDistribution(vrnts map[string]*flaggio.Variant) *flaggio.Distribution {

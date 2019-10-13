@@ -12,10 +12,26 @@ type Ruler interface {
 	IsRuler()
 }
 
+type NewConstraint struct {
+	Property  string        `json:"property"`
+	Operation Operation     `json:"operation"`
+	Values    []interface{} `json:"values"`
+}
+
+type NewDistribution struct {
+	VariantID  string `json:"variantId"`
+	Percentage int    `json:"percentage"`
+}
+
 type NewFlag struct {
 	Key         string  `json:"key"`
 	Name        string  `json:"name"`
 	Description *string `json:"description"`
+}
+
+type NewFlagRule struct {
+	Constraints   []*NewConstraint   `json:"constraints"`
+	Distributions []*NewDistribution `json:"distributions"`
 }
 
 type NewSegment struct {
@@ -37,6 +53,11 @@ type UpdateFlag struct {
 	Name        *string `json:"name"`
 	Description *string `json:"description"`
 	Enabled     *bool   `json:"enabled"`
+}
+
+type UpdateFlagRule struct {
+	Constraints   []*NewConstraint   `json:"constraints"`
+	Distributions []*NewDistribution `json:"distributions"`
 }
 
 type UpdateSegment struct {
