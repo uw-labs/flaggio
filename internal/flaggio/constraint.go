@@ -1,5 +1,7 @@
 package flaggio
 
+//go:generate mockgen -destination=./mocks/operator_mock.go -package=flaggio_mock github.com/victorkohl/flaggio/internal/flaggio Operator
+
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/victorkohl/flaggio/internal/operator"
@@ -87,6 +89,7 @@ var operatorMap = map[Operation]Operator{
 	OperationMatchesRegex:     operator.MatchesRegex{},
 	OperationDoesntMatchRegex: operator.DoesntMatchRegex{},
 	// TODO: date operations
+	// TODO: ip address operator
 	OperationIsInSegment:   operator.Validates{},
 	OperationIsntInSegment: operator.DoesntValidate{},
 }
