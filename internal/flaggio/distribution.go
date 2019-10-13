@@ -7,6 +7,8 @@ import (
 	"github.com/victorkohl/flaggio/internal/errors"
 )
 
+var _ Evaluator = DistributionList{}
+
 type Distribution struct {
 	ID         string
 	Variant    *Variant

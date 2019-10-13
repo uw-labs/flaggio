@@ -36,6 +36,7 @@ func main() {
 	flgRepo := mongodb.NewMongoFlagRepository(db)
 	resolvers := api.NewResolver(
 		flgRepo,
+		mongodb.NewMongoSegmentRepository(db),
 	)
 
 	http.Handle("/", handler.Playground("GraphQL playground", "/query"))

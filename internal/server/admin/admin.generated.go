@@ -77,18 +77,23 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		CreateFlag    func(childComplexity int, input flaggio.NewFlag) int
+		CreateSegment func(childComplexity int, input flaggio.NewSegment) int
 		CreateVariant func(childComplexity int, flagID string, input flaggio.NewVariant) int
 		DeleteFlag    func(childComplexity int, id string) int
+		DeleteSegment func(childComplexity int, id string) int
 		DeleteVariant func(childComplexity int, flagID string, id string) int
 		Ping          func(childComplexity int) int
 		UpdateFlag    func(childComplexity int, id string, input flaggio.UpdateFlag) int
+		UpdateSegment func(childComplexity int, id string, input flaggio.UpdateSegment) int
 		UpdateVariant func(childComplexity int, flagID string, id string, input flaggio.UpdateVariant) int
 	}
 
 	Query struct {
-		Flag  func(childComplexity int, id string) int
-		Flags func(childComplexity int, offset *int, limit *int) int
-		Ping  func(childComplexity int) int
+		Flag     func(childComplexity int, id string) int
+		Flags    func(childComplexity int, offset *int, limit *int) int
+		Ping     func(childComplexity int) int
+		Segment  func(childComplexity int, id string) int
+		Segments func(childComplexity int, offset *int, limit *int) int
 	}
 
 	Segment struct {
@@ -124,11 +129,16 @@ type MutationResolver interface {
 	CreateVariant(ctx context.Context, flagID string, input flaggio.NewVariant) (*flaggio.Variant, error)
 	UpdateVariant(ctx context.Context, flagID string, id string, input flaggio.UpdateVariant) (bool, error)
 	DeleteVariant(ctx context.Context, flagID string, id string) (bool, error)
+	CreateSegment(ctx context.Context, input flaggio.NewSegment) (*flaggio.Segment, error)
+	UpdateSegment(ctx context.Context, id string, input flaggio.UpdateSegment) (bool, error)
+	DeleteSegment(ctx context.Context, id string) (bool, error)
 }
 type QueryResolver interface {
 	Ping(ctx context.Context) (*bool, error)
 	Flags(ctx context.Context, offset *int, limit *int) ([]*flaggio.Flag, error)
 	Flag(ctx context.Context, id string) (*flaggio.Flag, error)
+	Segments(ctx context.Context, offset *int, limit *int) ([]*flaggio.Segment, error)
+	Segment(ctx context.Context, id string) (*flaggio.Segment, error)
 }
 
 type executableSchema struct {
@@ -284,6 +294,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateFlag(childComplexity, args["input"].(flaggio.NewFlag)), true
 
+	case "Mutation.createSegment":
+		if e.complexity.Mutation.CreateSegment == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createSegment_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateSegment(childComplexity, args["input"].(flaggio.NewSegment)), true
+
 	case "Mutation.createVariant":
 		if e.complexity.Mutation.CreateVariant == nil {
 			break
@@ -307,6 +329,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteFlag(childComplexity, args["id"].(string)), true
+
+	case "Mutation.deleteSegment":
+		if e.complexity.Mutation.DeleteSegment == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteSegment_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteSegment(childComplexity, args["id"].(string)), true
 
 	case "Mutation.deleteVariant":
 		if e.complexity.Mutation.DeleteVariant == nil {
@@ -338,6 +372,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateFlag(childComplexity, args["id"].(string), args["input"].(flaggio.UpdateFlag)), true
+
+	case "Mutation.updateSegment":
+		if e.complexity.Mutation.UpdateSegment == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateSegment_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateSegment(childComplexity, args["id"].(string), args["input"].(flaggio.UpdateSegment)), true
 
 	case "Mutation.updateVariant":
 		if e.complexity.Mutation.UpdateVariant == nil {
@@ -381,6 +427,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Ping(childComplexity), true
+
+	case "Query.segment":
+		if e.complexity.Query.Segment == nil {
+			break
+		}
+
+		args, err := ec.field_Query_segment_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Segment(childComplexity, args["id"].(string)), true
+
+	case "Query.segments":
+		if e.complexity.Query.Segments == nil {
+			break
+		}
+
+		args, err := ec.field_Query_segments_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Segments(childComplexity, args["offset"].(*int), args["limit"].(*int)), true
 
 	case "Segment.createdAt":
 		if e.complexity.Segment.CreatedAt == nil {
@@ -578,9 +648,23 @@ input UpdateVariant {
     defaultWhenOff: Boolean
 }
 
+input NewSegment {
+    key: String!
+    name: String!
+    description: String
+}
+
+input UpdateSegment {
+    key: String
+    name: String
+    description: String
+}
+
 extend type Query {
     flags(offset: Int, limit: Int): [Flag!]!
     flag(id: ID!): Flag
+    segments(offset: Int, limit: Int): [Segment!]!
+    segment(id: ID!): Segment
 }
 
 extend type Mutation {
@@ -591,6 +675,10 @@ extend type Mutation {
     createVariant(flagId: ID!, input: NewVariant!): Variant!
     updateVariant(flagId: ID!, id: ID!, input: UpdateVariant!): Boolean!
     deleteVariant(flagId: ID!, id: ID!): Boolean!
+
+    createSegment(input: NewSegment!): Segment!
+    updateSegment(id: ID!, input: UpdateSegment!): Boolean!
+    deleteSegment(id: ID!): Boolean!
 }`},
 	&ast.Source{Name: "schema/flaggio.graphql", Input: `scalar Time
 scalar Any
@@ -707,6 +795,20 @@ func (ec *executionContext) field_Mutation_createFlag_args(ctx context.Context, 
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_createSegment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 flaggio.NewSegment
+	if tmp, ok := rawArgs["input"]; ok {
+		arg0, err = ec.unmarshalNNewSegment2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐNewSegment(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_createVariant_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -730,6 +832,20 @@ func (ec *executionContext) field_Mutation_createVariant_args(ctx context.Contex
 }
 
 func (ec *executionContext) field_Mutation_deleteFlag_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteSegment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -779,6 +895,28 @@ func (ec *executionContext) field_Mutation_updateFlag_args(ctx context.Context, 
 	var arg1 flaggio.UpdateFlag
 	if tmp, ok := rawArgs["input"]; ok {
 		arg1, err = ec.unmarshalNUpdateFlag2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐUpdateFlag(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateSegment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 flaggio.UpdateSegment
+	if tmp, ok := rawArgs["input"]; ok {
+		arg1, err = ec.unmarshalNUpdateSegment2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐUpdateSegment(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -846,6 +984,42 @@ func (ec *executionContext) field_Query_flag_args(ctx context.Context, rawArgs m
 }
 
 func (ec *executionContext) field_Query_flags_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *int
+	if tmp, ok := rawArgs["offset"]; ok {
+		arg0, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["offset"] = arg0
+	var arg1 *int
+	if tmp, ok := rawArgs["limit"]; ok {
+		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["limit"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_segment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_segments_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 *int
@@ -1855,6 +2029,138 @@ func (ec *executionContext) _Mutation_deleteVariant(ctx context.Context, field g
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_createSegment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_createSegment_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateSegment(rctx, args["input"].(flaggio.NewSegment))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*flaggio.Segment)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNSegment2ᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐSegment(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_updateSegment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateSegment_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateSegment(rctx, args["id"].(string), args["input"].(flaggio.UpdateSegment))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_deleteSegment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_deleteSegment_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteSegment(rctx, args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query_ping(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
@@ -1972,6 +2278,91 @@ func (ec *executionContext) _Query_flag(ctx context.Context, field graphql.Colle
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalOFlag2ᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐFlag(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_segments(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_segments_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Segments(rctx, args["offset"].(*int), args["limit"].(*int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*flaggio.Segment)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNSegment2ᚕᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐSegment(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_segment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_segment_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Segment(rctx, args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*flaggio.Segment)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOSegment2ᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐSegment(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3773,6 +4164,36 @@ func (ec *executionContext) unmarshalInputNewFlag(ctx context.Context, obj inter
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputNewSegment(ctx context.Context, obj interface{}) (flaggio.NewSegment, error) {
+	var it flaggio.NewSegment
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "key":
+			var err error
+			it.Key, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "name":
+			var err error
+			it.Name, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "description":
+			var err error
+			it.Description, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputNewVariant(ctx context.Context, obj interface{}) (flaggio.NewVariant, error) {
 	var it flaggio.NewVariant
 	var asMap = obj.(map[string]interface{})
@@ -3842,6 +4263,36 @@ func (ec *executionContext) unmarshalInputUpdateFlag(ctx context.Context, obj in
 		case "enabled":
 			var err error
 			it.Enabled, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputUpdateSegment(ctx context.Context, obj interface{}) (flaggio.UpdateSegment, error) {
+	var it flaggio.UpdateSegment
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "key":
+			var err error
+			it.Key, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "name":
+			var err error
+			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "description":
+			var err error
+			it.Description, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4131,6 +4582,21 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "createSegment":
+			out.Values[i] = ec._Mutation_createSegment(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "updateSegment":
+			out.Values[i] = ec._Mutation_updateSegment(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deleteSegment":
+			out.Values[i] = ec._Mutation_deleteSegment(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -4191,6 +4657,31 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_flag(ctx, field)
+				return res
+			})
+		case "segments":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_segments(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "segment":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_segment(ctx, field)
 				return res
 			})
 		case "__type":
@@ -4810,6 +5301,10 @@ func (ec *executionContext) unmarshalNNewFlag2githubᚗcomᚋvictorkohlᚋflaggi
 	return ec.unmarshalInputNewFlag(ctx, v)
 }
 
+func (ec *executionContext) unmarshalNNewSegment2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐNewSegment(ctx context.Context, v interface{}) (flaggio.NewSegment, error) {
+	return ec.unmarshalInputNewSegment(ctx, v)
+}
+
 func (ec *executionContext) unmarshalNNewVariant2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐNewVariant(ctx context.Context, v interface{}) (flaggio.NewVariant, error) {
 	return ec.unmarshalInputNewVariant(ctx, v)
 }
@@ -4821,6 +5316,57 @@ func (ec *executionContext) unmarshalNOperation2githubᚗcomᚋvictorkohlᚋflag
 
 func (ec *executionContext) marshalNOperation2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐOperation(ctx context.Context, sel ast.SelectionSet, v flaggio.Operation) graphql.Marshaler {
 	return v
+}
+
+func (ec *executionContext) marshalNSegment2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐSegment(ctx context.Context, sel ast.SelectionSet, v flaggio.Segment) graphql.Marshaler {
+	return ec._Segment(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNSegment2ᚕᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐSegment(ctx context.Context, sel ast.SelectionSet, v []*flaggio.Segment) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		rctx := &graphql.ResolverContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNSegment2ᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐSegment(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNSegment2ᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐSegment(ctx context.Context, sel ast.SelectionSet, v *flaggio.Segment) graphql.Marshaler {
+	if v == nil {
+		if !ec.HasError(graphql.GetResolverContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Segment(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNSegmentRule2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐSegmentRule(ctx context.Context, sel ast.SelectionSet, v flaggio.SegmentRule) graphql.Marshaler {
@@ -4904,6 +5450,10 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 
 func (ec *executionContext) unmarshalNUpdateFlag2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐUpdateFlag(ctx context.Context, v interface{}) (flaggio.UpdateFlag, error) {
 	return ec.unmarshalInputUpdateFlag(ctx, v)
+}
+
+func (ec *executionContext) unmarshalNUpdateSegment2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐUpdateSegment(ctx context.Context, v interface{}) (flaggio.UpdateSegment, error) {
+	return ec.unmarshalInputUpdateSegment(ctx, v)
 }
 
 func (ec *executionContext) unmarshalNUpdateVariant2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐUpdateVariant(ctx context.Context, v interface{}) (flaggio.UpdateVariant, error) {
@@ -5336,6 +5886,17 @@ func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.Sele
 		return graphql.Null
 	}
 	return ec.marshalOInt2int(ctx, sel, *v)
+}
+
+func (ec *executionContext) marshalOSegment2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐSegment(ctx context.Context, sel ast.SelectionSet, v flaggio.Segment) graphql.Marshaler {
+	return ec._Segment(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOSegment2ᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐSegment(ctx context.Context, sel ast.SelectionSet, v *flaggio.Segment) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Segment(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {

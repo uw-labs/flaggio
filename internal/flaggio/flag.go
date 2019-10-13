@@ -6,6 +6,8 @@ import (
 	"github.com/victorkohl/flaggio/internal/errors"
 )
 
+var _ Evaluator = Flag{}
+
 type Flag struct {
 	ID          string
 	Key         string

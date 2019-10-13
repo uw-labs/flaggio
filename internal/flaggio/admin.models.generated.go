@@ -18,6 +18,12 @@ type NewFlag struct {
 	Description *string `json:"description"`
 }
 
+type NewSegment struct {
+	Key         string  `json:"key"`
+	Name        string  `json:"name"`
+	Description *string `json:"description"`
+}
+
 type NewVariant struct {
 	Key            string      `json:"key"`
 	Description    *string     `json:"description"`
@@ -31,6 +37,12 @@ type UpdateFlag struct {
 	Name        *string `json:"name"`
 	Description *string `json:"description"`
 	Enabled     *bool   `json:"enabled"`
+}
+
+type UpdateSegment struct {
+	Key         *string `json:"key"`
+	Name        *string `json:"name"`
+	Description *string `json:"description"`
 }
 
 type UpdateVariant struct {

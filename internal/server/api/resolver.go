@@ -9,14 +9,17 @@ import (
 ) // THIS CODE IS A STARTING POINT ONLY. IT WILL NOT BE UPDATED WITH SCHEMA CHANGES.
 
 type Resolver struct {
-	flagRepo repository.Flag
+	flagRepo    repository.Flag
+	segmentRepo repository.Segment
 }
 
 func NewResolver(
 	flagRepo repository.Flag,
+	segmentRepo repository.Segment,
 ) *Resolver {
 	return &Resolver{
-		flagRepo: flagRepo,
+		flagRepo:    flagRepo,
+		segmentRepo: segmentRepo,
 	}
 }
 

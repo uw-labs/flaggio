@@ -5,6 +5,8 @@ import (
 	"github.com/victorkohl/flaggio/internal/operator"
 )
 
+var _ operator.Validator = Constraint{}
+
 type Operator interface {
 	Operate(usrValue interface{}, validValues []interface{}) bool
 }

@@ -37,6 +37,7 @@ func main() {
 	resolvers := admin.NewResolver(
 		flgRepo,
 		mongodb.NewMongoVariantRepository(flgRepo),
+		mongodb.NewMongoSegmentRepository(db),
 	)
 
 	http.Handle("/", handler.Playground("GraphQL playground", "/query"))

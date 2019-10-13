@@ -1,5 +1,7 @@
 package flaggio
 
+var _ Evaluator = FlagRule{}
+
 type Rule struct {
 	ID          string
 	Constraints []*Constraint

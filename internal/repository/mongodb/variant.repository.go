@@ -11,9 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-var (
-	_ repository.Variant = &VariantRepository{}
-)
+var _ repository.Variant = VariantRepository{}
 
 type VariantRepository struct {
 	flagRepo *FlagRepository
@@ -39,6 +37,7 @@ func (r VariantRepository) Create(ctx context.Context, flagIDHex string, v flagg
 	if err != nil {
 		return nil, err
 	}
+	// TODO: check if passing flag id is needed, add unique indexes on all _id fields
 	filter := bson.M{"_id": flagID}
 	res, err := r.flagRepo.col.UpdateOne(ctx, filter, bson.M{
 		"$push": bson.M{"variants": vrntModel},

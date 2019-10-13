@@ -2,7 +2,11 @@ package flaggio
 
 import (
 	"time"
+
+	"github.com/victorkohl/flaggio/internal/operator"
 )
+
+var _ operator.Validator = Segment{}
 
 type Segment struct {
 	ID          string
@@ -14,7 +18,7 @@ type Segment struct {
 	UpdatedAt   *time.Time
 }
 
-func (s Segment) Validator(usrContext map[string]interface{}) bool {
+func (s Segment) Validate(usrContext map[string]interface{}) bool {
 	for _, rl := range s.Rules {
 		if ConstraintList(rl.Constraints).Validate(usrContext) {
 			return true

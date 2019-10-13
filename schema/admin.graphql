@@ -27,9 +27,23 @@ input UpdateVariant {
     defaultWhenOff: Boolean
 }
 
+input NewSegment {
+    key: String!
+    name: String!
+    description: String
+}
+
+input UpdateSegment {
+    key: String
+    name: String
+    description: String
+}
+
 extend type Query {
     flags(offset: Int, limit: Int): [Flag!]!
     flag(id: ID!): Flag
+    segments(offset: Int, limit: Int): [Segment!]!
+    segment(id: ID!): Segment
 }
 
 extend type Mutation {
@@ -40,4 +54,8 @@ extend type Mutation {
     createVariant(flagId: ID!, input: NewVariant!): Variant!
     updateVariant(flagId: ID!, id: ID!, input: UpdateVariant!): Boolean!
     deleteVariant(flagId: ID!, id: ID!): Boolean!
+
+    createSegment(input: NewSegment!): Segment!
+    updateSegment(id: ID!, input: UpdateSegment!): Boolean!
+    deleteSegment(id: ID!): Boolean!
 }

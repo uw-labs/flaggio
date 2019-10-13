@@ -34,8 +34,6 @@ func (f flagModel) asFlag() *flaggio.Flag {
 	}
 	return &flaggio.Flag{
 		ID:          f.ID.Hex(),
-		CreatedAt:   f.CreatedAt,
-		UpdatedAt:   f.UpdatedAt,
 		Key:         f.Key,
 		Name:        f.Name,
 		Description: f.Description,
@@ -43,6 +41,8 @@ func (f flagModel) asFlag() *flaggio.Flag {
 		Version:     f.Version,
 		Variants:    variants,
 		Rules:       rules,
+		CreatedAt:   f.CreatedAt,
+		UpdatedAt:   f.UpdatedAt,
 	}
 }
 
@@ -67,9 +67,9 @@ func (v variantModel) asVariant() *flaggio.Variant {
 }
 
 type flagRuleModel struct {
-	ID            primitive.ObjectID `bson:"_id"`
-	Constraints   []constraintModel  `bson:"constraints"`
-	Distributions []distribution     `bson:"distributions"`
+	ID            primitive.ObjectID  `bson:"_id"`
+	Constraints   []constraintModel   `bson:"constraints"`
+	Distributions []distributionModel `bson:"distributions"`
 }
 
 func (r flagRuleModel) asRule(vrnts map[string]*flaggio.Variant) *flaggio.FlagRule {
@@ -106,15 +106,59 @@ func (c constraintModel) asConstraint() *flaggio.Constraint {
 	}
 }
 
-type distribution struct {
+type distributionModel struct {
 	ID         primitive.ObjectID `bson:"_id"`
 	VariantID  primitive.ObjectID `bson:"variantId"`
 	Percentage uint32             `bson:"percentage"`
 }
 
-func (d distribution) asDistribution(vrnts map[string]*flaggio.Variant) *flaggio.Distribution {
+func (d distributionModel) asDistribution(vrnts map[string]*flaggio.Variant) *flaggio.Distribution {
 	return &flaggio.Distribution{
 		Variant:    vrnts[d.VariantID.Hex()],
 		Percentage: int(d.Percentage),
+	}
+}
+
+type segmentRuleModel struct {
+	ID          primitive.ObjectID `bson:"_id"`
+	Constraints []constraintModel  `bson:"constraints"`
+}
+
+func (r segmentRuleModel) asRule() *flaggio.SegmentRule {
+	constraints := make([]*flaggio.Constraint, len(r.Constraints))
+	for idx, cnstrnt := range r.Constraints {
+		constraints[idx] = cnstrnt.asConstraint()
+	}
+	return &flaggio.SegmentRule{
+		Rule: flaggio.Rule{
+			ID:          r.ID.Hex(),
+			Constraints: constraints,
+		},
+	}
+}
+
+type segmentModel struct {
+	ID          primitive.ObjectID `bson:"_id"`
+	Key         string             `bson:"key"`
+	Name        string             `bson:"name"`
+	Description *string            `bson:"description"`
+	Rules       []segmentRuleModel `bson:"rules"`
+	CreatedAt   time.Time          `bson:"createdAt"`
+	UpdatedAt   *time.Time         `bson:"updatedAt"`
+}
+
+func (f segmentModel) asSegment() *flaggio.Segment {
+	rules := make([]*flaggio.SegmentRule, len(f.Rules))
+	for idx, rl := range f.Rules {
+		rules[idx] = rl.asRule()
+	}
+	return &flaggio.Segment{
+		ID:          f.ID.Hex(),
+		Key:         f.Key,
+		Name:        f.Name,
+		Description: f.Description,
+		Rules:       rules,
+		CreatedAt:   f.CreatedAt,
+		UpdatedAt:   f.UpdatedAt,
 	}
 }
