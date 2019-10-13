@@ -5,7 +5,7 @@ import (
 )
 
 type Validator interface {
-	Validate(usr map[string]interface{}) bool
+	Validate(usrContext map[string]interface{}) bool
 }
 
 type Validates struct{}

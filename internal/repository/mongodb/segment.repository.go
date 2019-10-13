@@ -141,9 +141,23 @@ func (r SegmentRepository) Delete(ctx context.Context, idHex string) error {
 	return nil
 }
 
-func NewMongoSegmentRepository(db *mongo.Database) *SegmentRepository {
+func NewMongoSegmentRepository(ctx context.Context, db *mongo.Database) (*SegmentRepository, error) {
+	col := db.Collection("segments")
+	_, err := col.Indexes().CreateMany(ctx, []mongo.IndexModel{
+		{
+			Keys:    bson.M{"rules._id": 1},
+			Options: options.Index().SetUnique(true).SetBackground(false),
+		},
+		{
+			Keys:    bson.M{"rules.constraints._id": 1},
+			Options: options.Index().SetUnique(true).SetBackground(false),
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
 	return &SegmentRepository{
 		db:  db,
-		col: db.Collection("segments"),
-	}
+		col: col,
+	}, nil
 }

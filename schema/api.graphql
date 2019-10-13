@@ -2,7 +2,7 @@ scalar Map
 
 type StackTrace {
     type: String!
-    id: String!
+    id: String
     answer: Any
 }
 

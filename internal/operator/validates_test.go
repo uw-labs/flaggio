@@ -13,45 +13,45 @@ type mockValidator struct {
 	r bool
 }
 
-func (m mockValidator) Validate(usr map[string]interface{}) bool {
+func (m mockValidator) Validate(usrContext map[string]interface{}) bool {
 	return m.r
 }
 
 func TestValidates_Operate(t *testing.T) {
 	tt := []struct {
 		desc           string
-		usr            map[string]interface{}
+		usrContext     map[string]interface{}
 		property       string
 		values         []interface{}
 		expectedResult bool
 	}{
 		{
 			desc:           "validates",
-			usr:            map[string]interface{}{"prop": "abc"},
+			usrContext:     map[string]interface{}{"prop": "abc"},
 			values:         []interface{}{mockValidator{true}},
 			expectedResult: true,
 		},
 		{
 			desc:           "validates all",
-			usr:            map[string]interface{}{"prop": "abc"},
+			usrContext:     map[string]interface{}{"prop": "abc"},
 			values:         []interface{}{mockValidator{true}, mockValidator{true}},
 			expectedResult: true,
 		},
 		{
 			desc:           "doesnt validate",
-			usr:            map[string]interface{}{"prop": "abc"},
+			usrContext:     map[string]interface{}{"prop": "abc"},
 			values:         []interface{}{mockValidator{false}},
 			expectedResult: false,
 		},
 		{
 			desc:           "doesnt validate all",
-			usr:            map[string]interface{}{"prop": "abc"},
+			usrContext:     map[string]interface{}{"prop": "abc"},
 			values:         []interface{}{mockValidator{true}, mockValidator{false}},
 			expectedResult: false,
 		},
 		{
 			desc:           "doesnt validate when not a validator",
-			usr:            map[string]interface{}{"prop": "abc"},
+			usrContext:     map[string]interface{}{"prop": "abc"},
 			values:         []interface{}{struct{}{}},
 			expectedResult: false,
 		},
@@ -60,7 +60,7 @@ func TestValidates_Operate(t *testing.T) {
 	for _, test := range tt {
 		t.Run(test.desc, func(t *testing.T) {
 			op := operator.Validates{}
-			res := op.Operate(test.usr, test.values)
+			res := op.Operate(test.usrContext, test.values)
 			assert.Equal(t, test.expectedResult, res)
 		})
 	}
@@ -69,38 +69,38 @@ func TestValidates_Operate(t *testing.T) {
 func TestDoesntValidate_Operate(t *testing.T) {
 	tt := []struct {
 		desc           string
-		usr            map[string]interface{}
+		usrContext     map[string]interface{}
 		property       string
 		values         []interface{}
 		expectedResult bool
 	}{
 		{
 			desc:           "validates",
-			usr:            map[string]interface{}{"prop": "abc"},
+			usrContext:     map[string]interface{}{"prop": "abc"},
 			values:         []interface{}{mockValidator{false}},
 			expectedResult: true,
 		},
 		{
 			desc:           "validates all",
-			usr:            map[string]interface{}{"prop": "abc"},
+			usrContext:     map[string]interface{}{"prop": "abc"},
 			values:         []interface{}{mockValidator{false}, mockValidator{false}},
 			expectedResult: true,
 		},
 		{
 			desc:           "doesnt validate",
-			usr:            map[string]interface{}{"prop": "abc"},
+			usrContext:     map[string]interface{}{"prop": "abc"},
 			values:         []interface{}{mockValidator{true}},
 			expectedResult: false,
 		},
 		{
 			desc:           "doesnt validate all",
-			usr:            map[string]interface{}{"prop": "abc"},
+			usrContext:     map[string]interface{}{"prop": "abc"},
 			values:         []interface{}{mockValidator{false}, mockValidator{true}},
 			expectedResult: false,
 		},
 		{
 			desc:           "doesnt validate when not a validator",
-			usr:            map[string]interface{}{"prop": "abc"},
+			usrContext:     map[string]interface{}{"prop": "abc"},
 			values:         []interface{}{struct{}{}},
 			expectedResult: false,
 		},
@@ -109,7 +109,7 @@ func TestDoesntValidate_Operate(t *testing.T) {
 	for _, test := range tt {
 		t.Run(test.desc, func(t *testing.T) {
 			op := operator.DoesntValidate{}
-			res := op.Operate(test.usr, test.values)
+			res := op.Operate(test.usrContext, test.values)
 			assert.Equal(t, test.expectedResult, res)
 		})
 	}

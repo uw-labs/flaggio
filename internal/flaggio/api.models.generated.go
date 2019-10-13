@@ -11,6 +11,6 @@ type Evaluation struct {
 
 type StackTrace struct {
 	Type   string      `json:"type"`
-	ID     string      `json:"id"`
+	ID     *string     `json:"id"`
 	Answer interface{} `json:"answer"`
 }

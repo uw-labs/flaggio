@@ -5,7 +5,7 @@ import (
 )
 
 type Evaluator interface {
-	Evaluate(usr map[string]interface{}) (EvalResult, error)
+	Evaluate(usrContext map[string]interface{}) (EvalResult, error)
 }
 
 type Identifier interface {
@@ -22,10 +22,11 @@ type EvalResult struct {
 func (r EvalResult) Stack() (stack []*StackTrace) {
 	prev := &r
 	for prev != nil {
-		var id string
+		var id *string
 		ider, ok := prev.evaluator.(Identifier)
 		if ok {
-			id = ider.GetID()
+			v := ider.GetID()
+			id = &v
 		}
 		stack = append(stack, &StackTrace{
 			Type:   fmt.Sprintf("%T", prev.evaluator),
@@ -37,16 +38,16 @@ func (r EvalResult) Stack() (stack []*StackTrace) {
 	return
 }
 
-func Evaluate(usr map[string]interface{}, root Evaluator) (EvalResult, error) {
-	return evaluate(usr, []Evaluator{root})
+func Evaluate(usrContext map[string]interface{}, root Evaluator) (EvalResult, error) {
+	return evaluate(usrContext, []Evaluator{root})
 }
 
-func evaluate(usr map[string]interface{}, evaluators []Evaluator) (EvalResult, error) {
+func evaluate(usrContext map[string]interface{}, evaluators []Evaluator) (EvalResult, error) {
 	var lastResult EvalResult
 	var last *EvalResult
 	for len(evaluators) > 0 {
 		evltr := evaluators[0]
-		res, err := evltr.Evaluate(usr)
+		res, err := evltr.Evaluate(usrContext)
 		if err != nil {
 			return EvalResult{}, err
 		}

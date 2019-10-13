@@ -150,9 +150,31 @@ func (r FlagRepository) Delete(ctx context.Context, idHex string) error {
 	return nil
 }
 
-func NewMongoFlagRepository(db *mongo.Database) *FlagRepository {
+func NewMongoFlagRepository(ctx context.Context, db *mongo.Database) (*FlagRepository, error) {
+	col := db.Collection("flags")
+	_, err := col.Indexes().CreateMany(ctx, []mongo.IndexModel{
+		{
+			Keys:    bson.M{"variants._id": 1},
+			Options: options.Index().SetUnique(true).SetBackground(false),
+		},
+		{
+			Keys:    bson.M{"rules._id": 1},
+			Options: options.Index().SetUnique(true).SetBackground(false),
+		},
+		{
+			Keys:    bson.M{"rules.distributions._id": 1},
+			Options: options.Index().SetUnique(true).SetBackground(false),
+		},
+		{
+			Keys:    bson.M{"rules.constraints._id": 1},
+			Options: options.Index().SetUnique(true).SetBackground(false),
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
 	return &FlagRepository{
 		db:  db,
-		col: db.Collection("flags"),
-	}
+		col: col,
+	}, nil
 }

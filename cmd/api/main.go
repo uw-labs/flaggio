@@ -33,10 +33,17 @@ func main() {
 	}
 
 	db := c.Database("flaggio")
-	flgRepo := mongodb.NewMongoFlagRepository(db)
+	flgRepo, err := mongodb.NewMongoFlagRepository(ctx, db)
+	if err != nil {
+		log.Fatal(err)
+	}
+	sgmntRepo, err := mongodb.NewMongoSegmentRepository(ctx, db)
+	if err != nil {
+		log.Fatal(err)
+	}
 	resolvers := api.NewResolver(
 		flgRepo,
-		mongodb.NewMongoSegmentRepository(db),
+		sgmntRepo,
 	)
 
 	http.Handle("/", handler.Playground("GraphQL playground", "/query"))

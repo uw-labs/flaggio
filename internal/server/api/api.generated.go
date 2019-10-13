@@ -531,7 +531,7 @@ var parsedSchema = gqlparser.MustLoadSchema(
 
 type StackTrace {
     type: String!
-    id: String!
+    id: String
     answer: Any
 }
 
@@ -2189,15 +2189,12 @@ func (ec *executionContext) _StackTrace_id(ctx context.Context, field graphql.Co
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _StackTrace_answer(ctx context.Context, field graphql.CollectedField, obj *flaggio.StackTrace) (ret graphql.Marshaler) {
@@ -4026,9 +4023,6 @@ func (ec *executionContext) _StackTrace(ctx context.Context, sel ast.SelectionSe
 			}
 		case "id":
 			out.Values[i] = ec._StackTrace_id(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "answer":
 			out.Values[i] = ec._StackTrace_answer(ctx, field, obj)
 		default:
