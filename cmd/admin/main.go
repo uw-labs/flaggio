@@ -7,6 +7,9 @@ import (
 	"os"
 
 	"github.com/99designs/gqlgen/handler"
+	"github.com/go-chi/chi"
+	"github.com/gorilla/websocket"
+	"github.com/rs/cors"
 	"github.com/victorkohl/flaggio/internal/repository/mongodb"
 	"github.com/victorkohl/flaggio/internal/server/admin"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -48,9 +51,31 @@ func main() {
 		sgmntRepo,
 	)
 
-	http.Handle("/", handler.Playground("GraphQL playground", "/query"))
-	http.Handle("/query", handler.GraphQL(admin.NewExecutableSchema(admin.Config{Resolvers: resolvers})))
+	router := chi.NewRouter()
+
+	// Add CORS middleware around every request
+	// See https://github.com/rs/cors for full option listing
+	router.Use(cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:3000"},
+		AllowCredentials: true,
+		Debug:            true,
+	}).Handler)
+
+	upgrader := websocket.Upgrader{
+		CheckOrigin: func(r *http.Request) bool {
+			// Check against your desired domains here
+			return r.Host == "example.org"
+		},
+		ReadBufferSize:  1024,
+		WriteBufferSize: 1024,
+	}
+
+	router.Handle("/", handler.Playground("GraphQL playground", "/query"))
+	router.Handle("/query", handler.GraphQL(
+		admin.NewExecutableSchema(admin.Config{Resolvers: resolvers}),
+		handler.WebsocketUpgrader(upgrader),
+	))
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Fatal(http.ListenAndServe(":"+port, router))
 }
