@@ -76,19 +76,22 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateFlag     func(childComplexity int, input flaggio.NewFlag) int
-		CreateFlagRule func(childComplexity int, flagID string, input flaggio.NewFlagRule) int
-		CreateSegment  func(childComplexity int, input flaggio.NewSegment) int
-		CreateVariant  func(childComplexity int, flagID string, input flaggio.NewVariant) int
-		DeleteFlag     func(childComplexity int, id string) int
-		DeleteFlagRule func(childComplexity int, flagID string, id string) int
-		DeleteSegment  func(childComplexity int, id string) int
-		DeleteVariant  func(childComplexity int, flagID string, id string) int
-		Ping           func(childComplexity int) int
-		UpdateFlag     func(childComplexity int, id string, input flaggio.UpdateFlag) int
-		UpdateFlagRule func(childComplexity int, flagID string, id string, input flaggio.UpdateFlagRule) int
-		UpdateSegment  func(childComplexity int, id string, input flaggio.UpdateSegment) int
-		UpdateVariant  func(childComplexity int, flagID string, id string, input flaggio.UpdateVariant) int
+		CreateFlag        func(childComplexity int, input flaggio.NewFlag) int
+		CreateFlagRule    func(childComplexity int, flagID string, input flaggio.NewFlagRule) int
+		CreateSegment     func(childComplexity int, input flaggio.NewSegment) int
+		CreateSegmentRule func(childComplexity int, segmentID string, input flaggio.NewSegmentRule) int
+		CreateVariant     func(childComplexity int, flagID string, input flaggio.NewVariant) int
+		DeleteFlag        func(childComplexity int, id string) int
+		DeleteFlagRule    func(childComplexity int, flagID string, id string) int
+		DeleteSegment     func(childComplexity int, id string) int
+		DeleteSegmentRule func(childComplexity int, segmentID string, id string) int
+		DeleteVariant     func(childComplexity int, flagID string, id string) int
+		Ping              func(childComplexity int) int
+		UpdateFlag        func(childComplexity int, id string, input flaggio.UpdateFlag) int
+		UpdateFlagRule    func(childComplexity int, flagID string, id string, input flaggio.UpdateFlagRule) int
+		UpdateSegment     func(childComplexity int, id string, input flaggio.UpdateSegment) int
+		UpdateSegmentRule func(childComplexity int, segmentID string, id string, input flaggio.UpdateSegmentRule) int
+		UpdateVariant     func(childComplexity int, flagID string, id string, input flaggio.UpdateVariant) int
 	}
 
 	Query struct {
@@ -135,6 +138,9 @@ type MutationResolver interface {
 	CreateFlagRule(ctx context.Context, flagID string, input flaggio.NewFlagRule) (string, error)
 	UpdateFlagRule(ctx context.Context, flagID string, id string, input flaggio.UpdateFlagRule) (bool, error)
 	DeleteFlagRule(ctx context.Context, flagID string, id string) (bool, error)
+	CreateSegmentRule(ctx context.Context, segmentID string, input flaggio.NewSegmentRule) (string, error)
+	UpdateSegmentRule(ctx context.Context, segmentID string, id string, input flaggio.UpdateSegmentRule) (bool, error)
+	DeleteSegmentRule(ctx context.Context, segmentID string, id string) (bool, error)
 	CreateSegment(ctx context.Context, input flaggio.NewSegment) (*flaggio.Segment, error)
 	UpdateSegment(ctx context.Context, id string, input flaggio.UpdateSegment) (bool, error)
 	DeleteSegment(ctx context.Context, id string) (bool, error)
@@ -324,6 +330,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateSegment(childComplexity, args["input"].(flaggio.NewSegment)), true
 
+	case "Mutation.createSegmentRule":
+		if e.complexity.Mutation.CreateSegmentRule == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createSegmentRule_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateSegmentRule(childComplexity, args["segmentId"].(string), args["input"].(flaggio.NewSegmentRule)), true
+
 	case "Mutation.createVariant":
 		if e.complexity.Mutation.CreateVariant == nil {
 			break
@@ -371,6 +389,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteSegment(childComplexity, args["id"].(string)), true
+
+	case "Mutation.deleteSegmentRule":
+		if e.complexity.Mutation.DeleteSegmentRule == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteSegmentRule_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteSegmentRule(childComplexity, args["segmentId"].(string), args["id"].(string)), true
 
 	case "Mutation.deleteVariant":
 		if e.complexity.Mutation.DeleteVariant == nil {
@@ -426,6 +456,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateSegment(childComplexity, args["id"].(string), args["input"].(flaggio.UpdateSegment)), true
+
+	case "Mutation.updateSegmentRule":
+		if e.complexity.Mutation.UpdateSegmentRule == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateSegmentRule_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateSegmentRule(childComplexity, args["segmentId"].(string), args["id"].(string), args["input"].(flaggio.UpdateSegmentRule)), true
 
 	case "Mutation.updateVariant":
 		if e.complexity.Mutation.UpdateVariant == nil {
@@ -711,6 +753,14 @@ input UpdateFlagRule {
     distributions: [NewDistribution!]!
 }
 
+input NewSegmentRule {
+    constraints: [NewConstraint!]!
+}
+
+input UpdateSegmentRule {
+    constraints: [NewConstraint!]!
+}
+
 input NewSegment {
     key: String!
     name: String!
@@ -742,6 +792,9 @@ extend type Mutation {
     createFlagRule(flagId: ID!, input: NewFlagRule!): ID!
     updateFlagRule(flagId: ID!, id: ID!, input: UpdateFlagRule!): Boolean!
     deleteFlagRule(flagId: ID!, id: ID!): Boolean!
+    createSegmentRule(segmentId: ID!, input: NewSegmentRule!): ID!
+    updateSegmentRule(segmentId: ID!, id: ID!, input: UpdateSegmentRule!): Boolean!
+    deleteSegmentRule(segmentId: ID!, id: ID!): Boolean!
 
     createSegment(input: NewSegment!): Segment!
     updateSegment(id: ID!, input: UpdateSegment!): Boolean!
@@ -884,6 +937,28 @@ func (ec *executionContext) field_Mutation_createFlag_args(ctx context.Context, 
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_createSegmentRule_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["segmentId"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["segmentId"] = arg0
+	var arg1 flaggio.NewSegmentRule
+	if tmp, ok := rawArgs["input"]; ok {
+		arg1, err = ec.unmarshalNNewSegmentRule2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐNewSegmentRule(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_createSegment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -953,6 +1028,28 @@ func (ec *executionContext) field_Mutation_deleteFlag_args(ctx context.Context, 
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteSegmentRule_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["segmentId"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["segmentId"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["id"]; ok {
+		arg1, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg1
 	return args, nil
 }
 
@@ -1041,6 +1138,36 @@ func (ec *executionContext) field_Mutation_updateFlag_args(ctx context.Context, 
 		}
 	}
 	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateSegmentRule_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["segmentId"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["segmentId"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["id"]; ok {
+		arg1, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg1
+	var arg2 flaggio.UpdateSegmentRule
+	if tmp, ok := rawArgs["input"]; ok {
+		arg2, err = ec.unmarshalNUpdateSegmentRule2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐUpdateSegmentRule(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg2
 	return args, nil
 }
 
@@ -2285,6 +2412,138 @@ func (ec *executionContext) _Mutation_deleteFlagRule(ctx context.Context, field 
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().DeleteFlagRule(rctx, args["flagId"].(string), args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_createSegmentRule(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_createSegmentRule_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateSegmentRule(rctx, args["segmentId"].(string), args["input"].(flaggio.NewSegmentRule))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_updateSegmentRule(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateSegmentRule_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateSegmentRule(rctx, args["segmentId"].(string), args["id"].(string), args["input"].(flaggio.UpdateSegmentRule))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_deleteSegmentRule(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_deleteSegmentRule_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteSegmentRule(rctx, args["segmentId"].(string), args["id"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4545,6 +4804,24 @@ func (ec *executionContext) unmarshalInputNewSegment(ctx context.Context, obj in
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputNewSegmentRule(ctx context.Context, obj interface{}) (flaggio.NewSegmentRule, error) {
+	var it flaggio.NewSegmentRule
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "constraints":
+			var err error
+			it.Constraints, err = ec.unmarshalNNewConstraint2ᚕᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐNewConstraint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputNewVariant(ctx context.Context, obj interface{}) (flaggio.NewVariant, error) {
 	var it flaggio.NewVariant
 	var asMap = obj.(map[string]interface{})
@@ -4668,6 +4945,24 @@ func (ec *executionContext) unmarshalInputUpdateSegment(ctx context.Context, obj
 		case "description":
 			var err error
 			it.Description, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputUpdateSegmentRule(ctx context.Context, obj interface{}) (flaggio.UpdateSegmentRule, error) {
+	var it flaggio.UpdateSegmentRule
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "constraints":
+			var err error
+			it.Constraints, err = ec.unmarshalNNewConstraint2ᚕᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐNewConstraint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4969,6 +5264,21 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			}
 		case "deleteFlagRule":
 			out.Values[i] = ec._Mutation_deleteFlagRule(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "createSegmentRule":
+			out.Values[i] = ec._Mutation_createSegmentRule(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "updateSegmentRule":
+			out.Values[i] = ec._Mutation_updateSegmentRule(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deleteSegmentRule":
+			out.Values[i] = ec._Mutation_deleteSegmentRule(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -5498,7 +5808,7 @@ func (ec *executionContext) unmarshalNAny2ᚕinterface(ctx context.Context, v in
 	var err error
 	res := make([]interface{}, len(vSlice))
 	for i := range vSlice {
-		res[i], err = ec.unmarshalOAny2interface(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNAny2interface(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -5509,7 +5819,7 @@ func (ec *executionContext) unmarshalNAny2ᚕinterface(ctx context.Context, v in
 func (ec *executionContext) marshalNAny2ᚕinterface(ctx context.Context, sel ast.SelectionSet, v []interface{}) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	for i := range v {
-		ret[i] = ec.marshalOAny2interface(ctx, sel, v[i])
+		ret[i] = ec.marshalNAny2interface(ctx, sel, v[i])
 	}
 
 	return ret
@@ -5763,6 +6073,10 @@ func (ec *executionContext) unmarshalNNewSegment2githubᚗcomᚋvictorkohlᚋfla
 	return ec.unmarshalInputNewSegment(ctx, v)
 }
 
+func (ec *executionContext) unmarshalNNewSegmentRule2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐNewSegmentRule(ctx context.Context, v interface{}) (flaggio.NewSegmentRule, error) {
+	return ec.unmarshalInputNewSegmentRule(ctx, v)
+}
+
 func (ec *executionContext) unmarshalNNewVariant2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐNewVariant(ctx context.Context, v interface{}) (flaggio.NewVariant, error) {
 	return ec.unmarshalInputNewVariant(ctx, v)
 }
@@ -5916,6 +6230,10 @@ func (ec *executionContext) unmarshalNUpdateFlagRule2githubᚗcomᚋvictorkohl�
 
 func (ec *executionContext) unmarshalNUpdateSegment2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐUpdateSegment(ctx context.Context, v interface{}) (flaggio.UpdateSegment, error) {
 	return ec.unmarshalInputUpdateSegment(ctx, v)
+}
+
+func (ec *executionContext) unmarshalNUpdateSegmentRule2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐUpdateSegmentRule(ctx context.Context, v interface{}) (flaggio.UpdateSegmentRule, error) {
+	return ec.unmarshalInputUpdateSegmentRule(ctx, v)
 }
 
 func (ec *executionContext) unmarshalNUpdateVariant2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐUpdateVariant(ctx context.Context, v interface{}) (flaggio.UpdateVariant, error) {

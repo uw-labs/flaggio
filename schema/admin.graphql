@@ -48,6 +48,14 @@ input UpdateFlagRule {
     distributions: [NewDistribution!]!
 }
 
+input NewSegmentRule {
+    constraints: [NewConstraint!]!
+}
+
+input UpdateSegmentRule {
+    constraints: [NewConstraint!]!
+}
+
 input NewSegment {
     key: String!
     name: String!
@@ -79,6 +87,9 @@ extend type Mutation {
     createFlagRule(flagId: ID!, input: NewFlagRule!): ID!
     updateFlagRule(flagId: ID!, id: ID!, input: UpdateFlagRule!): Boolean!
     deleteFlagRule(flagId: ID!, id: ID!): Boolean!
+    createSegmentRule(segmentId: ID!, input: NewSegmentRule!): ID!
+    updateSegmentRule(segmentId: ID!, id: ID!, input: UpdateSegmentRule!): Boolean!
+    deleteSegmentRule(segmentId: ID!, id: ID!): Boolean!
 
     createSegment(input: NewSegment!): Segment!
     updateSegment(id: ID!, input: UpdateSegment!): Boolean!

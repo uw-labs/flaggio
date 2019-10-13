@@ -84,6 +84,20 @@ func (r *mutationResolver) DeleteFlagRule(ctx context.Context, flagID, id string
 	return err == nil, err
 }
 
+func (r *mutationResolver) CreateSegmentRule(ctx context.Context, segmentID string, input flaggio.NewSegmentRule) (string, error) {
+	return r.ruleRepo.CreateSegmentRule(ctx, segmentID, input)
+}
+
+func (r *mutationResolver) UpdateSegmentRule(ctx context.Context, segmentID, id string, input flaggio.UpdateSegmentRule) (bool, error) {
+	err := r.ruleRepo.UpdateSegmentRule(ctx, segmentID, id, input)
+	return err == nil, err
+}
+
+func (r *mutationResolver) DeleteSegmentRule(ctx context.Context, segmentID, id string) (bool, error) {
+	err := r.ruleRepo.DeleteSegmentRule(ctx, segmentID, id)
+	return err == nil, err
+}
+
 func (r *mutationResolver) CreateSegment(ctx context.Context, input flaggio.NewSegment) (*flaggio.Segment, error) {
 	return r.segmentRepo.Create(ctx, input)
 }

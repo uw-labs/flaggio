@@ -14,7 +14,8 @@ import (
 var _ repository.Rule = RuleRepository{}
 
 type RuleRepository struct {
-	flagRepo *FlagRepository
+	flagRepo    *FlagRepository
+	segmentRepo *SegmentRepository
 }
 
 func (r RuleRepository) CreateFlagRule(ctx context.Context, flagIDHex string, fr flaggio.NewFlagRule) (string, error) {
@@ -136,8 +137,99 @@ func (r RuleRepository) DeleteFlagRule(ctx context.Context, flagIDHex, idHex str
 	return nil
 }
 
-func NewMongoRuleRepository(flagRepo *FlagRepository) *RuleRepository {
+func (r RuleRepository) CreateSegmentRule(ctx context.Context, segmentIDHex string, fr flaggio.NewSegmentRule) (string, error) {
+	constraints := make([]constraintModel, len(fr.Constraints))
+	for idx, c := range fr.Constraints {
+		constraints[idx] = constraintModel{
+			ID:        primitive.NewObjectID(),
+			Property:  c.Property,
+			Operation: string(c.Operation),
+			Values:    c.Values,
+		}
+	}
+	sgmntRuleModel := &segmentRuleModel{
+		ID:          primitive.NewObjectID(),
+		Constraints: constraints,
+	}
+	segmentID, err := primitive.ObjectIDFromHex(segmentIDHex)
+	if err != nil {
+		return "", err
+	}
+	filter := bson.M{"_id": segmentID}
+	res, err := r.segmentRepo.col.UpdateOne(ctx, filter, bson.M{
+		"$push": bson.M{"rules": sgmntRuleModel},
+		"$set":  bson.M{"updatedAt": time.Now()},
+	})
+	if err != nil {
+		return "", err
+	}
+	if res.ModifiedCount == 0 {
+		return "", errors.NotFound("segment")
+	}
+	return sgmntRuleModel.ID.Hex(), nil
+}
+
+func (r RuleRepository) UpdateSegmentRule(ctx context.Context, segmentIDHex, idHex string, fr flaggio.UpdateSegmentRule) error {
+	segmentID, err := primitive.ObjectIDFromHex(segmentIDHex)
+	if err != nil {
+		return err
+	}
+	id, err := primitive.ObjectIDFromHex(idHex)
+	if err != nil {
+		return err
+	}
+	constraints := make([]constraintModel, len(fr.Constraints))
+	for idx, c := range fr.Constraints {
+		constraints[idx] = constraintModel{
+			ID:        primitive.NewObjectID(),
+			Property:  c.Property,
+			Operation: string(c.Operation),
+			Values:    c.Values,
+		}
+	}
+	mods := bson.M{
+		"updatedAt":           time.Now(),
+		"rules.$.constraints": constraints,
+	}
+	res, err := r.segmentRepo.col.UpdateOne(
+		ctx,
+		bson.M{"_id": segmentID, "rules._id": id},
+		bson.M{"$set": mods},
+	)
+	if err != nil {
+		return err
+	}
+	if res.ModifiedCount == 0 {
+		return errors.NotFound("segment rule")
+	}
+	return nil
+}
+
+func (r RuleRepository) DeleteSegmentRule(ctx context.Context, segmentIDHex, idHex string) error {
+	segmentID, err := primitive.ObjectIDFromHex(segmentIDHex)
+	if err != nil {
+		return err
+	}
+	id, err := primitive.ObjectIDFromHex(idHex)
+	if err != nil {
+		return err
+	}
+	res, err := r.segmentRepo.col.UpdateOne(ctx, bson.M{"_id": segmentID}, bson.M{
+		"$pull": bson.M{"rules": bson.M{"_id": id}},
+		"$set":  bson.M{"updatedAt": time.Now()},
+	})
+	if err != nil {
+		return err
+	}
+	if res.ModifiedCount == 0 {
+		return errors.NotFound("segment rule")
+	}
+	return nil
+}
+
+func NewMongoRuleRepository(flagRepo *FlagRepository, segmentRepo *SegmentRepository) *RuleRepository {
 	return &RuleRepository{
-		flagRepo: flagRepo,
+		flagRepo:    flagRepo,
+		segmentRepo: segmentRepo,
 	}
 }

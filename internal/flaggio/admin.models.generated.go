@@ -40,6 +40,10 @@ type NewSegment struct {
 	Description *string `json:"description"`
 }
 
+type NewSegmentRule struct {
+	Constraints []*NewConstraint `json:"constraints"`
+}
+
 type NewVariant struct {
 	Key            string      `json:"key"`
 	Description    *string     `json:"description"`
@@ -64,6 +68,10 @@ type UpdateSegment struct {
 	Key         *string `json:"key"`
 	Name        *string `json:"name"`
 	Description *string `json:"description"`
+}
+
+type UpdateSegmentRule struct {
+	Constraints []*NewConstraint `json:"constraints"`
 }
 
 type UpdateVariant struct {

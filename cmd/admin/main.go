@@ -44,7 +44,7 @@ func main() {
 	resolvers := admin.NewResolver(
 		flgRepo,
 		mongodb.NewMongoVariantRepository(flgRepo),
-		mongodb.NewMongoRuleRepository(flgRepo),
+		mongodb.NewMongoRuleRepository(flgRepo, sgmntRepo),
 		sgmntRepo,
 	)
 
