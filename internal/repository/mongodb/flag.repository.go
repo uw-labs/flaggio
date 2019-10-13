@@ -154,7 +154,15 @@ func NewMongoFlagRepository(ctx context.Context, db *mongo.Database) (*FlagRepos
 	col := db.Collection("flags")
 	_, err := col.Indexes().CreateMany(ctx, []mongo.IndexModel{
 		{
+			Keys:    bson.M{"key": 1},
+			Options: options.Index().SetUnique(true).SetBackground(false),
+		},
+		{
 			Keys:    bson.M{"variants._id": 1},
+			Options: options.Index().SetUnique(true).SetBackground(false),
+		},
+		{
+			Keys:    bson.M{"variants.key": 1},
 			Options: options.Index().SetUnique(true).SetBackground(false),
 		},
 		{

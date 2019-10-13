@@ -145,6 +145,10 @@ func NewMongoSegmentRepository(ctx context.Context, db *mongo.Database) (*Segmen
 	col := db.Collection("segments")
 	_, err := col.Indexes().CreateMany(ctx, []mongo.IndexModel{
 		{
+			Keys:    bson.M{"key": 1},
+			Options: options.Index().SetUnique(true).SetBackground(false),
+		},
+		{
 			Keys:    bson.M{"rules._id": 1},
 			Options: options.Index().SetUnique(true).SetBackground(false),
 		},
