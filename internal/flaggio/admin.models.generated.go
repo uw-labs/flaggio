@@ -26,6 +26,21 @@ type NewVariant struct {
 	DefaultWhenOff *bool       `json:"defaultWhenOff"`
 }
 
+type UpdateFlag struct {
+	Key         *string `json:"key"`
+	Name        *string `json:"name"`
+	Description *string `json:"description"`
+	Enabled     *bool   `json:"enabled"`
+}
+
+type UpdateVariant struct {
+	Key            *string     `json:"key"`
+	Description    *string     `json:"description"`
+	Value          interface{} `json:"value"`
+	DefaultWhenOn  *bool       `json:"defaultWhenOn"`
+	DefaultWhenOff *bool       `json:"defaultWhenOff"`
+}
+
 type Operation string
 
 const (

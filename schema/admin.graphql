@@ -4,6 +4,13 @@ input NewFlag {
     description: String
 }
 
+input UpdateFlag {
+    key: String
+    name: String
+    description: String
+    enabled: Boolean
+}
+
 input NewVariant {
     key: String!
     description: String
@@ -12,14 +19,25 @@ input NewVariant {
     defaultWhenOff: Boolean
 }
 
+input UpdateVariant {
+    key: String
+    description: String
+    value: Any
+    defaultWhenOn: Boolean
+    defaultWhenOff: Boolean
+}
+
 extend type Query {
-    flags: [Flag!]!
+    flags(offset: Int, limit: Int): [Flag!]!
+    flag(id: ID!): Flag
 }
 
 extend type Mutation {
     createFlag(input: NewFlag!): Flag!
+    updateFlag(id: ID!, input: UpdateFlag!): Boolean!
     deleteFlag(id: ID!): Boolean!
 
     createVariant(flagId: ID!, input: NewVariant!): Variant!
+    updateVariant(flagId: ID!, id: ID!, input: UpdateVariant!): Boolean!
     deleteVariant(flagId: ID!, id: ID!): Boolean!
 }

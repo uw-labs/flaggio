@@ -99,35 +99,43 @@ func (r FlagRepository) Create(ctx context.Context, f flaggio.NewFlag) (*flaggio
 	return r.FindByID(ctx, id.Hex())
 }
 
-// func (r FlagRepository) Update(ctx context.Context, idHex string, f flag.UpdateFlagDto) (*flaggio.Flag, error) {
-// 	id, err := primitive.ObjectIDFromHex(idHex)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	mods := bson.M{}
-// 	if f.Key != nil {
-// 		mods["key"] = *f.Key
-// 	}
-// 	if f.Name != nil {
-// 		mods["name"] = *f.Name
-// 	}
-// 	if f.Description != nil {
-// 		mods["description"] = *f.Description
-// 	}
-// 	if len(mods) == 0 {
-// 		return nil, errors.ErrNothingToUpdate
-// 	}
-// 	filter := bson.M{"_id": id}
-// 	update := bson.M{"$set": mods, "$inc": "version"}
-// 	res, err := r.col.UpdateOne(ctx, filter, update)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	if res.ModifiedCount == 0 {
-// 		return nil, errors.NotFound("flag")
-// 	}
-// 	return r.FindByID(ctx, idHex)
-// }
+func (r FlagRepository) Update(ctx context.Context, idHex string, f flaggio.UpdateFlag) error {
+	id, err := primitive.ObjectIDFromHex(idHex)
+	if err != nil {
+		return err
+	}
+	mods := bson.M{
+		"updatedAt": time.Now(),
+	}
+	if f.Key != nil {
+		mods["key"] = *f.Key
+	}
+	if f.Name != nil {
+		mods["name"] = *f.Name
+	}
+	if f.Description != nil {
+		mods["description"] = *f.Description
+	}
+	if f.Enabled != nil {
+		mods["enabled"] = *f.Enabled
+	}
+	if len(mods) == 0 {
+		return errors.ErrNothingToUpdate
+	}
+	filter := bson.M{"_id": id}
+	update := bson.M{
+		"$set": mods,
+		"$inc": bson.M{"version": 1},
+	}
+	res, err := r.col.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return err
+	}
+	if res.ModifiedCount == 0 {
+		return errors.NotFound("flag")
+	}
+	return nil
+}
 
 func (r FlagRepository) Delete(ctx context.Context, idHex string) error {
 	id, err := primitive.ObjectIDFromHex(idHex)

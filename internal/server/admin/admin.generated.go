@@ -81,10 +81,13 @@ type ComplexityRoot struct {
 		DeleteFlag    func(childComplexity int, id string) int
 		DeleteVariant func(childComplexity int, flagID string, id string) int
 		Ping          func(childComplexity int) int
+		UpdateFlag    func(childComplexity int, id string, input flaggio.UpdateFlag) int
+		UpdateVariant func(childComplexity int, flagID string, id string, input flaggio.UpdateVariant) int
 	}
 
 	Query struct {
-		Flags func(childComplexity int) int
+		Flag  func(childComplexity int, id string) int
+		Flags func(childComplexity int, offset *int, limit *int) int
 		Ping  func(childComplexity int) int
 	}
 
@@ -116,13 +119,16 @@ type ComplexityRoot struct {
 type MutationResolver interface {
 	Ping(ctx context.Context) (*bool, error)
 	CreateFlag(ctx context.Context, input flaggio.NewFlag) (*flaggio.Flag, error)
+	UpdateFlag(ctx context.Context, id string, input flaggio.UpdateFlag) (bool, error)
 	DeleteFlag(ctx context.Context, id string) (bool, error)
 	CreateVariant(ctx context.Context, flagID string, input flaggio.NewVariant) (*flaggio.Variant, error)
+	UpdateVariant(ctx context.Context, flagID string, id string, input flaggio.UpdateVariant) (bool, error)
 	DeleteVariant(ctx context.Context, flagID string, id string) (bool, error)
 }
 type QueryResolver interface {
 	Ping(ctx context.Context) (*bool, error)
-	Flags(ctx context.Context) ([]*flaggio.Flag, error)
+	Flags(ctx context.Context, offset *int, limit *int) ([]*flaggio.Flag, error)
+	Flag(ctx context.Context, id string) (*flaggio.Flag, error)
 }
 
 type executableSchema struct {
@@ -321,12 +327,53 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.Ping(childComplexity), true
 
+	case "Mutation.updateFlag":
+		if e.complexity.Mutation.UpdateFlag == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateFlag_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateFlag(childComplexity, args["id"].(string), args["input"].(flaggio.UpdateFlag)), true
+
+	case "Mutation.updateVariant":
+		if e.complexity.Mutation.UpdateVariant == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateVariant_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateVariant(childComplexity, args["flagId"].(string), args["id"].(string), args["input"].(flaggio.UpdateVariant)), true
+
+	case "Query.flag":
+		if e.complexity.Query.Flag == nil {
+			break
+		}
+
+		args, err := ec.field_Query_flag_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Flag(childComplexity, args["id"].(string)), true
+
 	case "Query.flags":
 		if e.complexity.Query.Flags == nil {
 			break
 		}
 
-		return e.complexity.Query.Flags(childComplexity), true
+		args, err := ec.field_Query_flags_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Flags(childComplexity, args["offset"].(*int), args["limit"].(*int)), true
 
 	case "Query.ping":
 		if e.complexity.Query.Ping == nil {
@@ -508,6 +555,13 @@ var parsedSchema = gqlparser.MustLoadSchema(
     description: String
 }
 
+input UpdateFlag {
+    key: String
+    name: String
+    description: String
+    enabled: Boolean
+}
+
 input NewVariant {
     key: String!
     description: String
@@ -516,15 +570,26 @@ input NewVariant {
     defaultWhenOff: Boolean
 }
 
+input UpdateVariant {
+    key: String
+    description: String
+    value: Any
+    defaultWhenOn: Boolean
+    defaultWhenOff: Boolean
+}
+
 extend type Query {
-    flags: [Flag!]!
+    flags(offset: Int, limit: Int): [Flag!]!
+    flag(id: ID!): Flag
 }
 
 extend type Mutation {
     createFlag(input: NewFlag!): Flag!
+    updateFlag(id: ID!, input: UpdateFlag!): Boolean!
     deleteFlag(id: ID!): Boolean!
 
     createVariant(flagId: ID!, input: NewVariant!): Variant!
+    updateVariant(flagId: ID!, id: ID!, input: UpdateVariant!): Boolean!
     deleteVariant(flagId: ID!, id: ID!): Boolean!
 }`},
 	&ast.Source{Name: "schema/flaggio.graphql", Input: `scalar Time
@@ -700,6 +765,58 @@ func (ec *executionContext) field_Mutation_deleteVariant_args(ctx context.Contex
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_updateFlag_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 flaggio.UpdateFlag
+	if tmp, ok := rawArgs["input"]; ok {
+		arg1, err = ec.unmarshalNUpdateFlag2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐUpdateFlag(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateVariant_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["flagId"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["flagId"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["id"]; ok {
+		arg1, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg1
+	var arg2 flaggio.UpdateVariant
+	if tmp, ok := rawArgs["input"]; ok {
+		arg2, err = ec.unmarshalNUpdateVariant2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐUpdateVariant(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg2
+	return args, nil
+}
+
 func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -711,6 +828,42 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		}
 	}
 	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_flag_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_flags_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *int
+	if tmp, ok := rawArgs["offset"]; ok {
+		arg0, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["offset"] = arg0
+	var arg1 *int
+	if tmp, ok := rawArgs["limit"]; ok {
+		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["limit"] = arg1
 	return args, nil
 }
 
@@ -1482,6 +1635,50 @@ func (ec *executionContext) _Mutation_createFlag(ctx context.Context, field grap
 	return ec.marshalNFlag2ᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐFlag(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_updateFlag(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateFlag_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateFlag(rctx, args["id"].(string), args["input"].(flaggio.UpdateFlag))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Mutation_deleteFlag(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
@@ -1568,6 +1765,50 @@ func (ec *executionContext) _Mutation_createVariant(ctx context.Context, field g
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalNVariant2ᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_updateVariant(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateVariant_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateVariant(rctx, args["flagId"].(string), args["id"].(string), args["input"].(flaggio.UpdateVariant))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_deleteVariant(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1664,10 +1905,17 @@ func (ec *executionContext) _Query_flags(ctx context.Context, field graphql.Coll
 		IsMethod: true,
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_flags_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Flags(rctx)
+		return ec.resolvers.Query().Flags(rctx, args["offset"].(*int), args["limit"].(*int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1683,6 +1931,47 @@ func (ec *executionContext) _Query_flags(ctx context.Context, field graphql.Coll
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalNFlag2ᚕᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐFlag(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_flag(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_flag_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Flag(rctx, args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*flaggio.Flag)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOFlag2ᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐFlag(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3526,6 +3815,84 @@ func (ec *executionContext) unmarshalInputNewVariant(ctx context.Context, obj in
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputUpdateFlag(ctx context.Context, obj interface{}) (flaggio.UpdateFlag, error) {
+	var it flaggio.UpdateFlag
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "key":
+			var err error
+			it.Key, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "name":
+			var err error
+			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "description":
+			var err error
+			it.Description, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "enabled":
+			var err error
+			it.Enabled, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputUpdateVariant(ctx context.Context, obj interface{}) (flaggio.UpdateVariant, error) {
+	var it flaggio.UpdateVariant
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "key":
+			var err error
+			it.Key, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "description":
+			var err error
+			it.Description, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "value":
+			var err error
+			it.Value, err = ec.unmarshalOAny2interface(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "defaultWhenOn":
+			var err error
+			it.DefaultWhenOn, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "defaultWhenOff":
+			var err error
+			it.DefaultWhenOff, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
@@ -3739,6 +4106,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "updateFlag":
+			out.Values[i] = ec._Mutation_updateFlag(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "deleteFlag":
 			out.Values[i] = ec._Mutation_deleteFlag(ctx, field)
 			if out.Values[i] == graphql.Null {
@@ -3746,6 +4118,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			}
 		case "createVariant":
 			out.Values[i] = ec._Mutation_createVariant(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "updateVariant":
+			out.Values[i] = ec._Mutation_updateVariant(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -3803,6 +4180,17 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
+				return res
+			})
+		case "flag":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_flag(ctx, field)
 				return res
 			})
 		case "__type":
@@ -4514,6 +4902,14 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 	return res
 }
 
+func (ec *executionContext) unmarshalNUpdateFlag2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐUpdateFlag(ctx context.Context, v interface{}) (flaggio.UpdateFlag, error) {
+	return ec.unmarshalInputUpdateFlag(ctx, v)
+}
+
+func (ec *executionContext) unmarshalNUpdateVariant2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐUpdateVariant(ctx context.Context, v interface{}) (flaggio.UpdateVariant, error) {
+	return ec.unmarshalInputUpdateVariant(ctx, v)
+}
+
 func (ec *executionContext) marshalNVariant2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx context.Context, sel ast.SelectionSet, v flaggio.Variant) graphql.Marshaler {
 	return ec._Variant(ctx, sel, &v)
 }
@@ -4906,6 +5302,40 @@ func (ec *executionContext) marshalODistribution2ᚕᚖgithubᚗcomᚋvictorkohl
 	}
 	wg.Wait()
 	return ret
+}
+
+func (ec *executionContext) marshalOFlag2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐFlag(ctx context.Context, sel ast.SelectionSet, v flaggio.Flag) graphql.Marshaler {
+	return ec._Flag(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOFlag2ᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐFlag(ctx context.Context, sel ast.SelectionSet, v *flaggio.Flag) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Flag(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOInt2int(ctx context.Context, v interface{}) (int, error) {
+	return graphql.UnmarshalInt(v)
+}
+
+func (ec *executionContext) marshalOInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
+	return graphql.MarshalInt(v)
+}
+
+func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalOInt2int(ctx, v)
+	return &res, err
+}
+
+func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec.marshalOInt2int(ctx, sel, *v)
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {

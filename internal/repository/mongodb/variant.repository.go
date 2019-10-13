@@ -2,6 +2,7 @@ package mongodb
 
 import (
 	"context"
+	"time"
 
 	"github.com/victorkohl/flaggio/internal/errors"
 	"github.com/victorkohl/flaggio/internal/flaggio"
@@ -51,9 +52,47 @@ func (r VariantRepository) Create(ctx context.Context, flagIDHex string, v flagg
 	return vrntModel.asVariant(), nil
 }
 
-// func (r VariantRepository) Update(ctx context.Context, flagID string, v variant.UpdateVariantDto) (*flaggio.Variant, error) {
-// 	return nil, errors.ErrNotImplemented
-// }
+func (r VariantRepository) Update(ctx context.Context, flagIDHex, idHex string, v flaggio.UpdateVariant) error {
+	flagID, err := primitive.ObjectIDFromHex(flagIDHex)
+	if err != nil {
+		return err
+	}
+	id, err := primitive.ObjectIDFromHex(idHex)
+	if err != nil {
+		return err
+	}
+	mods := bson.M{
+		"updatedAt": time.Now(),
+	}
+	if v.Key != nil {
+		mods["variants.$.key"] = *v.Key
+	}
+	if v.Description != nil {
+		mods["variants.$.description"] = *v.Description
+	}
+	if v.Value != nil {
+		mods["variants.$.value"] = v.Value
+	}
+	if v.DefaultWhenOn != nil {
+		mods["variants.$.defaultWhenOn"] = *v.DefaultWhenOn
+	}
+	if v.DefaultWhenOff != nil {
+		mods["variants.$.defaultWhenOff"] = *v.DefaultWhenOff
+	}
+	// TODO: inc flag version
+	res, err := r.flagRepo.col.UpdateOne(
+		ctx,
+		bson.M{"_id": flagID, "variants._id": id},
+		bson.M{"$set": mods, "$inc": bson.M{"version": 1}},
+	)
+	if err != nil {
+		return err
+	}
+	if res.ModifiedCount == 0 {
+		return errors.NotFound("variant")
+	}
+	return nil
+}
 
 func (r VariantRepository) Delete(ctx context.Context, flagIDHex, idHex string) error {
 	flagID, err := primitive.ObjectIDFromHex(flagIDHex)
