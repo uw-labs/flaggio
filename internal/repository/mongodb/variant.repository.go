@@ -42,6 +42,8 @@ func (r VariantRepository) Create(ctx context.Context, flagIDHex string, v flagg
 	filter := bson.M{"_id": flagID}
 	res, err := r.flagRepo.col.UpdateOne(ctx, filter, bson.M{
 		"$push": bson.M{"variants": vrntModel},
+		"$set":  bson.M{"updatedAt": time.Now()},
+		"$inc":  bson.M{"version": 1},
 	})
 	if err != nil {
 		return nil, err
@@ -105,6 +107,8 @@ func (r VariantRepository) Delete(ctx context.Context, flagIDHex, idHex string) 
 	}
 	res, err := r.flagRepo.col.UpdateOne(ctx, bson.M{"_id": flagID}, bson.M{
 		"$pull": bson.M{"variants": bson.M{"_id": id}},
+		"$set":  bson.M{"updatedAt": time.Now()},
+		"$inc":  bson.M{"version": 1},
 	})
 	if err != nil {
 		return err
