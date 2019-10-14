@@ -77,7 +77,7 @@ extend type Query {
 
 extend type Mutation {
     createFlag(input: NewFlag!): Flag!
-    updateFlag(id: ID!, input: UpdateFlag!): Boolean!
+    updateFlag(id: ID!, input: UpdateFlag!): Flag!
     deleteFlag(id: ID!): Boolean!
 
     createVariant(flagId: ID!, input: NewVariant!): ID!

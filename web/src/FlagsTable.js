@@ -2,23 +2,24 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {
+  Chip,
   Paper,
+  Switch,
   Table,
   TableBody,
+  TableCell,
+  TableHead,
+  TablePagination,
   TableRow,
   Toolbar,
-  TablePagination,
-  Typography,
-  TableCell,
-  Checkbox, TableHead
+  Typography
 } from "@material-ui/core";
-import {Delete as DeleteIcon, FilterList as FilterListIcon} from '@material-ui/icons';
 import {lighten, makeStyles} from "@material-ui/core/styles";
 import './App.css';
-import { useQuery } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
+import {useMutation, useQuery} from '@apollo/react-hooks';
+import {gql} from 'apollo-boost';
 
-const FLAGS_QUERY = gql`
+export const FLAGS_QUERY = gql`
     {
         flags {
             id
@@ -26,6 +27,15 @@ const FLAGS_QUERY = gql`
             name
             enabled
             createdAt
+        }
+    }
+`;
+
+const TOGGLE_FLAG_QUERY = gql`
+    mutation($id: ID!, $input: UpdateFlag!) {
+        updateFlag(id: $id, input: $input) {
+            id
+            enabled
         }
     }
 `;
@@ -58,7 +68,7 @@ const useToolbarStyles = makeStyles(theme => ({
 
 const EnhancedTableToolbar = props => {
   const classes = useToolbarStyles();
-  const { numSelected } = props;
+  const {numSelected} = props;
 
   return (
     <Toolbar
@@ -77,7 +87,7 @@ const EnhancedTableToolbar = props => {
           </Typography>
         )}
       </div>
-      <div className={classes.spacer} />
+      <div className={classes.spacer}/>
     </Toolbar>
   );
 };
@@ -85,6 +95,7 @@ const EnhancedTableToolbar = props => {
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -116,50 +127,52 @@ const useStyles = makeStyles(theme => ({
 
 function FlagsTable() {
   const classes = useStyles();
-  const { loading, error, data } = useQuery(FLAGS_QUERY);
+  const {loading, error, data} = useQuery(FLAGS_QUERY);
+  const [toggleFlag] = useMutation(TOGGLE_FLAG_QUERY);
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={0} />
+        <EnhancedTableToolbar numSelected={0}/>
         <div className={classes.tableWrapper}>
           <Table
             className={classes.table}
             aria-labelledby="tableTitle"
-            // size={dense ? 'small' : 'medium'}
             aria-label="enhanced table"
           >
             <TableHead>
               <TableRow>
                 <TableCell/>
-                <TableCell component="th" id={1} scope="row" padding="none">Key / Name</TableCell>
-                <TableCell>Created At</TableCell>
+                <TableCell component="th" scope="row" padding="none">Name</TableCell>
+                <TableCell align="right">Key</TableCell>
+                <TableCell align="right">Created At</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {data.flags.map(({ key, name, enabled, createdAt }) => (
-                  <TableRow
+              {data.flags.map(({id, key, name, enabled, createdAt}) => (
+                <TableRow
                   hover
-                  role="checkbox"
                   aria-checked={false}
                   tabIndex={-1}
                   key={key}
-                  selected={false}
                 >
                   <TableCell padding="checkbox">
-                    <Checkbox
+                    <Switch
                       checked={enabled}
-                      disabled={true}
-                      inputProps={{ 'aria-labelledby': 1 }}
+                      onChange={e => toggleFlag({variables: {id, input: {enabled: e.target.checked}}})}
+                      color="primary"
+                      inputProps={{'aria-label': 'primary checkbox'}}
                     />
                   </TableCell>
                   <TableCell component="th" id={1} scope="row" padding="none">
-                    {key} / {name}
+                    {name}
                   </TableCell>
-                  <TableCell>{createdAt}</TableCell>
+                  <TableCell align="right"><Chip label={key}/></TableCell>
+                  <TableCell align="right">{createdAt}</TableCell>
                 </TableRow>
-                ))
+              ))
               }
             </TableBody>
           </Table>

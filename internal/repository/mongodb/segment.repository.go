@@ -150,11 +150,11 @@ func NewMongoSegmentRepository(ctx context.Context, db *mongo.Database) (*Segmen
 		},
 		{
 			Keys:    bson.M{"rules._id": 1},
-			Options: options.Index().SetUnique(true).SetBackground(false),
+			Options: options.Index().SetUnique(true).SetSparse(true).SetBackground(false),
 		},
 		{
 			Keys:    bson.M{"rules.constraints._id": 1},
-			Options: options.Index().SetUnique(true).SetBackground(false),
+			Options: options.Index().SetUnique(true).SetSparse(true).SetBackground(false),
 		},
 	})
 	if err != nil {

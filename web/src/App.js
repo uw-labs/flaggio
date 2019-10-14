@@ -1,34 +1,41 @@
 import React from 'react';
-import {AppBar, Container, CssBaseline, IconButton, Toolbar, Typography} from "@material-ui/core";
-import {Menu as MenuIcon} from '@material-ui/icons';
+import {AppBar, Container, CssBaseline, Fab, IconButton, Toolbar, Typography} from "@material-ui/core";
+import {Add as AddIcon, Menu as MenuIcon} from '@material-ui/icons';
 import {makeStyles} from "@material-ui/core/styles";
 import './App.css';
 import FlagsTable from "./FlagsTable";
+import NewFlagModal from "./NewFlagModal";
 import ApolloClient from 'apollo-boost';
-import { ApolloProvider } from '@apollo/react-hooks';
+import {ApolloProvider} from '@apollo/react-hooks';
 
 const client = new ApolloClient({
   uri: 'http://localhost:8081/query',
 });
 
 const useStyles = makeStyles(theme => ({
-  root: {
-    flexGrow: 1,
-  },
   menuButton: {
     marginRight: theme.spacing(2),
   },
   title: {
     flexGrow: 1,
   },
+  addFlag: {
+    position: 'fixed',
+    right: 50,
+    bottom: 50,
+  }
 }));
 
 function App() {
   const classes = useStyles();
+  const [open, setOpen] = React.useState(false);
+  const handleClickOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   return (
     <ApolloProvider client={client}>
       <div>
-        <CssBaseline />
+        <CssBaseline/>
         <AppBar position="static">
           <Toolbar>
             <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
@@ -42,6 +49,10 @@ function App() {
         <Container fixed>
           <FlagsTable/>
         </Container>
+        <NewFlagModal open={open} handleClose={handleClose}/>
+        <Fab color="primary" aria-label="add" className={classes.addFlag} onClick={handleClickOpen}>
+          <AddIcon/>
+        </Fab>
       </div>
     </ApolloProvider>
   );

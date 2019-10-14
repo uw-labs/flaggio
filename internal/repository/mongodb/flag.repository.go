@@ -97,10 +97,10 @@ func (r FlagRepository) Create(ctx context.Context, f flaggio.NewFlag) (*flaggio
 	return r.FindByID(ctx, id.Hex())
 }
 
-func (r FlagRepository) Update(ctx context.Context, idHex string, f flaggio.UpdateFlag) error {
+func (r FlagRepository) Update(ctx context.Context, idHex string, f flaggio.UpdateFlag) (*flaggio.Flag, error) {
 	id, err := primitive.ObjectIDFromHex(idHex)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	mods := bson.M{
 		"updatedAt": time.Now(),
@@ -118,7 +118,7 @@ func (r FlagRepository) Update(ctx context.Context, idHex string, f flaggio.Upda
 		mods["enabled"] = *f.Enabled
 	}
 	if len(mods) == 0 {
-		return errors.ErrNothingToUpdate
+		return nil, errors.ErrNothingToUpdate
 	}
 	filter := bson.M{"_id": id}
 	update := bson.M{
@@ -127,12 +127,12 @@ func (r FlagRepository) Update(ctx context.Context, idHex string, f flaggio.Upda
 	}
 	res, err := r.col.UpdateOne(ctx, filter, update)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if res.ModifiedCount == 0 {
-		return errors.NotFound("flag")
+		return nil, errors.NotFound("flag")
 	}
-	return nil
+	return r.FindByID(ctx, idHex)
 }
 
 func (r FlagRepository) Delete(ctx context.Context, idHex string) error {
@@ -159,23 +159,23 @@ func NewMongoFlagRepository(ctx context.Context, db *mongo.Database) (*FlagRepos
 		},
 		{
 			Keys:    bson.M{"variants._id": 1},
-			Options: options.Index().SetUnique(true).SetBackground(false),
+			Options: options.Index().SetUnique(true).SetSparse(true).SetBackground(false),
 		},
 		{
 			Keys:    bson.M{"variants.key": 1},
-			Options: options.Index().SetUnique(true).SetBackground(false),
+			Options: options.Index().SetUnique(true).SetSparse(true).SetBackground(false),
 		},
 		{
 			Keys:    bson.M{"rules._id": 1},
-			Options: options.Index().SetUnique(true).SetBackground(false),
+			Options: options.Index().SetUnique(true).SetSparse(true).SetBackground(false),
 		},
 		{
 			Keys:    bson.M{"rules.distributions._id": 1},
-			Options: options.Index().SetUnique(true).SetBackground(false),
+			Options: options.Index().SetUnique(true).SetSparse(true).SetBackground(false),
 		},
 		{
 			Keys:    bson.M{"rules.constraints._id": 1},
-			Options: options.Index().SetUnique(true).SetBackground(false),
+			Options: options.Index().SetUnique(true).SetSparse(true).SetBackground(false),
 		},
 	})
 	if err != nil {

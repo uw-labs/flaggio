@@ -19,9 +19,8 @@ func (r *mutationResolver) CreateFlag(ctx context.Context, input flaggio.NewFlag
 	return r.flagRepo.Create(ctx, input)
 }
 
-func (r *mutationResolver) UpdateFlag(ctx context.Context, id string, input flaggio.UpdateFlag) (bool, error) {
-	err := r.flagRepo.Update(ctx, id, input)
-	return err == nil, err
+func (r *mutationResolver) UpdateFlag(ctx context.Context, id string, input flaggio.UpdateFlag) (*flaggio.Flag, error) {
+	return r.flagRepo.Update(ctx, id, input)
 }
 
 func (r *mutationResolver) DeleteFlag(ctx context.Context, id string) (bool, error) {

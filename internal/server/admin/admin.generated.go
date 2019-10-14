@@ -130,7 +130,7 @@ type ComplexityRoot struct {
 type MutationResolver interface {
 	Ping(ctx context.Context) (*bool, error)
 	CreateFlag(ctx context.Context, input flaggio.NewFlag) (*flaggio.Flag, error)
-	UpdateFlag(ctx context.Context, id string, input flaggio.UpdateFlag) (bool, error)
+	UpdateFlag(ctx context.Context, id string, input flaggio.UpdateFlag) (*flaggio.Flag, error)
 	DeleteFlag(ctx context.Context, id string) (bool, error)
 	CreateVariant(ctx context.Context, flagID string, input flaggio.NewVariant) (string, error)
 	UpdateVariant(ctx context.Context, flagID string, id string, input flaggio.UpdateVariant) (bool, error)
@@ -782,7 +782,7 @@ extend type Query {
 
 extend type Mutation {
     createFlag(input: NewFlag!): Flag!
-    updateFlag(id: ID!, input: UpdateFlag!): Boolean!
+    updateFlag(id: ID!, input: UpdateFlag!): Flag!
     deleteFlag(id: ID!): Boolean!
 
     createVariant(flagId: ID!, input: NewVariant!): ID!
@@ -2115,10 +2115,10 @@ func (ec *executionContext) _Mutation_updateFlag(ctx context.Context, field grap
 		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(*flaggio.Flag)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalNFlag2ᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐFlag(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_deleteFlag(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -5808,7 +5808,7 @@ func (ec *executionContext) unmarshalNAny2ᚕinterface(ctx context.Context, v in
 	var err error
 	res := make([]interface{}, len(vSlice))
 	for i := range vSlice {
-		res[i], err = ec.unmarshalNAny2interface(ctx, vSlice[i])
+		res[i], err = ec.unmarshalOAny2interface(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -5819,7 +5819,7 @@ func (ec *executionContext) unmarshalNAny2ᚕinterface(ctx context.Context, v in
 func (ec *executionContext) marshalNAny2ᚕinterface(ctx context.Context, sel ast.SelectionSet, v []interface{}) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	for i := range v {
-		ret[i] = ec.marshalNAny2interface(ctx, sel, v[i])
+		ret[i] = ec.marshalOAny2interface(ctx, sel, v[i])
 	}
 
 	return ret
