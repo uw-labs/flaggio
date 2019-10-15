@@ -98,7 +98,7 @@ function Navigator(props) {
               </ListItemText>
             </ListItem>
             {children.map(({id: childId, link, icon, active}) => (
-              <Link to={link}>
+              <Link to={link} key={childId}>
                 <ListItem
                   key={childId}
                   button

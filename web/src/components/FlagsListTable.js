@@ -13,7 +13,6 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Tooltip,
   Typography,
   withStyles
 } from "@material-ui/core";
@@ -35,9 +34,6 @@ const styles = theme => ({
   },
   addFlag: {
     marginRight: theme.spacing(1),
-  },
-  contentWrapper: {
-    // margin: '40px 16px',
   },
 });
 
@@ -142,9 +138,7 @@ function FlagsListTable(props) {
           </Grid>
         </Toolbar>
       </AppBar>
-      <div className={classes.contentWrapper}>
-        {content}
-      </div>
+      {content}
     </div>
   )
 }
