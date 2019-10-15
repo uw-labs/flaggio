@@ -4,21 +4,6 @@ import ListFlagsPage from "./ListFlagsPage";
 import EditFlagPage from "./EditFlagPage";
 import {withStyles} from "@material-ui/core";
 import Header from "../theme/Header";
-import Typography from "@material-ui/core/Typography";
-import Link from "@material-ui/core/Link";
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 const styles = theme => ({
   app: {
@@ -53,9 +38,6 @@ function FlagsPage(props) {
           </Route>
         </Switch>
       </main>
-      <footer className={classes.footer}>
-        <Copyright/>
-      </footer>
     </div>
   )
 }

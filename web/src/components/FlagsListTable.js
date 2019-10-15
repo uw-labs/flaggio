@@ -4,14 +4,24 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import Tooltip from "@material-ui/core/Tooltip";
-import IconButton from "@material-ui/core/IconButton";
-import RefreshIcon from '@material-ui/icons/Refresh';
 import SearchIcon from "@material-ui/icons/Search";
-import {Chip, Switch, Table, TableBody, TableCell, TableHead, TableRow, withStyles} from "@material-ui/core";
+import {
+  Chip,
+  Switch,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Tooltip,
+  Typography,
+  withStyles
+} from "@material-ui/core";
 import {useMutation, useQuery} from "@apollo/react-hooks";
 import {FLAGS_QUERY, TOGGLE_FLAG_QUERY} from "../Queries";
 import NewFlagModal from "./NewFlagModal";
+import {Link} from "react-router-dom";
+import moment from 'moment';
 
 const styles = theme => ({
   searchBar: {
@@ -31,15 +41,80 @@ const styles = theme => ({
   },
 });
 
+function FlagsTable(props) {
+  const {classes, toggleFlag, flags} = props;
+  return (
+    <Table
+      className={classes.table}
+      aria-labelledby="tableTitle"
+      aria-label="enhanced table"
+    >
+      <TableHead>
+        <TableRow>
+          <TableCell/>
+          <TableCell>Name</TableCell>
+          <TableCell>Key</TableCell>
+          <TableCell align="right">Added</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {flags.map(({id, key, name, enabled, createdAt}) => (
+          <TableRow
+            aria-checked={false}
+            tabIndex={-1}
+            key={key}
+          >
+            <TableCell padding="checkbox">
+              <Switch
+                checked={enabled}
+                onChange={e => toggleFlag({variables: {id, input: {enabled: e.target.checked}}})}
+                color="primary"
+                inputProps={{'aria-label': 'primary checkbox'}}
+              />
+            </TableCell>
+            <TableCell>
+              <Link to={`/flags/${id}`}>
+                {name}
+              </Link>
+            </TableCell>
+            <TableCell><Chip label={key}/></TableCell>
+            <TableCell align="right">
+              {moment(createdAt).fromNow()}
+            </TableCell>
+          </TableRow>
+        ))
+        }
+      </TableBody>
+    </Table>
+  );
+}
+
+function EmptyMessage({message}) {
+  return (
+    <Typography color="textSecondary" align="center" style={{margin: '40px 16px'}}>
+      {message}
+    </Typography>
+  )
+}
+
 function FlagsListTable(props) {
+  const {classes} = props;
   const [open, setOpen] = React.useState(false);
   const handleClickOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const {loading, error, data} = useQuery(FLAGS_QUERY);
   const [toggleFlag] = useMutation(TOGGLE_FLAG_QUERY);
-  const {classes} = props;
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
+  let content;
+  switch (true) {
+    case loading:
+      content = <EmptyMessage message="No flags for this project yet"/>;
+      break;
+    case  error:
+      content = <EmptyMessage message="There were an error while loading the flag list :("/>;
+      break;
+    default:
+      content = <FlagsTable classes={classes} flags={data.flags} toggleFlag={toggleFlag}/>;
+  }
   return (
     <div>
       <AppBar className={classes.searchBar} position="static" color="default" elevation={0}>
@@ -68,48 +143,7 @@ function FlagsListTable(props) {
         </Toolbar>
       </AppBar>
       <div className={classes.contentWrapper}>
-        {/*<Typography color="textSecondary" align="center">*/}
-        {/*  No users for this project yet*/}
-        {/*</Typography>*/}
-        <Table
-          className={classes.table}
-          aria-labelledby="tableTitle"
-          aria-label="enhanced table"
-        >
-          <TableHead>
-            <TableRow>
-              <TableCell/>
-              <TableCell component="th" scope="row" padding="none">Name</TableCell>
-              <TableCell align="right">Key</TableCell>
-              <TableCell align="right">Created At</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data.flags.map(({id, key, name, enabled, createdAt}) => (
-              <TableRow
-                hover
-                aria-checked={false}
-                tabIndex={-1}
-                key={key}
-              >
-                <TableCell padding="checkbox">
-                  <Switch
-                    checked={enabled}
-                    onChange={e => toggleFlag({variables: {id, input: {enabled: e.target.checked}}})}
-                    color="primary"
-                    inputProps={{'aria-label': 'primary checkbox'}}
-                  />
-                </TableCell>
-                <TableCell component="th" id={1} scope="row" padding="none">
-                  {name}
-                </TableCell>
-                <TableCell align="right"><Chip label={key}/></TableCell>
-                <TableCell align="right">{createdAt}</TableCell>
-              </TableRow>
-            ))
-            }
-          </TableBody>
-        </Table>
+        {content}
       </div>
     </div>
   )
