@@ -15,30 +15,10 @@ import {
   Typography
 } from "@material-ui/core";
 import {lighten, makeStyles} from "@material-ui/core/styles";
-import './App.css';
 import {useMutation, useQuery} from '@apollo/react-hooks';
-import {gql} from 'apollo-boost';
+import {FLAGS_QUERY, TOGGLE_FLAG_QUERY} from "../Queries";
 
-export const FLAGS_QUERY = gql`
-    {
-        flags {
-            id
-            key
-            name
-            enabled
-            createdAt
-        }
-    }
-`;
 
-const TOGGLE_FLAG_QUERY = gql`
-    mutation($id: ID!, $input: UpdateFlag!) {
-        updateFlag(id: $id, input: $input) {
-            id
-            enabled
-        }
-    }
-`;
 
 const useToolbarStyles = makeStyles(theme => ({
   root: {

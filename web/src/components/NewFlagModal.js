@@ -1,8 +1,5 @@
 import React from 'react';
-import './App.css';
-import {gql} from "apollo-boost";
 import {useMutation} from '@apollo/react-hooks';
-import {FLAGS_QUERY} from './FlagsTable';
 import {
   Button,
   Dialog,
@@ -12,28 +9,12 @@ import {
   Divider,
   FormControl,
   InputLabel,
-  makeStyles,
   MenuItem,
   Select,
   TextField,
-  Typography,
+  Typography, withStyles,
 } from "@material-ui/core";
-
-const CREATE_FLAG_QUERY = gql`
-    mutation ($name: String!, $key: String!, $description:String){
-        createFlag(input: {
-            name: $name
-            key: $key
-            description: $description
-        }) {
-            id
-            key
-            name
-            enabled
-            createdAt
-        }
-    }
-`;
+import {CREATE_FLAG_QUERY, FLAGS_QUERY} from "../Queries";
 
 const variantType = {
   BOOLEAN: 1,
@@ -48,7 +29,7 @@ function slugify(str) {
   return str.replace(/ /g, '.').toLowerCase();
 }
 
-const useStyles = makeStyles(theme => ({
+const styles = theme => ({
   root: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -57,10 +38,9 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
     minWidth: 120,
   },
-}));
+});
 
-function NewFlagModal({open, handleClose}) {
-  const classes = useStyles();
+function NewFlagModal({classes, open, handleClose}) {
   const [name, setName] = React.useState('');
   const [key, setKey] = React.useState('');
   const [description, setDescription] = React.useState(null);
@@ -99,31 +79,31 @@ function NewFlagModal({open, handleClose}) {
         <TextField margin="dense" id="description" label="Description" type="text" fullWidth
                    onChange={e => setDescription(e.target.value)}/>
 
-        <Divider/>
+        {/*<Divider/>*/}
 
-        <Typography variant="h6" id="variants">
-          Variants
-        </Typography>
+        {/*<Typography variant="h6" id="variants">*/}
+        {/*  Variants*/}
+        {/*</Typography>*/}
 
-        <FormControl variant="outlined" className={classes.formControl}>
-          <InputLabel ref={inputLabel} htmlFor="outlined-age-simple">
-            Age
-          </InputLabel>
-          <Select
-            value={variantsType}
-            onChange={e => setVariantsType(e.target.value)}
-            inputProps={{
-              name: 'variantsType',
-              id: 'variants-type',
-            }}
-          >
-            {
-              Object.keys(variantType).map(vt => (
-                <MenuItem value={vt}>{vt}</MenuItem>
-              ))
-            }
-          </Select>
-        </FormControl>
+        {/*<FormControl variant="outlined" className={classes.formControl}>*/}
+        {/*  <InputLabel ref={inputLabel} htmlFor="outlined-age-simple">*/}
+        {/*    Age*/}
+        {/*  </InputLabel>*/}
+        {/*  <Select*/}
+        {/*    value={variantsType}*/}
+        {/*    onChange={e => setVariantsType(e.target.value)}*/}
+        {/*    inputProps={{*/}
+        {/*      name: 'variantsType',*/}
+        {/*      id: 'variants-type',*/}
+        {/*    }}*/}
+        {/*  >*/}
+        {/*    {*/}
+        {/*      Object.keys(variantType).map(vt => (*/}
+        {/*        <MenuItem value={vt}>{vt}</MenuItem>*/}
+        {/*      ))*/}
+        {/*    }*/}
+        {/*  </Select>*/}
+        {/*</FormControl>*/}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary">
@@ -137,4 +117,4 @@ function NewFlagModal({open, handleClose}) {
   )
 }
 
-export default NewFlagModal;
+export default withStyles(styles)(NewFlagModal);
