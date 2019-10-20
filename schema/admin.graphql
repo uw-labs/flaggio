@@ -78,20 +78,20 @@ extend type Query {
 extend type Mutation {
     createFlag(input: NewFlag!): Flag!
     updateFlag(id: ID!, input: UpdateFlag!): Flag!
-    deleteFlag(id: ID!): Boolean!
+    deleteFlag(id: ID!): ID!
 
     createVariant(flagId: ID!, input: NewVariant!): ID!
     updateVariant(flagId: ID!, id: ID!, input: UpdateVariant!): Boolean!
-    deleteVariant(flagId: ID!, id: ID!): Boolean!
+    deleteVariant(flagId: ID!, id: ID!): ID!
 
     createFlagRule(flagId: ID!, input: NewFlagRule!): ID!
     updateFlagRule(flagId: ID!, id: ID!, input: UpdateFlagRule!): Boolean!
-    deleteFlagRule(flagId: ID!, id: ID!): Boolean!
+    deleteFlagRule(flagId: ID!, id: ID!): ID!
     createSegmentRule(segmentId: ID!, input: NewSegmentRule!): ID!
     updateSegmentRule(segmentId: ID!, id: ID!, input: UpdateSegmentRule!): Boolean!
-    deleteSegmentRule(segmentId: ID!, id: ID!): Boolean!
+    deleteSegmentRule(segmentId: ID!, id: ID!): ID!
 
     createSegment(input: NewSegment!): Segment!
     updateSegment(id: ID!, input: UpdateSegment!): Boolean!
-    deleteSegment(id: ID!): Boolean!
+    deleteSegment(id: ID!): ID!
 }

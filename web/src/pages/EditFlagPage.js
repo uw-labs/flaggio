@@ -1,11 +1,26 @@
 import React from 'react';
-import {useParams} from "react-router-dom";
+import {Redirect, useParams} from "react-router-dom";
+import {reject} from "lodash";
 import Content from "../theme/Content";
-import {Button, Checkbox, FormControlLabel, MenuItem, Paper, Select, TextField, withStyles} from "@material-ui/core";
+import {
+  Button,
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  FormControlLabel,
+  MenuItem,
+  Paper,
+  Select,
+  TextField,
+  withStyles
+} from "@material-ui/core";
 import {Delete as DeleteIcon} from "@material-ui/icons";
 import Grid from "@material-ui/core/Grid";
-import {useQuery} from "@apollo/react-hooks";
-import {FLAG_QUERY} from "../Queries";
+import {useMutation, useQuery} from "@apollo/react-hooks";
+import {DELETE_FLAG_QUERY, FLAG_QUERY, FLAGS_QUERY} from "../Queries";
 
 const styles = theme => ({
   container: {
@@ -33,9 +48,16 @@ const styles = theme => ({
   }
 });
 
-function FlagForm({classes, flag: flg, operations}) {
+function FlagForm({classes, flag: flg, operations, handleDeleteFlag}) {
   const [flag, setFlag] = React.useState(flg);
+  const [deleteFlagDlgOpen, setDeleteFlagDlgOpen] = React.useState(false);
   const setFlagField = (field, value) => setFlag({...flag, [field]: value});
+  const handleClickOpen = () => setDeleteFlagDlgOpen(true);
+  const handleClose = () => setDeleteFlagDlgOpen(false);
+  const confirmDeleteFlag = () => {
+    handleDeleteFlag(flag.id);
+    setDeleteFlagDlgOpen(false);
+  };
   return (
     <form className={classes.container} noValidate autoComplete="off">
       <Grid container spacing={2} className={classes.section1}>
@@ -167,7 +189,9 @@ function FlagForm({classes, flag: flg, operations}) {
           </Button>
         </Grid>
         <Grid item>
-          <Button color="secondary">
+          <DeleteFlagDialog open={deleteFlagDlgOpen} onConfirm={confirmDeleteFlag} handleClose={handleClose}
+                            flag={flag}/>
+          <Button color="secondary" onClick={handleClickOpen}>
             <DeleteIcon/>
           </Button>
         </Grid>
@@ -176,15 +200,60 @@ function FlagForm({classes, flag: flg, operations}) {
   )
 }
 
+function DeleteFlagDialog({open, flag, onConfirm, handleClose}) {
+  return (
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">Delete flag?</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          Are you sure you want to delete flag "{flag.name}"?
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary">
+          No, keep it
+        </Button>
+        <Button onClick={onConfirm} color="secondary" autoFocus>
+          Yes, delete it
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
 function EditFlagPage({classes}) {
+  const [toFlagsPage, setToFlagsPage] = React.useState(false);
   let {id} = useParams();
   const {loading, error, data} = useQuery(FLAG_QUERY, {variables: {id}});
+  const [deleteFlag] = useMutation(DELETE_FLAG_QUERY, {
+    update(cache, {data: {deleteFlag: id}}) {
+      const {flags} = cache.readQuery({query: FLAGS_QUERY});
+      cache.writeQuery({
+        query: FLAGS_QUERY,
+        data: {flags: reject(flags, {id})},
+      });
+    }
+  });
+  if (toFlagsPage === true) {
+    return <Redirect to='/flags'/>
+  }
   if (loading) return <div>"Loading..."</div>;
   if (error) return <div>"Error while loading flag details :("</div>;
+  const handleDeleteFlag = (id) => {
+    deleteFlag({variables: {id}}).then(() => setToFlagsPage(true));
+  };
 
   return (
     <Content>
-      <FlagForm classes={classes} flag={data.flag} operations={data.operations.enumValues}/>
+      <FlagForm classes={classes}
+                flag={data.flag}
+                operations={data.operations.enumValues}
+                handleDeleteFlag={handleDeleteFlag}/>
     </Content>
   )
 }

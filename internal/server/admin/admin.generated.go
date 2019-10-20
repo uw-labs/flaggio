@@ -131,19 +131,19 @@ type MutationResolver interface {
 	Ping(ctx context.Context) (*bool, error)
 	CreateFlag(ctx context.Context, input flaggio.NewFlag) (*flaggio.Flag, error)
 	UpdateFlag(ctx context.Context, id string, input flaggio.UpdateFlag) (*flaggio.Flag, error)
-	DeleteFlag(ctx context.Context, id string) (bool, error)
+	DeleteFlag(ctx context.Context, id string) (string, error)
 	CreateVariant(ctx context.Context, flagID string, input flaggio.NewVariant) (string, error)
 	UpdateVariant(ctx context.Context, flagID string, id string, input flaggio.UpdateVariant) (bool, error)
-	DeleteVariant(ctx context.Context, flagID string, id string) (bool, error)
+	DeleteVariant(ctx context.Context, flagID string, id string) (string, error)
 	CreateFlagRule(ctx context.Context, flagID string, input flaggio.NewFlagRule) (string, error)
 	UpdateFlagRule(ctx context.Context, flagID string, id string, input flaggio.UpdateFlagRule) (bool, error)
-	DeleteFlagRule(ctx context.Context, flagID string, id string) (bool, error)
+	DeleteFlagRule(ctx context.Context, flagID string, id string) (string, error)
 	CreateSegmentRule(ctx context.Context, segmentID string, input flaggio.NewSegmentRule) (string, error)
 	UpdateSegmentRule(ctx context.Context, segmentID string, id string, input flaggio.UpdateSegmentRule) (bool, error)
-	DeleteSegmentRule(ctx context.Context, segmentID string, id string) (bool, error)
+	DeleteSegmentRule(ctx context.Context, segmentID string, id string) (string, error)
 	CreateSegment(ctx context.Context, input flaggio.NewSegment) (*flaggio.Segment, error)
 	UpdateSegment(ctx context.Context, id string, input flaggio.UpdateSegment) (bool, error)
-	DeleteSegment(ctx context.Context, id string) (bool, error)
+	DeleteSegment(ctx context.Context, id string) (string, error)
 }
 type QueryResolver interface {
 	Ping(ctx context.Context) (*bool, error)
@@ -783,22 +783,22 @@ extend type Query {
 extend type Mutation {
     createFlag(input: NewFlag!): Flag!
     updateFlag(id: ID!, input: UpdateFlag!): Flag!
-    deleteFlag(id: ID!): Boolean!
+    deleteFlag(id: ID!): ID!
 
     createVariant(flagId: ID!, input: NewVariant!): ID!
     updateVariant(flagId: ID!, id: ID!, input: UpdateVariant!): Boolean!
-    deleteVariant(flagId: ID!, id: ID!): Boolean!
+    deleteVariant(flagId: ID!, id: ID!): ID!
 
     createFlagRule(flagId: ID!, input: NewFlagRule!): ID!
     updateFlagRule(flagId: ID!, id: ID!, input: UpdateFlagRule!): Boolean!
-    deleteFlagRule(flagId: ID!, id: ID!): Boolean!
+    deleteFlagRule(flagId: ID!, id: ID!): ID!
     createSegmentRule(segmentId: ID!, input: NewSegmentRule!): ID!
     updateSegmentRule(segmentId: ID!, id: ID!, input: UpdateSegmentRule!): Boolean!
-    deleteSegmentRule(segmentId: ID!, id: ID!): Boolean!
+    deleteSegmentRule(segmentId: ID!, id: ID!): ID!
 
     createSegment(input: NewSegment!): Segment!
     updateSegment(id: ID!, input: UpdateSegment!): Boolean!
-    deleteSegment(id: ID!): Boolean!
+    deleteSegment(id: ID!): ID!
 }`},
 	&ast.Source{Name: "schema/flaggio.graphql", Input: `scalar Time
 scalar Any
@@ -2159,10 +2159,10 @@ func (ec *executionContext) _Mutation_deleteFlag(ctx context.Context, field grap
 		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(string)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_createVariant(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2291,10 +2291,10 @@ func (ec *executionContext) _Mutation_deleteVariant(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(string)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_createFlagRule(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2423,10 +2423,10 @@ func (ec *executionContext) _Mutation_deleteFlagRule(ctx context.Context, field 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(string)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_createSegmentRule(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2555,10 +2555,10 @@ func (ec *executionContext) _Mutation_deleteSegmentRule(ctx context.Context, fie
 		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(string)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_createSegment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2687,10 +2687,10 @@ func (ec *executionContext) _Mutation_deleteSegment(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(string)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_ping(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -5808,7 +5808,7 @@ func (ec *executionContext) unmarshalNAny2ᚕinterface(ctx context.Context, v in
 	var err error
 	res := make([]interface{}, len(vSlice))
 	for i := range vSlice {
-		res[i], err = ec.unmarshalOAny2interface(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNAny2interface(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -5819,7 +5819,7 @@ func (ec *executionContext) unmarshalNAny2ᚕinterface(ctx context.Context, v in
 func (ec *executionContext) marshalNAny2ᚕinterface(ctx context.Context, sel ast.SelectionSet, v []interface{}) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	for i := range v {
-		ret[i] = ec.marshalOAny2interface(ctx, sel, v[i])
+		ret[i] = ec.marshalNAny2interface(ctx, sel, v[i])
 	}
 
 	return ret

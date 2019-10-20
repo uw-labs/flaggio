@@ -23,9 +23,9 @@ func (r *mutationResolver) UpdateFlag(ctx context.Context, id string, input flag
 	return r.flagRepo.Update(ctx, id, input)
 }
 
-func (r *mutationResolver) DeleteFlag(ctx context.Context, id string) (bool, error) {
+func (r *mutationResolver) DeleteFlag(ctx context.Context, id string) (string, error) {
 	err := r.flagRepo.Delete(ctx, id)
-	return err == nil, err
+	return id, err
 }
 
 func (r *mutationResolver) CreateVariant(ctx context.Context, flagID string, input flaggio.NewVariant) (string, error) {
@@ -37,9 +37,9 @@ func (r *mutationResolver) UpdateVariant(ctx context.Context, flagID, id string,
 	return err == nil, err
 }
 
-func (r *mutationResolver) DeleteVariant(ctx context.Context, flagID, id string) (bool, error) {
+func (r *mutationResolver) DeleteVariant(ctx context.Context, flagID, id string) (string, error) {
 	err := r.variantRepo.Delete(ctx, flagID, id)
-	return err == nil, err
+	return id, err
 }
 
 func (r *mutationResolver) CreateFlagRule(ctx context.Context, flagID string, input flaggio.NewFlagRule) (string, error) {
@@ -51,9 +51,9 @@ func (r *mutationResolver) UpdateFlagRule(ctx context.Context, flagID, id string
 	return err == nil, err
 }
 
-func (r *mutationResolver) DeleteFlagRule(ctx context.Context, flagID, id string) (bool, error) {
+func (r *mutationResolver) DeleteFlagRule(ctx context.Context, flagID, id string) (string, error) {
 	err := r.ruleRepo.DeleteFlagRule(ctx, flagID, id)
-	return err == nil, err
+	return id, err
 }
 
 func (r *mutationResolver) CreateSegmentRule(ctx context.Context, segmentID string, input flaggio.NewSegmentRule) (string, error) {
@@ -65,9 +65,9 @@ func (r *mutationResolver) UpdateSegmentRule(ctx context.Context, segmentID, id 
 	return err == nil, err
 }
 
-func (r *mutationResolver) DeleteSegmentRule(ctx context.Context, segmentID, id string) (bool, error) {
+func (r *mutationResolver) DeleteSegmentRule(ctx context.Context, segmentID, id string) (string, error) {
 	err := r.ruleRepo.DeleteSegmentRule(ctx, segmentID, id)
-	return err == nil, err
+	return id, err
 }
 
 func (r *mutationResolver) CreateSegment(ctx context.Context, input flaggio.NewSegment) (*flaggio.Segment, error) {
@@ -79,7 +79,7 @@ func (r *mutationResolver) UpdateSegment(ctx context.Context, id string, input f
 	return err == nil, err
 }
 
-func (r *mutationResolver) DeleteSegment(ctx context.Context, id string) (bool, error) {
+func (r *mutationResolver) DeleteSegment(ctx context.Context, id string) (string, error) {
 	err := r.segmentRepo.Delete(ctx, id)
-	return err == nil, err
+	return id, err
 }

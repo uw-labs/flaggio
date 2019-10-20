@@ -76,3 +76,9 @@ export const CREATE_FLAG_QUERY = gql`
         }
     }
 `;
+
+export const DELETE_FLAG_QUERY = gql`
+    mutation deleteFlag($id: ID!){
+        deleteFlag(id: $id)
+    }
+`;
