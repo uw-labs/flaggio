@@ -1,26 +1,28 @@
 import React from 'react';
-import {Redirect, useParams} from "react-router-dom";
+import {Link, Redirect, useParams} from "react-router-dom";
 import {reject} from "lodash";
 import Content from "../theme/Content";
 import {
   Button,
-  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  FormControlLabel,
+  FormControl,
+  InputLabel,
   MenuItem,
   Paper,
   Select,
   TextField,
+  Tooltip,
   withStyles
 } from "@material-ui/core";
-import {Delete as DeleteIcon} from "@material-ui/icons";
+import {Delete as DeleteIcon, RemoveCircleOutline as RemoveIcon} from "@material-ui/icons";
 import Grid from "@material-ui/core/Grid";
 import {useMutation, useQuery} from "@apollo/react-hooks";
 import {DELETE_FLAG_QUERY, FLAG_QUERY, FLAGS_QUERY} from "../Queries";
+import {BooleanType, Operations, VariantType, VariantTypes} from "./copy";
 
 const styles = theme => ({
   container: {
@@ -45,8 +47,93 @@ const styles = theme => ({
   },
   footerDiv: {
     flexGrow: 1,
+  },
+  margin: {
+    margin: theme.spacing(1),
+  },
+  formControl: {
+    margin: 0,
+    fullWidth: true,
+    display: "flex",
+    wrap: "nowrap",
   }
 });
+
+const newVariant = (variant = {}) => ({
+  id: variant.id || String(Math.random()),
+  description: variant.description,
+  value: variant.value,
+  type: typeof variant.value,
+  defaultWhenOn: false,
+  defaultWhenOff: false,
+});
+
+function VariantField({classes, variant: vrnt, handleDeleteVariant, handleUpdateVariant}) {
+  const [variant, setVariant] = React.useState(vrnt);
+  const setVariantField = (field, value) => {
+    handleUpdateVariant(field, value);
+    setVariant({...variant, [field]: value});
+  };
+  return (
+    <Grid container spacing={2} className={classes.section2} key={variant.id}>
+      <Grid item xs={3}>
+        <FormControl className={classes.formControl}>
+          <InputLabel>Variant type</InputLabel>
+          <Select
+            value={variant.type}
+            onChange={e => setVariantField('type', e.target.value)}
+          >
+            {Object.keys(VariantTypes).map(type => (
+              <MenuItem key={type} value={VariantTypes[type]}>{VariantType[type]}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Grid>
+      <Grid item xs={4}>
+        {
+          variant.type === VariantTypes.BOOLEAN ?
+            (
+              <FormControl className={classes.formControl}>
+                <InputLabel>Variant value</InputLabel>
+                <Select
+                  value={variant.value}
+                  onChange={e => setVariantField('value', e.target.value)}
+                >
+                  {[true, false].map(val => (
+                    <MenuItem key={val} value={val}>{BooleanType[val]}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            ) :
+            (
+              <TextField
+                label="Value"
+                className={classes.textField}
+                value={variant.value}
+                type={variant.type === VariantTypes.NUMBER ? "number" : "text"}
+                onChange={e => setVariantField('value', e.target.value)}
+                fullWidth
+              />
+            )
+        }
+      </Grid>
+      <Grid item xs={5} style={{display: 'flex'}}>
+        <TextField
+          label="Name"
+          className={classes.textField}
+          value={variant.description || ''}
+          onChange={e => setVariantField('description', e.target.value)}
+          fullWidth
+        />
+        <Tooltip title="Delete variant" placement="top">
+          <Button size="small" color="secondary" style={{minWidth: 0}} onClick={() => handleDeleteVariant(vrnt)}>
+            <RemoveIcon/>
+          </Button>
+        </Tooltip>
+      </Grid>
+    </Grid>
+  )
+}
 
 function FlagForm({classes, flag: flg, operations, handleDeleteFlag}) {
   const [flag, setFlag] = React.useState(flg);
@@ -57,6 +144,14 @@ function FlagForm({classes, flag: flg, operations, handleDeleteFlag}) {
   const confirmDeleteFlag = () => {
     handleDeleteFlag(flag.id);
     setDeleteFlagDlgOpen(false);
+  };
+  const addVariant = () => {
+    // TODO: make the variant type smarter (check existing variants)
+    setFlag({...flag, variants: [...flag.variants, newVariant()]});
+  };
+  const updateVariant = variant => (field, value) => variant[field] = value;
+  const deleteVariant = ({id}) => {
+    setFlag({...flag, variants: reject(flag.variants, {id})});
   };
   return (
     <form className={classes.container} noValidate autoComplete="off">
@@ -90,54 +185,17 @@ function FlagForm({classes, flag: flg, operations, handleDeleteFlag}) {
         </Grid>
       </Grid>
 
-      {
-        flag.variants.map(variant => (
-          <Grid container spacing={2} className={classes.section2} key={variant.id}>
-            <Grid item xs={6} sm={6}>
-              <TextField
-                label="Value"
-                className={classes.textField}
-                value={variant.value}
-                // onChange={e => setFlag('name', e.target.value)}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={6} sm={6}>
-              <TextField
-                label="Name"
-                className={classes.textField}
-                value={variant.name}
-                // onChange={e => setFlag('name', e.target.value)}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={4} sm={4}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={variant.defaultWhenOn}
-                    // onChange={handleChange('checkedB')}
-                    color="primary"
-                  />
-                }
-                label="Use when flag is on"
-              />
-            </Grid>
-            <Grid item xs={4} sm={4}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={variant.defaultWhenOff}
-                    // onChange={handleChange('checkedB')}
-                    color="primary"
-                  />
-                }
-                label="Use when flag is off"
-              />
-            </Grid>
-          </Grid>
-        ))
-      }
+      <Grid container className={classes.section1}>
+        {
+          flag.variants.map(variant => (
+            <VariantField key={variant.id} classes={classes} variant={newVariant(variant)}
+                          handleUpdateVariant={updateVariant(variant)} handleDeleteVariant={deleteVariant}/>
+          ))
+        }
+        <Button variant="outlined" size="small" color="primary" onClick={addVariant} className={classes.margin}>
+          New Variant
+        </Button>
+      </Grid>
 
       {
         flag.rules.map(rule => (
@@ -159,7 +217,7 @@ function FlagForm({classes, flag: flg, operations, handleDeleteFlag}) {
                     // onChange={handleChange}
                   >
                     {operations.map(operation => (
-                      <MenuItem key={operation} value={operation.name}>{operation.name}</MenuItem>
+                      <MenuItem key={operation} value={operation.name}>{Operations[operation.name]}</MenuItem>
                     ))}
                   </Select>
                 </Grid>
@@ -179,21 +237,25 @@ function FlagForm({classes, flag: flg, operations, handleDeleteFlag}) {
       }
       <Grid container alignContent="space-around" direction="row-reverse" className={classes.footer}>
         <Grid item>
-          <Button color="primary">
+          <Button color="primary" onClick={() => console.log(flag.variants)}>
             Save
           </Button>
         </Grid>
         <Grid item>
-          <Button color="secondary">
-            Cancel
-          </Button>
+          <Link to="/flags">
+            <Button>
+              Cancel
+            </Button>
+          </Link>
         </Grid>
         <Grid item>
           <DeleteFlagDialog open={deleteFlagDlgOpen} onConfirm={confirmDeleteFlag} handleClose={handleClose}
                             flag={flag}/>
-          <Button color="secondary" onClick={handleClickOpen}>
-            <DeleteIcon/>
-          </Button>
+          <Tooltip title="Delete flag" placement="top">
+            <Button color="secondary" onClick={handleClickOpen}>
+              <DeleteIcon/>
+            </Button>
+          </Tooltip>
         </Grid>
       </Grid>
     </form>

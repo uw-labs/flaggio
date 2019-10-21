@@ -37,7 +37,6 @@ export const FLAG_QUERY = gql`
             }
             variants {
                 id
-                key
                 description
                 value
                 defaultWhenOn

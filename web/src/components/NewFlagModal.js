@@ -43,7 +43,6 @@ const styles = theme => ({
 function NewFlagModal({classes, open, handleClose}) {
   const [name, setName] = React.useState('');
   const [key, setKey] = React.useState('');
-  const [description, setDescription] = React.useState(null);
   const [variantsType, setVariantsType] = React.useState(variantType.BOOLEAN);
   const [createFlag] = useMutation(CREATE_FLAG_QUERY, {
     update(cache, {data: {createFlag}}) {
@@ -60,7 +59,6 @@ function NewFlagModal({classes, open, handleClose}) {
       variables: {
         name,
         key,
-        description,
       }
     }).then(handleClose);
   };
@@ -76,8 +74,6 @@ function NewFlagModal({classes, open, handleClose}) {
                    }}/>
         <TextField margin="dense" id="key" value={key} label="Key" type="text" fullWidth
                    onChange={e => setKey(e.target.value)}/>
-        <TextField margin="dense" id="description" label="Description" type="text" fullWidth
-                   onChange={e => setDescription(e.target.value)}/>
 
         {/*<Divider/>*/}
 
@@ -106,10 +102,10 @@ function NewFlagModal({classes, open, handleClose}) {
         {/*</FormControl>*/}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="primary">
+        <Button onClick={handleClose}>
           Cancel
         </Button>
-        <Button onClick={handleCreateFlag} color="primary">
+        <Button onClick={handleCreateFlag} color="primary" autoFocus>
           Create
         </Button>
       </DialogActions>
