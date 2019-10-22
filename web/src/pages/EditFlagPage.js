@@ -138,6 +138,13 @@ function VariantField({classes, variant: vrnt, handleDeleteVariant, handleUpdate
 function FlagForm({classes, flag: flg, operations, handleDeleteFlag}) {
   const [flag, setFlag] = React.useState(flg);
   const [deleteFlagDlgOpen, setDeleteFlagDlgOpen] = React.useState(false);
+  const [defaults, setDefaults] = React.useState(
+    flag.variants.reduce((dflts, variant) => {
+      if (variant.defaultWhenOn) return {...dflts, defaultWhenOn: variant};
+      if (variant.defaultWhenOff) return {...dflts, defaultWhenOff: variant};
+      return dflts;
+    }, {})
+  );
   const setFlagField = (field, value) => setFlag({...flag, [field]: value});
   const handleClickOpen = () => setDeleteFlagDlgOpen(true);
   const handleClose = () => setDeleteFlagDlgOpen(false);
@@ -153,6 +160,7 @@ function FlagForm({classes, flag: flg, operations, handleDeleteFlag}) {
   const deleteVariant = ({id}) => {
     setFlag({...flag, variants: reject(flag.variants, {id})});
   };
+
   return (
     <form className={classes.container} noValidate autoComplete="off">
       <Grid container spacing={2} className={classes.section1}>
@@ -195,6 +203,39 @@ function FlagForm({classes, flag: flg, operations, handleDeleteFlag}) {
         <Button variant="outlined" size="small" color="primary" onClick={addVariant} className={classes.margin}>
           New Variant
         </Button>
+      </Grid>
+
+      <Grid container spacing={2} className={classes.section1}>
+        <Grid item xs={6}>
+          <FormControl className={classes.formControl}>
+            <InputLabel>Default value when flag is enabled</InputLabel>
+            <Select
+              value={defaults.defaultWhenOn}
+              onChange={e => setDefaults({...defaults, defaultWhenOn: e.target.value})}
+            >
+              {flag.variants.map(variant => (
+                <MenuItem key={variant.id} value={variant}>
+                  {typeof variant.value === VariantTypes.BOOLEAN ? BooleanType[variant.value] : variant.value}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={6}>
+          <FormControl className={classes.formControl}>
+            <InputLabel>Default value when flag is disabled</InputLabel>
+            <Select
+              value={defaults.defaultWhenOff}
+              onChange={e => setDefaults({...defaults, defaultWhenOff: e.target.value})}
+            >
+              {flag.variants.map(variant => (
+                <MenuItem key={variant.id} value={variant}>
+                  {typeof variant.value === VariantTypes.BOOLEAN ? BooleanType[variant.value] : variant.value}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
       </Grid>
 
       {
