@@ -8,81 +8,44 @@ import {
   Card,
   CardActions,
   CardContent,
-  Avatar,
-  Checkbox,
+  Chip,
+  Switch,
   Table,
   TableBody,
   TableCell,
   TableHead,
+  TablePagination,
   TableRow,
-  Typography,
-  TablePagination
 } from '@material-ui/core';
-
-import { getInitials } from 'helpers';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   root: {},
   content: {
-    padding: 0
+    padding: 0,
   },
   inner: {
-    minWidth: 1050
+    minWidth: 1050,
   },
   nameContainer: {
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   avatar: {
-    marginRight: theme.spacing(2)
+    marginRight: theme.spacing(2),
   },
   actions: {
-    justifyContent: 'flex-end'
-  }
+    justifyContent: 'flex-end',
+  },
 }));
 
 const FlagsTable = props => {
-  const { className, flags, ...rest } = props;
+  const {className, flags, toggleFlag, ...rest} = props;
 
   const classes = useStyles();
 
-  const [selectedFlags, setSelectedFlags] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
-
-  const handleSelectAll = event => {
-    const { flags } = props;
-
-    let selectedFlags;
-
-    if (event.target.checked) {
-      selectedFlags = flags.map(flag => flag.id);
-    } else {
-      selectedFlags = [];
-    }
-
-    setSelectedFlags(selectedFlags);
-  };
-
-  const handleSelectOne = (event, id) => {
-    const selectedIndex = selectedFlags.indexOf(id);
-    let newSelectedFlags = [];
-
-    if (selectedIndex === -1) {
-      newSelectedFlags = newSelectedFlags.concat(selectedFlags, id);
-    } else if (selectedIndex === 0) {
-      newSelectedFlags = newSelectedFlags.concat(selectedFlags.slice(1));
-    } else if (selectedIndex === selectedFlags.length - 1) {
-      newSelectedFlags = newSelectedFlags.concat(selectedFlags.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelectedFlags = newSelectedFlags.concat(
-        selectedFlags.slice(0, selectedIndex),
-        selectedFlags.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelectedFlags(newSelectedFlags);
-  };
 
   const handlePageChange = (event, page) => {
     setPage(page);
@@ -104,58 +67,36 @@ const FlagsTable = props => {
               <TableHead>
                 <TableRow>
                   <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={selectedFlags.length === flags.length}
-                      color="primary"
-                      indeterminate={
-                        selectedFlags.length > 0 &&
-                        selectedFlags.length < flags.length
-                      }
-                      onChange={handleSelectAll}
-                    />
+                    &nbsp;
                   </TableCell>
                   <TableCell>Name</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Location</TableCell>
-                  <TableCell>Phone</TableCell>
-                  <TableCell>Registration date</TableCell>
+                  <TableCell>Key</TableCell>
+                  <TableCell>Created</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {flags.slice(0, rowsPerPage).map(flag => (
+                {flags.map(flag => (
                   <TableRow
                     className={classes.tableRow}
                     hover
                     key={flag.id}
-                    selected={selectedFlags.indexOf(flag.id) !== -1}
                   >
                     <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={selectedFlags.indexOf(flag.id) !== -1}
+                      <Switch
+                        checked={flag.enabled}
+                        onChange={e => toggleFlag({variables: {id: flag.id, input: {enabled: e.target.checked}}})}
                         color="primary"
-                        onChange={event => handleSelectOne(event, flag.id)}
-                        value="true"
+                        inputProps={{'aria-label': 'primary checkbox'}}
                       />
                     </TableCell>
                     <TableCell>
-                      <div className={classes.nameContainer}>
-                        <Avatar
-                          className={classes.avatar}
-                          src={flag.avatarUrl}
-                        >
-                          {getInitials(flag.name)}
-                        </Avatar>
-                        <Typography variant="body1">{flag.name}</Typography>
-                      </div>
+                      <Link to={`/flags/${flag.id}`}>{flag.name}</Link>
                     </TableCell>
-                    <TableCell>{flag.email}</TableCell>
                     <TableCell>
-                      {flag.address.city}, {flag.address.state},{' '}
-                      {flag.address.country}
+                      <Chip size="small" variant="outlined" label={flag.key}/>
                     </TableCell>
-                    <TableCell>{flag.phone}</TableCell>
                     <TableCell>
-                      {moment(flag.createdAt).format('DD/MM/YYYY')}
+                      {moment(flag.createdAt).fromNow()}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -181,7 +122,7 @@ const FlagsTable = props => {
 
 FlagsTable.propTypes = {
   className: PropTypes.string,
-  flags: PropTypes.array.isRequired
+  flags: PropTypes.array.isRequired,
 };
 
 export default FlagsTable;
