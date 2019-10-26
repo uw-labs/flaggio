@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Divider,
   FormControl,
   InputLabel,
   MenuItem,
@@ -16,13 +17,14 @@ import {
   Select,
   TextField,
   Tooltip,
+  Typography,
   withStyles
 } from "@material-ui/core";
 import {Delete as DeleteIcon, RemoveCircleOutline as RemoveIcon} from "@material-ui/icons";
 import Grid from "@material-ui/core/Grid";
 import {useMutation, useQuery} from "@apollo/react-hooks";
 import {DELETE_FLAG_QUERY, FLAG_QUERY, FLAGS_QUERY} from "../Queries";
-import {BooleanType, Operations, VariantType, VariantTypes} from "./copy";
+import {BooleanType, Operations, OperationTypes, VariantType, VariantTypes} from "./copy";
 
 const styles = theme => ({
   container: {
@@ -40,6 +42,9 @@ const styles = theme => ({
   section2: {
     margin: theme.spacing(0),
   },
+  section3: {
+    margin: theme.spacing(1, 2, 1, 1),
+  },
   footer: {
     marginTop: theme.spacing(1),
     paddingTop: theme.spacing(1),
@@ -56,7 +61,12 @@ const styles = theme => ({
     fullWidth: true,
     display: "flex",
     wrap: "nowrap",
-  }
+  },
+  paper: {
+    margin: theme.spacing(0, 0, 2, 0),
+    display: "flex",
+    flexGrow: 1,
+  },
 });
 
 const newVariant = (variant = {}) => ({
@@ -66,6 +76,19 @@ const newVariant = (variant = {}) => ({
   type: typeof variant.value,
   defaultWhenOn: false,
   defaultWhenOff: false,
+});
+
+const newRule = (rule = {}) => ({
+  id: rule.id || String(Math.random()),
+  constraints: rule.constraints || [newConstraint()],
+  distributions: rule.distributions || [],
+});
+
+const newConstraint = (constraint = {}) => ({
+  id: constraint.id || String(Math.random()),
+  property: constraint.property || "",
+  operation: constraint.operation || OperationTypes.ONE_OF,
+  values: constraint.values || [""],
 });
 
 function VariantField({classes, variant: vrnt, handleDeleteVariant, handleUpdateVariant}) {
@@ -135,6 +158,54 @@ function VariantField({classes, variant: vrnt, handleDeleteVariant, handleUpdate
   )
 }
 
+function ConstraintField({classes, constraint: cnstrnt, operations, handleDeleteConstraint, handleUpdateConstraint}) {
+  const [constraint, setConstraint] = React.useState(cnstrnt);
+  const setConstraintField = (field, value) => {
+    // handleUpdateConstraint(field, value);
+    setConstraint({...constraint, [field]: value});
+  };
+  return (
+    <Grid container spacing={2} className={classes.section2} key={constraint.id}>
+      <Grid item xs={4}>
+        <TextField
+          label="Property"
+          className={classes.textField}
+          value={constraint.property}
+          onChange={e => setConstraintField('property', e.target.value)}
+          fullWidth
+        />
+      </Grid>
+      <Grid item xs={4}>
+        <FormControl className={classes.formControl}>
+          <InputLabel>Operation</InputLabel>
+          <Select
+            value={constraint.operation}
+            onChange={e => setConstraintField('operation', e.target.value)}
+          >
+            {operations.map(operation => (
+              <MenuItem key={operation} value={operation.name}>{Operations[operation.name] || operation.name}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Grid>
+      <Grid item xs={4} style={{display: 'flex'}}>
+        <TextField
+          label="Value"
+          className={classes.textField}
+          value={constraint.values[0]}
+          onChange={e => setConstraintField('values', [e.target.value])}
+          fullWidth
+        />
+        <Tooltip title="Delete constraint" placement="top">
+          <Button size="small" color="secondary" style={{minWidth: 0}} onClick={() => handleDeleteConstraint(cnstrnt)}>
+            <RemoveIcon/>
+          </Button>
+        </Tooltip>
+      </Grid>
+    </Grid>
+  );
+}
+
 function FlagForm({classes, flag: flg, operations, handleDeleteFlag}) {
   const [flag, setFlag] = React.useState(flg);
   const [deleteFlagDlgOpen, setDeleteFlagDlgOpen] = React.useState(false);
@@ -159,6 +230,28 @@ function FlagForm({classes, flag: flg, operations, handleDeleteFlag}) {
   const updateVariant = variant => (field, value) => variant[field] = value;
   const deleteVariant = ({id}) => {
     setFlag({...flag, variants: reject(flag.variants, {id})});
+  };
+  const addConstraint = ruleId => () => {
+    setFlag({
+      ...flag, rules: flag.rules.map(rule => {
+        if (rule.id === ruleId) rule = {...rule, constraints: [...rule.constraints, newConstraint()]};
+        return rule;
+      })
+    });
+  };
+  const deleteConstraint = ruleId => ({id}) => {
+    setFlag({
+      ...flag, rules: flag.rules.map(rule => {
+        if (rule.id === ruleId) rule = {...rule, constraints: reject(rule.constraints, {id})};
+        return rule;
+      })
+    });
+  };
+  const addRule = () => {
+    setFlag({...flag, rules: [...flag.rules, newRule()]});
+  };
+  const deleteRule = ({id}) => {
+    setFlag({...flag, rules: reject(flag.rules, {id})});
   };
 
   return (
@@ -190,6 +283,13 @@ function FlagForm({classes, flag: flg, operations, handleDeleteFlag}) {
             onChange={e => setFlagField('description', e.target.value)}
             fullWidth
           />
+        </Grid>
+      </Grid>
+
+      <Grid container spacing={2} className={classes.section1}>
+        <Grid item xs={12}>
+          <Typography variant="h6" color="textSecondary">Variants</Typography>
+          <Divider light/>
         </Grid>
       </Grid>
 
@@ -238,44 +338,43 @@ function FlagForm({classes, flag: flg, operations, handleDeleteFlag}) {
         </Grid>
       </Grid>
 
-      {
-        flag.rules.map(rule => (
-          <Paper key={rule.id}>
-            {rule.constraints.map(constraint => (
-              <Grid container spacing={2} className={classes.section2} key={constraint.id}>
-                <Grid item xs={4} sm={4}>
-                  <TextField
-                    label="Property"
-                    className={classes.textField}
-                    value={constraint.property}
-                    // onChange={e => setFlag('name', e.target.value)}
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item xs={4} sm={4}>
-                  <Select
-                    value={constraint.operation}
-                    // onChange={handleChange}
-                  >
-                    {operations.map(operation => (
-                      <MenuItem key={operation} value={operation.name}>{Operations[operation.name]}</MenuItem>
+      <Grid container spacing={2} className={classes.section1}>
+        <Grid item xs={12}>
+          <Typography variant="h6" color="textSecondary">Rules</Typography>
+          <Divider light/>
+        </Grid>
+      </Grid>
+
+      <Grid container className={classes.section1}>
+        <Grid item xs={12}>
+          {
+            flag.rules.map(rule => (
+              <Paper key={rule.id} className={classes.paper}>
+                <Grid container className={classes.section3}>
+                  <Grid item xs={12}>
+                    {rule.constraints.map(constraint => (
+                      <ConstraintField key={constraint.id} classes={classes} constraint={constraint}
+                                       operations={operations} handleDeleteConstraint={deleteConstraint(rule.id)}/>
                     ))}
-                  </Select>
+                  </Grid>
+                  <Button variant="outlined" size="small" color="primary" onClick={addConstraint(rule.id)}
+                          className={classes.margin}>
+                    New Constraint
+                  </Button>
+                  <Button variant="outlined" size="small" color="secondary" onClick={() => deleteRule(rule)}
+                          className={classes.margin}>
+                    Delete Rule
+                  </Button>
                 </Grid>
-                <Grid item xs={4} sm={4}>
-                  <TextField
-                    label="Value"
-                    className={classes.textField}
-                    value={constraint.values.join(',')}
-                    // onChange={e => setFlag('name', e.target.value)}
-                    fullWidth
-                  />
-                </Grid>
-              </Grid>
-            ))}
-          </Paper>
-        ))
-      }
+              </Paper>
+            ))
+          }
+        </Grid>
+        <Button variant="outlined" size="small" color="primary" onClick={addRule} className={classes.margin}>
+          New Rule
+        </Button>
+      </Grid>
+
       <Grid container alignContent="space-around" direction="row-reverse" className={classes.footer}>
         <Grid item>
           <Button color="primary" onClick={() => console.log(flag.variants)}>
@@ -289,7 +388,7 @@ function FlagForm({classes, flag: flg, operations, handleDeleteFlag}) {
             </Button>
           </Link>
         </Grid>
-        <Grid item>
+        <Grid item style={{flexGrow: 1}}>
           <DeleteFlagDialog open={deleteFlagDlgOpen} onConfirm={confirmDeleteFlag} handleClose={handleClose}
                             flag={flag}/>
           <Tooltip title="Delete flag" placement="top">

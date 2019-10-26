@@ -1,6 +1,6 @@
 export const Operations = {
-  ONE_OF: "One Of",
-  NOT_ONE_OF: "Not one of",
+  ONE_OF: "Equals",
+  NOT_ONE_OF: "Not equals",
   GREATER: "Greater",
   GREATER_OR_EQUAL: "Greater or equal",
   LOWER: "Lower",
@@ -22,6 +22,9 @@ export const Operations = {
   IS_IN_SEGMENT: "Is in segment",
   ISNT_IN_SEGMENT: "Isn't in segment",
 };
+
+export const OperationTypes = Object.keys(Operations)
+  .reduce((ops, op) => ({...ops, [op]: op}), {});
 
 export const VariantType = {
   BOOLEAN: "Boolean",
