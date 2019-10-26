@@ -20,7 +20,12 @@ import {
   Typography,
   withStyles
 } from "@material-ui/core";
-import {Delete as DeleteIcon, RemoveCircleOutline as RemoveIcon} from "@material-ui/icons";
+import {
+  AddCircleOutline as AddIcon,
+  Delete as DeleteIcon,
+  DeleteOutline as DeleteOutlineIcon,
+  RemoveCircleOutline as RemoveIcon
+} from "@material-ui/icons";
 import Grid from "@material-ui/core/Grid";
 import {useMutation, useQuery} from "@apollo/react-hooks";
 import {DELETE_FLAG_QUERY, FLAG_QUERY, FLAGS_QUERY} from "../Queries";
@@ -45,6 +50,9 @@ const styles = theme => ({
   section3: {
     margin: theme.spacing(1, 2, 1, 1),
   },
+  section4: {
+    margin: theme.spacing(1, 2, 1, 1),
+  },
   footer: {
     marginTop: theme.spacing(1),
     paddingTop: theme.spacing(1),
@@ -57,7 +65,7 @@ const styles = theme => ({
     margin: theme.spacing(1),
   },
   formControl: {
-    margin: 0,
+    // margin: 0,
     fullWidth: true,
     display: "flex",
     wrap: "nowrap",
@@ -91,7 +99,7 @@ const newConstraint = (constraint = {}) => ({
   values: constraint.values || [""],
 });
 
-function VariantField({classes, variant: vrnt, handleDeleteVariant, handleUpdateVariant}) {
+function VariantField({classes, variant: vrnt, last, handleAddVariant, handleDeleteVariant, handleUpdateVariant}) {
   const [variant, setVariant] = React.useState(vrnt);
   const setVariantField = (field, value) => {
     handleUpdateVariant(field, value);
@@ -142,7 +150,7 @@ function VariantField({classes, variant: vrnt, handleDeleteVariant, handleUpdate
       </Grid>
       <Grid item xs={5} style={{display: 'flex'}}>
         <TextField
-          label="Name"
+          label="Description"
           className={classes.textField}
           value={variant.description || ''}
           onChange={e => setVariantField('description', e.target.value)}
@@ -153,12 +161,25 @@ function VariantField({classes, variant: vrnt, handleDeleteVariant, handleUpdate
             <RemoveIcon/>
           </Button>
         </Tooltip>
+        {
+          last === true ? (
+            <Tooltip title="New variant" placement="top">
+              <Button size="small" color="primary" style={{minWidth: 0}} onClick={handleAddVariant}>
+                <AddIcon/>
+              </Button>
+            </Tooltip>
+          ) : (
+            <Button size="small" color="primary" style={{minWidth: 0}} disabled>
+              <AddIcon style={{visibility: "hidden"}}/>
+            </Button>
+          )
+        }
       </Grid>
     </Grid>
   )
 }
 
-function ConstraintField({classes, constraint: cnstrnt, operations, handleDeleteConstraint, handleUpdateConstraint}) {
+function ConstraintField({classes, constraint: cnstrnt, last, operations, handleAddConstraint, handleDeleteConstraint, handleUpdateConstraint}) {
   const [constraint, setConstraint] = React.useState(cnstrnt);
   const setConstraintField = (field, value) => {
     // handleUpdateConstraint(field, value);
@@ -201,6 +222,19 @@ function ConstraintField({classes, constraint: cnstrnt, operations, handleDelete
             <RemoveIcon/>
           </Button>
         </Tooltip>
+        {
+          last === true ? (
+            <Tooltip title="New constraint" placement="top">
+              <Button size="small" color="primary" style={{minWidth: 0}} onClick={handleAddConstraint}>
+                <AddIcon/>
+              </Button>
+            </Tooltip>
+          ) : (
+            <Button size="small" color="primary" style={{minWidth: 0}} disabled>
+              <AddIcon style={{visibility: "hidden"}}/>
+            </Button>
+          )
+        }
       </Grid>
     </Grid>
   );
@@ -295,20 +329,19 @@ function FlagForm({classes, flag: flg, operations, handleDeleteFlag}) {
 
       <Grid container className={classes.section1}>
         {
-          flag.variants.map(variant => (
+          flag.variants.map((variant, idx) => (
             <VariantField key={variant.id} classes={classes} variant={newVariant(variant)}
+                          last={idx === flag.variants.length - 1}
+                          handleAddVariant={addVariant}
                           handleUpdateVariant={updateVariant(variant)} handleDeleteVariant={deleteVariant}/>
           ))
         }
-        <Button variant="outlined" size="small" color="primary" onClick={addVariant} className={classes.margin}>
-          New Variant
-        </Button>
       </Grid>
 
       <Grid container spacing={2} className={classes.section1}>
         <Grid item xs={6}>
           <FormControl className={classes.formControl}>
-            <InputLabel>Default value when flag is enabled</InputLabel>
+            <InputLabel>If no rules are matched, return</InputLabel>
             <Select
               value={defaults.defaultWhenOn}
               onChange={e => setDefaults({...defaults, defaultWhenOn: e.target.value})}
@@ -323,7 +356,7 @@ function FlagForm({classes, flag: flg, operations, handleDeleteFlag}) {
         </Grid>
         <Grid item xs={6}>
           <FormControl className={classes.formControl}>
-            <InputLabel>Default value when flag is disabled</InputLabel>
+            <InputLabel>If flag is disabled, return</InputLabel>
             <Select
               value={defaults.defaultWhenOff}
               onChange={e => setDefaults({...defaults, defaultWhenOff: e.target.value})}
@@ -352,19 +385,36 @@ function FlagForm({classes, flag: flg, operations, handleDeleteFlag}) {
               <Paper key={rule.id} className={classes.paper}>
                 <Grid container className={classes.section3}>
                   <Grid item xs={12}>
-                    {rule.constraints.map(constraint => (
+                    {rule.constraints.map((constraint, idx) => (
                       <ConstraintField key={constraint.id} classes={classes} constraint={constraint}
+                                       handleAddConstraint={addConstraint(rule.id)}
+                                       last={idx === rule.constraints.length - 1}
                                        operations={operations} handleDeleteConstraint={deleteConstraint(rule.id)}/>
                     ))}
                   </Grid>
-                  <Button variant="outlined" size="small" color="primary" onClick={addConstraint(rule.id)}
-                          className={classes.margin}>
-                    New Constraint
-                  </Button>
-                  <Button variant="outlined" size="small" color="secondary" onClick={() => deleteRule(rule)}
-                          className={classes.margin}>
-                    Delete Rule
-                  </Button>
+                  <Grid item xs={8} md={7}>
+                    <FormControl className={[classes.formControl, classes.section4]}>
+                      <InputLabel>Return</InputLabel>
+                      <Select
+                        // value={defaults.defaultWhenOn}
+                        // onChange={e => setDefaults({...defaults, defaultWhenOn: e.target.value})}
+                      >
+                        {flag.variants.map(variant => (
+                          <MenuItem key={variant.id} value={variant}>
+                            {typeof variant.value === VariantTypes.BOOLEAN ? BooleanType[variant.value] : variant.value}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={1} md={2}/>
+                  <Grid item xs={3} style={{display: "flex", justifyContent: "flex-end", alignItems: "flex-end"}}>
+                    <Tooltip title="Delete rule" placement="top">
+                      <Button size="small" color="secondary" style={{minWidth: 0}} onClick={() => deleteRule(rule)}>
+                        <DeleteOutlineIcon/>
+                      </Button>
+                    </Tooltip>
+                  </Grid>
                 </Grid>
               </Paper>
             ))
