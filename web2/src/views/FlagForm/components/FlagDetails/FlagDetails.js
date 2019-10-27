@@ -11,6 +11,7 @@ import {
   CardHeader,
   Divider,
   Grid,
+  Paper,
   Tab,
   Tabs,
   TextField,
@@ -22,6 +23,7 @@ import { reject, set } from 'lodash';
 import DeleteFlagDialog from '../DeleteFlagDialog';
 import { newVariant } from '../../models';
 import VariantFields from '../VariantFields';
+import RuleFields from '../RuleFields';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -31,7 +33,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const FlagDetails = props => {
-  const { className, flag: flg, onDeleteFlag, ...rest } = props;
+  const { className, flag: flg, operations, onDeleteFlag, ...rest } = props;
   const [flag, setFlag] = useState(flg);
   const [tab, setTab] = React.useState(0);
   const [deleteFlagDlgOpen, setDeleteFlagDlgOpen] = React.useState(false);
@@ -63,7 +65,7 @@ const FlagDetails = props => {
 
         {/*********** GENERAL TAB ***********/}
 
-        <Box role="tabpanel" value={tab} hidden={tab !== 0}>
+        <Box role="tabpanel" value={tab} hidden={tab !== 1}>
           <CardHeader
             subheader="Identified by a key, a flag will return a value (variant) based on a set of rules"
             title="Flag"
@@ -131,50 +133,23 @@ const FlagDetails = props => {
 
         {/*********** RULES TAB ***********/}
 
-        <Box role="tabpanel" value={tab} hidden={tab !== 1}>
+        <Box role="tabpanel" value={tab} hidden={tab !== 0}>
           <CardHeader
             subheader="Based on a set of constraints, decide which value should be returned as result"
             title="Rules"
           />
           <Divider/>
           <CardContent>
-            <Grid container spacing={3}>
-              <Grid item md={6} xs={12}>
-                <TextField
-                  fullWidth
-                  label="Name"
-                  margin="dense"
-                  name="name"
-                  onChange={handleChange}
-                  required
-                  value={flag.name}
-                  variant="outlined"
+            {
+              flag.rules.map(rule => (
+                <RuleFields
+                  key={rule.id}
+                  rule={rule}
+                  variants={flag.variants}
+                  operations={operations}
                 />
-              </Grid>
-              <Grid item md={6} xs={12}>
-                <TextField
-                  fullWidth
-                  label="Key"
-                  margin="dense"
-                  name="key"
-                  onChange={handleChange}
-                  required
-                  value={flag.key}
-                  variant="outlined"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Description"
-                  margin="dense"
-                  name="description"
-                  onChange={handleChange}
-                  value={flag.description}
-                  variant="outlined"
-                />
-              </Grid>
-            </Grid>
+              ))
+            }
           </CardContent>
         </Box>
 
