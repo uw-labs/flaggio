@@ -1,11 +1,13 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/styles';
-import { useParams } from 'react-router-dom';
+import { Redirect, useParams } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
-import { useQuery } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import { FlagDetails } from './components';
-import { FLAG_QUERY } from './queries';
+import { DELETE_FLAG_QUERY, FLAG_QUERY } from './queries';
 import { newFlag } from './models';
+import { FLAGS_QUERY } from '../FlagList/queries';
+import { reject } from 'lodash';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -14,19 +16,35 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const FlagForm = () => {
-  let {id} = useParams();
+  const [toFlagsPage, setToFlagsPage] = React.useState(false);
+  const {id} = useParams();
   const {loading, error, data} = useQuery(FLAG_QUERY, {variables: {id}});
+  const [deleteFlag] = useMutation(DELETE_FLAG_QUERY, {
+    update(cache, {data: {deleteFlag: id}}) {
+      const {flags} = cache.readQuery({query: FLAGS_QUERY});
+      cache.writeQuery({
+        query: FLAGS_QUERY,
+        data: {flags: reject(flags, {id})},
+      });
+    },
+  });
   const classes = useStyles();
   if (loading) return <div>"Loading..."</div>;
   if (error) return <div>"Error while loading flag details :("</div>;
+  const handleDeleteFlag = id => {
+    deleteFlag({variables: {id}})
+      .then(() => setToFlagsPage(true));
+  };
 
   return (
     <div className={classes.root}>
+      {toFlagsPage && <Redirect to='/flags'/>}
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <FlagDetails
             flag={newFlag(data.flag)}
             operations={data.operations.enumValues.map(v => v.name)}
+            onDeleteFlag={handleDeleteFlag}
           />
         </Grid>
       </Grid>

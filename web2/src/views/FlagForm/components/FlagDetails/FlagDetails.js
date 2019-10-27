@@ -18,6 +18,7 @@ import {
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { Link } from 'react-router-dom';
+import DeleteFlagDialog from '../DeleteFlagDialog';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -27,9 +28,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const FlagDetails = props => {
-  const {className, flag: flg, ...rest} = props;
+  const {className, flag: flg, onDeleteFlag, ...rest} = props;
   const [flag, setFlag] = useState(flg);
   const [tab, setTab] = React.useState(0);
+  const [deleteFlagDlgOpen, setDeleteFlagDlgOpen] = React.useState(false);
   const classes = useStyles();
 
   const handleChange = event => {
@@ -191,8 +193,14 @@ const FlagDetails = props => {
 
         <Divider/>
         <CardActions>
+          <DeleteFlagDialog
+            flag={flag}
+            open={deleteFlagDlgOpen}
+            onConfirm={() => onDeleteFlag(flag.id)}
+            onClose={() => setDeleteFlagDlgOpen(false)}
+          />
           <Tooltip title="Delete flag" placement="top">
-            <Button color="secondary">
+            <Button color="secondary" onClick={() => setDeleteFlagDlgOpen(true)}>
               <DeleteIcon/>
             </Button>
           </Tooltip>
@@ -213,6 +221,7 @@ FlagDetails.propTypes = {
   className: PropTypes.string,
   flag: PropTypes.object.isRequired,
   operations: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onDeleteFlag: PropTypes.func.isRequired,
 };
 
 export default FlagDetails;
