@@ -2,7 +2,7 @@ import React from 'react';
 import { Redirect, Switch } from 'react-router-dom';
 import { RouteWithLayout } from './components';
 import { Main as MainLayout, Minimal as MinimalLayout } from './layouts';
-import { FlagList as FlagListView, NotFound as NotFoundView } from './views';
+import { FlagForm as FlagFormView, FlagList as FlagListView, NotFound as NotFoundView } from './views';
 
 const Routes = () => {
   return (
@@ -17,6 +17,12 @@ const Routes = () => {
         exact
         layout={MainLayout}
         path="/flags"
+      />
+      <RouteWithLayout
+        component={FlagFormView}
+        exact
+        layout={MainLayout}
+        path="/flags/:id"
       />
       <RouteWithLayout
         component={NotFoundView}
