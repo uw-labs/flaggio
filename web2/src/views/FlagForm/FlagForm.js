@@ -5,6 +5,7 @@ import { Grid } from '@material-ui/core';
 import { useQuery } from '@apollo/react-hooks';
 import { FlagDetails } from './components';
 import { FLAG_QUERY } from './queries';
+import { newFlag } from './models';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -23,7 +24,10 @@ const FlagForm = () => {
     <div className={classes.root}>
       <Grid container spacing={4}>
         <Grid item xs={12}>
-          <FlagDetails flag={data.flag} operations={data.operations}/>
+          <FlagDetails
+            flag={newFlag(data.flag)}
+            operations={data.operations.enumValues.map(v => v.name)}
+          />
         </Grid>
       </Grid>
     </div>

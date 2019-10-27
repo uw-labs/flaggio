@@ -19,7 +19,7 @@ import {
 import DeleteIcon from '@material-ui/icons/Delete';
 import { Link } from 'react-router-dom';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {},
   actionButton: {
     margin: theme.spacing(1),
@@ -212,6 +212,7 @@ const FlagDetails = props => {
 FlagDetails.propTypes = {
   className: PropTypes.string,
   flag: PropTypes.object.isRequired,
+  operations: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default FlagDetails;
