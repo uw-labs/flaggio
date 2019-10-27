@@ -2,10 +2,10 @@ import uuid from 'uuid/v1';
 import { Operations, VariantType } from './copy';
 
 export const OperationTypes = Object.keys(Operations)
-  .reduce((ops, op) => ({...ops, [op]: op}), {});
+  .reduce((ops, op) => ({ ...ops, [op]: op }), {});
 
 export const VariantTypes = Object.keys(VariantType)
-  .reduce((vts, vt) => ({...vts, [vt]: vt.toLowerCase()}), {});
+  .reduce((vts, vt) => ({ ...vts, [vt]: vt.toLowerCase() }), {});
 
 export const newFlag = (flag = {}) => ({
   id: flag.id || uuid(),
@@ -20,7 +20,8 @@ export const newVariant = (variant = {}) => ({
   id: variant.id || uuid(),
   description: variant.description || '',
   value: variant.value !== undefined ? variant.value : '',
-  type: typeof variant.value,
+  type: variant.type !== undefined ? variant.type :
+    variant.value !== undefined ? typeof variant.value : VariantTypes.STRING,
   defaultWhenOn: false,
   defaultWhenOff: false,
 });

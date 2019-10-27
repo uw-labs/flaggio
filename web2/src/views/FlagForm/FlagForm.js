@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Redirect, useParams } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
@@ -16,23 +16,30 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const FlagForm = () => {
+  const { id } = useParams();
   const [toFlagsPage, setToFlagsPage] = React.useState(false);
-  const {id} = useParams();
-  const {loading, error, data} = useQuery(FLAG_QUERY, {variables: {id}});
+  const { loading, error, data } = useQuery(FLAG_QUERY, { variables: { id } });
   const [deleteFlag] = useMutation(DELETE_FLAG_QUERY, {
-    update(cache, {data: {deleteFlag: id}}) {
-      const {flags} = cache.readQuery({query: FLAGS_QUERY});
+    update(cache, { data: { deleteFlag: id } }) {
+      const { flags } = cache.readQuery({ query: FLAGS_QUERY });
       cache.writeQuery({
         query: FLAGS_QUERY,
-        data: {flags: reject(flags, {id})},
+        data: { flags: reject(flags, { id }) },
       });
     },
   });
+  useEffect(() => {
+    const handleEsc = (event) => {
+      if (event.key === 'Escape') setToFlagsPage(true);
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, []);
   const classes = useStyles();
   if (loading) return <div>"Loading..."</div>;
   if (error) return <div>"Error while loading flag details :("</div>;
   const handleDeleteFlag = id => {
-    deleteFlag({variables: {id}})
+    deleteFlag({ variables: { id } })
       .then(() => setToFlagsPage(true));
   };
 

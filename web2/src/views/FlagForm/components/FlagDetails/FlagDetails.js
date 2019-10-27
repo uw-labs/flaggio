@@ -18,7 +18,10 @@ import {
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { Link } from 'react-router-dom';
+import { reject, set } from 'lodash';
 import DeleteFlagDialog from '../DeleteFlagDialog';
+import { newVariant } from '../../models';
+import VariantFields from '../VariantFields';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -28,17 +31,16 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const FlagDetails = props => {
-  const {className, flag: flg, onDeleteFlag, ...rest} = props;
+  const { className, flag: flg, onDeleteFlag, ...rest } = props;
   const [flag, setFlag] = useState(flg);
   const [tab, setTab] = React.useState(0);
   const [deleteFlagDlgOpen, setDeleteFlagDlgOpen] = React.useState(false);
   const classes = useStyles();
 
-  const handleChange = event => {
-    setFlag({
-      ...flag,
-      [event.target.name]: event.target.value,
-    });
+  const handleAddVariant = () => setFlag({ ...flag, variants: [...flag.variants, newVariant()] });
+  const handleDelVariant = variant => () => setFlag({ ...flag, variants: reject(flag.variants, v => v === variant) });
+  const handleChange = (prefix = '') => event => {
+    setFlag(set({ ...flag }, `${prefix}${event.target.name}`, event.target.value));
   };
 
   return (
@@ -53,7 +55,6 @@ const FlagDetails = props => {
           indicatorColor="primary"
           textColor="primary"
           variant="standard"
-          aria-label="full width tabs example"
         >
           <Tab label="General"/>
           <Tab label="Rules"/>
@@ -76,7 +77,7 @@ const FlagDetails = props => {
                   label="Name"
                   margin="dense"
                   name="name"
-                  onChange={handleChange}
+                  onChange={handleChange()}
                   required
                   value={flag.name}
                   variant="outlined"
@@ -88,7 +89,7 @@ const FlagDetails = props => {
                   label="Key"
                   margin="dense"
                   name="key"
-                  onChange={handleChange}
+                  onChange={handleChange()}
                   required
                   value={flag.key}
                   variant="outlined"
@@ -100,7 +101,7 @@ const FlagDetails = props => {
                   label="Description"
                   margin="dense"
                   name="description"
-                  onChange={handleChange}
+                  onChange={handleChange()}
                   value={flag.description}
                   variant="outlined"
                 />
@@ -113,32 +114,18 @@ const FlagDetails = props => {
           />
           <Divider/>
           <CardContent>
-            <Grid container spacing={3}>
-              <Grid item md={6} xs={12}>
-                <TextField
-                  fullWidth
-                  label="Name"
-                  margin="dense"
-                  name="name"
-                  onChange={handleChange}
-                  required
-                  value={flag.name}
-                  variant="outlined"
+            {
+              flag.variants.map((variant, idx) => (
+                <VariantFields
+                  key={variant.id}
+                  variant={newVariant(variant)}
+                  isLast={idx === flag.variants.length - 1}
+                  onAddVariant={handleAddVariant}
+                  onUpdateVariant={handleChange(`variants[${idx}].`)}
+                  onDeleteVariant={handleDelVariant(variant)}
                 />
-              </Grid>
-              <Grid item md={6} xs={12}>
-                <TextField
-                  fullWidth
-                  label="Key"
-                  margin="dense"
-                  name="key"
-                  onChange={handleChange}
-                  required
-                  value={flag.key}
-                  variant="outlined"
-                />
-              </Grid>
-            </Grid>
+              ))
+            }
           </CardContent>
         </Box>
 
@@ -200,15 +187,23 @@ const FlagDetails = props => {
             onClose={() => setDeleteFlagDlgOpen(false)}
           />
           <Tooltip title="Delete flag" placement="top">
-            <Button color="secondary" onClick={() => setDeleteFlagDlgOpen(true)}>
+            <Button
+              color="secondary"
+              onClick={() => setDeleteFlagDlgOpen(true)}
+            >
               <DeleteIcon/>
             </Button>
           </Tooltip>
-          <div style={{flexGrow: 1}}/>
+          <div style={{ flexGrow: 1 }}/>
           <Link to="/flags">
             <Button className={classes.actionButton}>Cancel</Button>
           </Link>
-          <Button color="primary" variant="outlined" className={classes.actionButton}>
+          <Button
+            color="primary"
+            variant="outlined"
+            className={classes.actionButton}
+            onClick={() => console.log(flag)}
+          >
             Save
           </Button>
         </CardActions>
