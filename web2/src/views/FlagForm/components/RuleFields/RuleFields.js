@@ -33,6 +33,7 @@ const RuleFields = props => {
   const {
     rule,
     variants,
+    segments,
     operations,
     onUpdateRule,
     onDeleteRule,
@@ -49,11 +50,12 @@ const RuleFields = props => {
             <ConstraintFields
               key={constraint.id}
               constraint={constraint}
+              segments={segments}
               isLast={idx === rule.constraints.length - 1}
               operations={operations}
               onAddConstraint={onAddConstraint}
               onUpdateConstraint={onUpdateConstraint(`constraints[${idx}].`)}
-              onDeleteConstraint={onDeleteConstraint}
+              onDeleteConstraint={onDeleteConstraint(constraint)}
             />
           ))}
         </Grid>
@@ -99,6 +101,7 @@ RuleFields.propTypes = {
   rule: PropTypes.object.isRequired,
   variants: PropTypes.arrayOf(PropTypes.object).isRequired,
   operations: PropTypes.arrayOf(PropTypes.string).isRequired,
+  segments: PropTypes.arrayOf(PropTypes.object).isRequired,
   onUpdateRule: PropTypes.func.isRequired,
   onDeleteRule: PropTypes.func.isRequired,
   onAddConstraint: PropTypes.func.isRequired,

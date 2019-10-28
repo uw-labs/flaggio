@@ -31,6 +31,11 @@ export const FLAG_QUERY = gql`
                 defaultWhenOff
             }
         }
+        segments {
+            id
+            key
+            name
+        }
         operations: __type(name: "Operation") {
             enumValues {
                 name

@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const FlagDetails = props => {
-  const { className, flag: flg, operations, onDeleteFlag, ...rest } = props;
+  const { className, flag: flg, operations, segments, onDeleteFlag, ...rest } = props;
   const [flag, setFlag] = useState(flg);
   const [tab, setTab] = React.useState(0);
   const [deleteFlagDlgOpen, setDeleteFlagDlgOpen] = React.useState(false);
@@ -50,7 +50,7 @@ const FlagDetails = props => {
       }),
     });
   };
-  const handleDelConstraint = rule => constraint => {
+  const handleDelConstraint = rule => constraint => () => {
     setFlag({
       ...flag, rules: flag.rules.map(r => {
         if (r === rule) r = { ...r, constraints: reject(r.constraints, c => c === constraint) };
@@ -83,7 +83,7 @@ const FlagDetails = props => {
 
         {/*********** GENERAL TAB ***********/}
 
-        <Box role="tabpanel" value={tab} hidden={tab !== 1}>
+        <Box role="tabpanel" value={tab} hidden={tab !== 0}>
           <CardHeader
             subheader="Identified by a key, a flag will return a value (variant) based on a set of rules"
             title="Flag"
@@ -151,7 +151,7 @@ const FlagDetails = props => {
 
         {/*********** RULES TAB ***********/}
 
-        <Box role="tabpanel" value={tab} hidden={tab !== 0}>
+        <Box role="tabpanel" value={tab} hidden={tab !== 1}>
           <CardHeader
             subheader="Based on a set of constraints, decide which value should be returned as result"
             title="Rules"
@@ -165,6 +165,7 @@ const FlagDetails = props => {
                   rule={rule}
                   variants={flag.variants}
                   operations={operations}
+                  segments={segments}
                   onDeleteRule={handleDelRule(rule)}
                   onUpdateRule={handleChange(`rules[${idx}].`)}
                   onAddConstraint={handleAddConstraint(rule)}
@@ -226,6 +227,7 @@ FlagDetails.propTypes = {
   className: PropTypes.string,
   flag: PropTypes.object.isRequired,
   operations: PropTypes.arrayOf(PropTypes.string).isRequired,
+  segments: PropTypes.arrayOf(PropTypes.object).isRequired,
   onDeleteFlag: PropTypes.func.isRequired,
 };
 

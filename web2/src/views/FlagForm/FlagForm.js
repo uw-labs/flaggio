@@ -51,6 +51,7 @@ const FlagForm = () => {
           <FlagDetails
             flag={newFlag(data.flag)}
             operations={data.operations.enumValues.map(v => v.name)}
+            segments={data.segments}
             onDeleteFlag={handleDeleteFlag}
           />
         </Grid>

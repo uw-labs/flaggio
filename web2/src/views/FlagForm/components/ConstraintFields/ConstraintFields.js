@@ -23,7 +23,16 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const ConstraintFields = ({ constraint, isLast, operations, onAddConstraint, onDeleteConstraint, onUpdateConstraint }) => {
+const ConstraintFields = props => {
+  const {
+    constraint,
+    isLast,
+    operations,
+    segments,
+    onAddConstraint,
+    onDeleteConstraint,
+    onUpdateConstraint,
+  } = props;
   const classes = useStyles();
   return (
     <Grid container spacing={1}>
@@ -59,16 +68,36 @@ const ConstraintFields = ({ constraint, isLast, operations, onAddConstraint, onD
         </FormControl>
       </Grid>
       <Grid item xs={3}>
-        <TextField
-          label="Value"
-          value={constraint.values[0]}
-          margin="dense"
-          name="values[0]"
-          onChange={onUpdateConstraint}
-          fullWidth
-          disabled={includes([OperationTypes.EXISTS, OperationTypes.DOESNT_EXIST], constraint.operation)}
-          variant="outlined"
-        />
+        {includes([OperationTypes.IS_IN_SEGMENT, OperationTypes.ISNT_IN_SEGMENT], constraint.operation) ? (
+          <FormControl
+            className={classes.formControl}
+            margin="dense"
+            variant="outlined"
+          >
+            <InputLabel>Segment</InputLabel>
+            <Select
+              value={constraint.values[0]}
+              name="values[0]"
+              required
+              onChange={onUpdateConstraint}
+            >
+              {segments.map(segment => (
+                <MenuItem key={segment.id} value={segment.id}>{segment.name}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          ) : (
+          <TextField
+            label="Value"
+            value={constraint.values[0]}
+            margin="dense"
+            name="values[0]"
+            onChange={onUpdateConstraint}
+            fullWidth
+            disabled={includes([OperationTypes.EXISTS, OperationTypes.DOESNT_EXIST], constraint.operation)}
+            variant="outlined"
+          />
+        )}
       </Grid>
       <Grid item xs={1} className={classes.actionButtons}>
         <Tooltip title="Delete constraint" placement="top">
@@ -111,6 +140,7 @@ const ConstraintFields = ({ constraint, isLast, operations, onAddConstraint, onD
 
 ConstraintFields.propTypes = {
   constraint: PropTypes.object.isRequired,
+  segments: PropTypes.arrayOf(PropTypes.object).isRequired,
   isLast: PropTypes.bool.isRequired,
   onAddConstraint: PropTypes.func.isRequired,
   onUpdateConstraint: PropTypes.func.isRequired,
