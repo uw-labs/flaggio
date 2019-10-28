@@ -41,6 +41,6 @@ export const newConstraint = (constraint = {}) => ({
 
 export const newDistribution = (distribution = {}) => ({
   id: distribution.id || uuid(),
-  variant: distribution.variant || {},
+  variant: distribution.variant || { id: '' },
   percentage: distribution.percentage || 100,
 });

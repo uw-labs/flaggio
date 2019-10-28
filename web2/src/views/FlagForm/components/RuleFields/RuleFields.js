@@ -16,19 +16,30 @@ const useStyles = makeStyles(theme => ({
   paper: {
     margin: theme.spacing(0, 0, 2, 0),
     padding: theme.spacing(2),
-    display: "flex",
+    display: 'flex',
     flexGrow: 1,
   },
   deleteRule: {
     display: 'flex',
-    justifyContent: 'flex-end',alignItems: 'flex-end'
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
   },
   sideButton: {
     minWidth: theme.spacing(0),
   },
 }));
 
-const RuleFields = ({ rule, variants, operations, onDeleteRule, onAddConstraint, onDeleteConstraint }) => {
+const RuleFields = props => {
+  const {
+    rule,
+    variants,
+    operations,
+    onUpdateRule,
+    onDeleteRule,
+    onAddConstraint,
+    onUpdateConstraint,
+    onDeleteConstraint,
+  } = props;
   const classes = useStyles();
   return (
     <Paper className={classes.paper}>
@@ -41,6 +52,7 @@ const RuleFields = ({ rule, variants, operations, onDeleteRule, onAddConstraint,
               isLast={idx === rule.constraints.length - 1}
               operations={operations}
               onAddConstraint={onAddConstraint}
+              onUpdateConstraint={onUpdateConstraint(`constraints[${idx}].`)}
               onDeleteConstraint={onDeleteConstraint}
             />
           ))}
@@ -54,7 +66,8 @@ const RuleFields = ({ rule, variants, operations, onDeleteRule, onAddConstraint,
             <InputLabel>Return</InputLabel>
             <Select
               value={rule.distributions[0].variant.id}
-              // onChange={e => setDefaults({...defaults, defaultWhenOn: e.target.value})}
+              name="distributions[0].variant.id"
+              onChange={onUpdateRule}
             >
               {variants.map(variant => (
                 <MenuItem key={variant.id} value={variant.id}>
@@ -86,8 +99,10 @@ RuleFields.propTypes = {
   rule: PropTypes.object.isRequired,
   variants: PropTypes.arrayOf(PropTypes.object).isRequired,
   operations: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onUpdateRule: PropTypes.func.isRequired,
   onDeleteRule: PropTypes.func.isRequired,
   onAddConstraint: PropTypes.func.isRequired,
+  onUpdateConstraint: PropTypes.func.isRequired,
   onDeleteConstraint: PropTypes.func.isRequired,
 };
 

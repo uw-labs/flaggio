@@ -61,6 +61,7 @@ const FlagDetails = props => {
   const handleChange = (prefix = '') => event => {
     setFlag(set({ ...flag }, `${prefix}${event.target.name}`, event.target.value));
   };
+  const handleChange2Deep = (prefix = '') => (prefix2 = '') => handleChange(prefix + prefix2);
 
   return (
     <Card
@@ -158,14 +159,16 @@ const FlagDetails = props => {
           <Divider/>
           <CardContent>
             {
-              flag.rules.map(rule => (
+              flag.rules.map((rule, idx) => (
                 <RuleFields
                   key={rule.id}
                   rule={rule}
                   variants={flag.variants}
                   operations={operations}
                   onDeleteRule={handleDelRule(rule)}
+                  onUpdateRule={handleChange(`rules[${idx}].`)}
                   onAddConstraint={handleAddConstraint(rule)}
+                  onUpdateConstraint={handleChange2Deep(`rules[${idx}].`)}
                   onDeleteConstraint={handleDelConstraint(rule)}
                 />
               ))

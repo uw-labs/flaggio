@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { includes } from 'lodash';
 import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip } from '@material-ui/core';
 import RemoveIcon from '@material-ui/icons/RemoveCircleOutline';
 import AddIcon from '@material-ui/icons/AddCircleOutline';
 import { Operations } from '../../copy';
 import { makeStyles } from '@material-ui/styles';
+import { OperationTypes } from '../../models';
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -30,9 +32,10 @@ const ConstraintFields = ({ constraint, isLast, operations, onAddConstraint, onD
           label="Property"
           value={constraint.property}
           margin="dense"
-          name="description"
+          name="property"
           onChange={onUpdateConstraint}
           fullWidth
+          disabled={includes([OperationTypes.IS_IN_SEGMENT, OperationTypes.ISNT_IN_SEGMENT], constraint.operation)}
           variant="outlined"
         />
       </Grid>
@@ -60,9 +63,10 @@ const ConstraintFields = ({ constraint, isLast, operations, onAddConstraint, onD
           label="Value"
           value={constraint.values[0]}
           margin="dense"
-          name="description"
+          name="values[0]"
           onChange={onUpdateConstraint}
           fullWidth
+          disabled={includes([OperationTypes.EXISTS, OperationTypes.DOESNT_EXIST], constraint.operation)}
           variant="outlined"
         />
       </Grid>
