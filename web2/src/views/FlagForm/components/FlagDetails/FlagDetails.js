@@ -11,7 +11,6 @@ import {
   CardHeader,
   Divider,
   Grid,
-  Paper,
   Tab,
   Tabs,
   TextField,
@@ -21,7 +20,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { Link } from 'react-router-dom';
 import { reject, set } from 'lodash';
 import DeleteFlagDialog from '../DeleteFlagDialog';
-import { newVariant } from '../../models';
+import { newConstraint, newRule, newVariant } from '../../models';
 import VariantFields from '../VariantFields';
 import RuleFields from '../RuleFields';
 
@@ -41,6 +40,24 @@ const FlagDetails = props => {
 
   const handleAddVariant = () => setFlag({ ...flag, variants: [...flag.variants, newVariant()] });
   const handleDelVariant = variant => () => setFlag({ ...flag, variants: reject(flag.variants, v => v === variant) });
+  const handleAddRule = () => setFlag({ ...flag, rules: [...flag.rules, newRule()] });
+  const handleDelRule = rule => () => setFlag({ ...flag, rules: reject(flag.rules, r => r === rule) });
+  const handleAddConstraint = rule => () => {
+    setFlag({
+      ...flag, rules: flag.rules.map(r => {
+        if (r === rule) r = { ...r, constraints: [...r.constraints, newConstraint()] };
+        return r;
+      }),
+    });
+  };
+  const handleDelConstraint = rule => constraint => {
+    setFlag({
+      ...flag, rules: flag.rules.map(r => {
+        if (r === rule) r = { ...r, constraints: reject(r.constraints, c => c === constraint) };
+        return r;
+      }),
+    });
+  };
   const handleChange = (prefix = '') => event => {
     setFlag(set({ ...flag }, `${prefix}${event.target.name}`, event.target.value));
   };
@@ -147,9 +164,24 @@ const FlagDetails = props => {
                   rule={rule}
                   variants={flag.variants}
                   operations={operations}
+                  onDeleteRule={handleDelRule(rule)}
+                  onAddConstraint={handleAddConstraint(rule)}
+                  onDeleteConstraint={handleDelConstraint(rule)}
                 />
               ))
             }
+            <Grid container>
+              <Grid item xs={12}>
+                <Button
+                  color="inherit"
+                  variant="outlined"
+                  className={classes.actionButton}
+                  onClick={handleAddRule}
+                >
+                  New rule
+                </Button>
+              </Grid>
+            </Grid>
           </CardContent>
         </Box>
 

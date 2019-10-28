@@ -5,6 +5,7 @@ import ConstraintFields from '../ConstraintFields';
 import { BooleanType } from '../../copy';
 import { VariantTypes } from '../../models';
 import { makeStyles } from '@material-ui/styles';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -27,7 +28,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const RuleFields = ({ rule, variants, operations, onDeleteRule }) => {
+const RuleFields = ({ rule, variants, operations, onDeleteRule, onAddConstraint, onDeleteConstraint }) => {
   const classes = useStyles();
   return (
     <Paper className={classes.paper}>
@@ -39,8 +40,8 @@ const RuleFields = ({ rule, variants, operations, onDeleteRule }) => {
               constraint={constraint}
               isLast={idx === rule.constraints.length - 1}
               operations={operations}
-              // onAddConstraint={addConstraint(rule.id)}
-              // onDeleteConstraint={deleteConstraint(rule.id)}
+              onAddConstraint={onAddConstraint}
+              onDeleteConstraint={onDeleteConstraint}
             />
           ))}
         </Grid>
@@ -52,11 +53,11 @@ const RuleFields = ({ rule, variants, operations, onDeleteRule }) => {
           >
             <InputLabel>Return</InputLabel>
             <Select
-              // value={defaults.defaultWhenOn}
+              value={rule.distributions[0].variant.id}
               // onChange={e => setDefaults({...defaults, defaultWhenOn: e.target.value})}
             >
               {variants.map(variant => (
-                <MenuItem key={variant.id} value={variant}>
+                <MenuItem key={variant.id} value={variant.id}>
                   {typeof variant.value === VariantTypes.BOOLEAN ? BooleanType[variant.value] : variant.value}
                 </MenuItem>
               ))}
@@ -79,6 +80,15 @@ const RuleFields = ({ rule, variants, operations, onDeleteRule }) => {
       </Grid>
     </Paper>
   );
+};
+
+RuleFields.propTypes = {
+  rule: PropTypes.object.isRequired,
+  variants: PropTypes.arrayOf(PropTypes.object).isRequired,
+  operations: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onDeleteRule: PropTypes.func.isRequired,
+  onAddConstraint: PropTypes.func.isRequired,
+  onDeleteConstraint: PropTypes.func.isRequired,
 };
 
 export default RuleFields;

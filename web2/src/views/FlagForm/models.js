@@ -29,7 +29,7 @@ export const newVariant = (variant = {}) => ({
 export const newRule = (rule = {}) => ({
   id: rule.id || uuid(),
   constraints: rule.constraints || [newConstraint()],
-  distributions: rule.distributions || [],
+  distributions: rule.distributions || [newDistribution()],
 });
 
 export const newConstraint = (constraint = {}) => ({
@@ -37,4 +37,10 @@ export const newConstraint = (constraint = {}) => ({
   property: constraint.property || '',
   operation: constraint.operation || OperationTypes.ONE_OF,
   values: constraint.values || [''],
+});
+
+export const newDistribution = (distribution = {}) => ({
+  id: distribution.id || uuid(),
+  variant: distribution.variant || {},
+  percentage: distribution.percentage || 100,
 });

@@ -37,7 +37,7 @@ const FlagList = () => {
     case  error:
       content = <EmptyMessage message="There were an error while loading the flag list :("/>;
       break;
-    case data.flags.length === 0:
+    case !data || !data.flags || data.flags.length === 0:
       content = <EmptyMessage message="No flags for this project yet"/>;
       break;
     default:
