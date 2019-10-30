@@ -138,7 +138,7 @@ const FlagDetails = props => {
               flag.variants.map((variant, idx) => (
                 <VariantFields
                   key={variant.id}
-                  variant={newVariant(variant)}
+                  variant={variant}
                   isLast={idx === flag.variants.length - 1}
                   onAddVariant={handleAddVariant}
                   onUpdateVariant={handleChange(`variants[${idx}].`)}

@@ -33,7 +33,6 @@ export const FLAG_QUERY = gql`
         }
         segments {
             id
-            key
             name
         }
         operations: __type(name: "Operation") {

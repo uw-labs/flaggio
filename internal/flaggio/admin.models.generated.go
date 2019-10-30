@@ -35,7 +35,6 @@ type NewFlagRule struct {
 }
 
 type NewSegment struct {
-	Key         string  `json:"key"`
 	Name        string  `json:"name"`
 	Description *string `json:"description"`
 }
@@ -45,7 +44,6 @@ type NewSegmentRule struct {
 }
 
 type NewVariant struct {
-	Key            string      `json:"key"`
 	Description    *string     `json:"description"`
 	Value          interface{} `json:"value"`
 	DefaultWhenOn  *bool       `json:"defaultWhenOn"`
@@ -65,7 +63,6 @@ type UpdateFlagRule struct {
 }
 
 type UpdateSegment struct {
-	Key         *string `json:"key"`
 	Name        *string `json:"name"`
 	Description *string `json:"description"`
 }
@@ -75,7 +72,6 @@ type UpdateSegmentRule struct {
 }
 
 type UpdateVariant struct {
-	Key            *string     `json:"key"`
 	Description    *string     `json:"description"`
 	Value          interface{} `json:"value"`
 	DefaultWhenOn  *bool       `json:"defaultWhenOn"`

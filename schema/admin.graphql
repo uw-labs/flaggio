@@ -12,7 +12,6 @@ input UpdateFlag {
 }
 
 input NewVariant {
-    key: String!
     description: String
     value: Any!
     defaultWhenOn: Boolean
@@ -20,7 +19,6 @@ input NewVariant {
 }
 
 input UpdateVariant {
-    key: String
     description: String
     value: Any
     defaultWhenOn: Boolean
@@ -57,13 +55,11 @@ input UpdateSegmentRule {
 }
 
 input NewSegment {
-    key: String!
     name: String!
     description: String
 }
 
 input UpdateSegment {
-    key: String
     name: String
     description: String
 }

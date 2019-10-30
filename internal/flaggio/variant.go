@@ -2,7 +2,6 @@ package flaggio
 
 type Variant struct {
 	ID             string
-	Key            string
 	Description    *string
 	Value          interface{}
 	DefaultWhenOn  bool

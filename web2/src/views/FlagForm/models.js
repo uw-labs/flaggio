@@ -12,8 +12,8 @@ export const newFlag = (flag = {}) => ({
   name: flag.name || '',
   key: flag.key || '',
   description: flag.description || '',
-  variants: flag.variants || [],
-  rules: flag.rules || [],
+  variants: flag.variants ? flag.variants.map(v => newVariant(v)) : [],
+  rules: flag.rules ? flag.rules.map(r => newRule(r)) : [],
 });
 
 export const newVariant = (variant = {}) => ({
@@ -28,8 +28,12 @@ export const newVariant = (variant = {}) => ({
 
 export const newRule = (rule = {}) => ({
   id: rule.id || uuid(),
-  constraints: rule.constraints || [newConstraint()],
-  distributions: rule.distributions || [newDistribution()],
+  constraints: rule.constraints ?
+    rule.constraints.map(c => newConstraint(c)) :
+    [newConstraint()],
+  distributions: rule.distributions ?
+    rule.distributions.map(d => newDistribution(d)) :
+    [newDistribution()],
 });
 
 export const newConstraint = (constraint = {}) => ({

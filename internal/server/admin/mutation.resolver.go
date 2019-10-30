@@ -16,11 +16,18 @@ func (r *mutationResolver) Ping(ctx context.Context) (*bool, error) {
 }
 
 func (r *mutationResolver) CreateFlag(ctx context.Context, input flaggio.NewFlag) (*flaggio.Flag, error) {
-	return r.flagRepo.Create(ctx, input)
+	id, err := r.flagRepo.Create(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	return r.flagRepo.FindByID(ctx, id)
 }
 
 func (r *mutationResolver) UpdateFlag(ctx context.Context, id string, input flaggio.UpdateFlag) (*flaggio.Flag, error) {
-	return r.flagRepo.Update(ctx, id, input)
+	if err := r.flagRepo.Update(ctx, id, input); err != nil {
+		return nil, err
+	}
+	return r.flagRepo.FindByID(ctx, id)
 }
 
 func (r *mutationResolver) DeleteFlag(ctx context.Context, id string) (string, error) {

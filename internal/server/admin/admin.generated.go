@@ -106,7 +106,6 @@ type ComplexityRoot struct {
 		CreatedAt   func(childComplexity int) int
 		Description func(childComplexity int) int
 		ID          func(childComplexity int) int
-		Key         func(childComplexity int) int
 		Name        func(childComplexity int) int
 		Rules       func(childComplexity int) int
 		UpdatedAt   func(childComplexity int) int
@@ -122,7 +121,6 @@ type ComplexityRoot struct {
 		DefaultWhenOn  func(childComplexity int) int
 		Description    func(childComplexity int) int
 		ID             func(childComplexity int) int
-		Key            func(childComplexity int) int
 		Value          func(childComplexity int) int
 	}
 }
@@ -557,13 +555,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Segment.ID(childComplexity), true
 
-	case "Segment.key":
-		if e.complexity.Segment.Key == nil {
-			break
-		}
-
-		return e.complexity.Segment.Key(childComplexity), true
-
 	case "Segment.name":
 		if e.complexity.Segment.Name == nil {
 			break
@@ -626,13 +617,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Variant.ID(childComplexity), true
-
-	case "Variant.key":
-		if e.complexity.Variant.Key == nil {
-			break
-		}
-
-		return e.complexity.Variant.Key(childComplexity), true
 
 	case "Variant.value":
 		if e.complexity.Variant.Value == nil {
@@ -717,7 +701,6 @@ input UpdateFlag {
 }
 
 input NewVariant {
-    key: String!
     description: String
     value: Any!
     defaultWhenOn: Boolean
@@ -725,7 +708,6 @@ input NewVariant {
 }
 
 input UpdateVariant {
-    key: String
     description: String
     value: Any
     defaultWhenOn: Boolean
@@ -762,13 +744,11 @@ input UpdateSegmentRule {
 }
 
 input NewSegment {
-    key: String!
     name: String!
     description: String
 }
 
 input UpdateSegment {
-    key: String
     name: String
     description: String
 }
@@ -817,7 +797,6 @@ type Flag {
 
 type Variant {
     id: ID!
-    key: String!
     description: String
     value: Any!
     defaultWhenOn: Boolean!
@@ -854,7 +833,6 @@ type SegmentRule implements Ruler {
 
 type Segment {
     id: ID!
-    key: String!
     name: String!
     description: String
     rules: [SegmentRule!]!
@@ -3009,43 +2987,6 @@ func (ec *executionContext) _Segment_id(ctx context.Context, field graphql.Colle
 	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Segment_key(ctx context.Context, field graphql.CollectedField, obj *flaggio.Segment) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "Segment",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Key, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
 func (ec *executionContext) _Segment_name(ctx context.Context, field graphql.CollectedField, obj *flaggio.Segment) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
@@ -3331,43 +3272,6 @@ func (ec *executionContext) _Variant_id(ctx context.Context, field graphql.Colle
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalNID2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Variant_key(ctx context.Context, field graphql.CollectedField, obj *flaggio.Variant) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "Variant",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Key, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Variant_description(ctx context.Context, field graphql.CollectedField, obj *flaggio.Variant) (ret graphql.Marshaler) {
@@ -4780,12 +4684,6 @@ func (ec *executionContext) unmarshalInputNewSegment(ctx context.Context, obj in
 
 	for k, v := range asMap {
 		switch k {
-		case "key":
-			var err error
-			it.Key, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
 		case "name":
 			var err error
 			it.Name, err = ec.unmarshalNString2string(ctx, v)
@@ -4828,12 +4726,6 @@ func (ec *executionContext) unmarshalInputNewVariant(ctx context.Context, obj in
 
 	for k, v := range asMap {
 		switch k {
-		case "key":
-			var err error
-			it.Key, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
 		case "description":
 			var err error
 			it.Description, err = ec.unmarshalOString2ᚖstring(ctx, v)
@@ -4930,12 +4822,6 @@ func (ec *executionContext) unmarshalInputUpdateSegment(ctx context.Context, obj
 
 	for k, v := range asMap {
 		switch k {
-		case "key":
-			var err error
-			it.Key, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
 		case "name":
 			var err error
 			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
@@ -4978,12 +4864,6 @@ func (ec *executionContext) unmarshalInputUpdateVariant(ctx context.Context, obj
 
 	for k, v := range asMap {
 		switch k {
-		case "key":
-			var err error
-			it.Key, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
 		case "description":
 			var err error
 			it.Description, err = ec.unmarshalOString2ᚖstring(ctx, v)
@@ -5415,11 +5295,6 @@ func (ec *executionContext) _Segment(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "key":
-			out.Values[i] = ec._Segment_key(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "name":
 			out.Values[i] = ec._Segment_name(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -5492,11 +5367,6 @@ func (ec *executionContext) _Variant(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = graphql.MarshalString("Variant")
 		case "id":
 			out.Values[i] = ec._Variant_id(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "key":
-			out.Values[i] = ec._Variant_key(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}

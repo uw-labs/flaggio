@@ -27,7 +27,6 @@ func (r VariantRepository) Create(ctx context.Context, flagIDHex string, v flagg
 	}
 	vrntModel := &variantModel{
 		ID:             primitive.NewObjectID(),
-		Key:            v.Key,
 		Description:    v.Description,
 		Value:          v.Value,
 		DefaultWhenOn:  defaultWhenOn,
@@ -64,9 +63,6 @@ func (r VariantRepository) Update(ctx context.Context, flagIDHex, idHex string, 
 	}
 	mods := bson.M{
 		"updatedAt": time.Now(),
-	}
-	if v.Key != nil {
-		mods["variants.$.key"] = *v.Key
 	}
 	if v.Description != nil {
 		mods["variants.$.description"] = *v.Description

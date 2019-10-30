@@ -15,7 +15,6 @@ type Flag {
 
 type Variant {
     id: ID!
-    key: String!
     description: String
     value: Any!
     defaultWhenOn: Boolean!
@@ -52,7 +51,6 @@ type SegmentRule implements Ruler {
 
 type Segment {
     id: ID!
-    key: String!
     name: String!
     description: String
     rules: [SegmentRule!]!

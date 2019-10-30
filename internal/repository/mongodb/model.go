@@ -48,7 +48,6 @@ func (f flagModel) asFlag() *flaggio.Flag {
 
 type variantModel struct {
 	ID             primitive.ObjectID `bson:"_id"`
-	Key            string             `bson:"key"`
 	Description    *string            `bson:"description"`
 	Value          interface{}        `bson:"value"`
 	DefaultWhenOn  bool               `bson:"defaultWhenOn"`
@@ -58,7 +57,6 @@ type variantModel struct {
 func (v variantModel) asVariant() *flaggio.Variant {
 	return &flaggio.Variant{
 		ID:             v.ID.Hex(),
-		Key:            v.Key,
 		Description:    v.Description,
 		Value:          v.Value,
 		DefaultWhenOn:  v.DefaultWhenOn,
@@ -139,7 +137,6 @@ func (r segmentRuleModel) asRule() *flaggio.SegmentRule {
 
 type segmentModel struct {
 	ID          primitive.ObjectID `bson:"_id"`
-	Key         string             `bson:"key"`
 	Name        string             `bson:"name"`
 	Description *string            `bson:"description"`
 	Rules       []segmentRuleModel `bson:"rules"`
@@ -154,7 +151,6 @@ func (f segmentModel) asSegment() *flaggio.Segment {
 	}
 	return &flaggio.Segment{
 		ID:          f.ID.Hex(),
-		Key:         f.Key,
 		Name:        f.Name,
 		Description: f.Description,
 		Rules:       rules,

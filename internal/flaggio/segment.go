@@ -11,7 +11,6 @@ var _ operator.Validator = Segment{}
 
 type Segment struct {
 	ID          string
-	Key         string
 	Name        string
 	Description *string
 	Rules       []*SegmentRule

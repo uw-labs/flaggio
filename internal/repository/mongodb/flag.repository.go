@@ -78,7 +78,7 @@ func (r FlagRepository) FindByKey(ctx context.Context, key string) (*flaggio.Fla
 	return f.asFlag(), nil
 }
 
-func (r FlagRepository) Create(ctx context.Context, f flaggio.NewFlag) (*flaggio.Flag, error) {
+func (r FlagRepository) Create(ctx context.Context, f flaggio.NewFlag) (string, error) {
 	id := primitive.NewObjectID()
 	_, err := r.col.InsertOne(ctx, &flagModel{
 		ID:          id,
@@ -92,15 +92,15 @@ func (r FlagRepository) Create(ctx context.Context, f flaggio.NewFlag) (*flaggio
 		Rules:       []flagRuleModel{},
 	})
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	return r.FindByID(ctx, id.Hex())
+	return id.Hex(), nil
 }
 
-func (r FlagRepository) Update(ctx context.Context, idHex string, f flaggio.UpdateFlag) (*flaggio.Flag, error) {
+func (r FlagRepository) Update(ctx context.Context, idHex string, f flaggio.UpdateFlag) error {
 	id, err := primitive.ObjectIDFromHex(idHex)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	mods := bson.M{
 		"updatedAt": time.Now(),
@@ -118,7 +118,7 @@ func (r FlagRepository) Update(ctx context.Context, idHex string, f flaggio.Upda
 		mods["enabled"] = *f.Enabled
 	}
 	if len(mods) == 0 {
-		return nil, errors.ErrNothingToUpdate
+		return errors.ErrNothingToUpdate
 	}
 	filter := bson.M{"_id": id}
 	update := bson.M{
@@ -127,12 +127,12 @@ func (r FlagRepository) Update(ctx context.Context, idHex string, f flaggio.Upda
 	}
 	res, err := r.col.UpdateOne(ctx, filter, update)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if res.ModifiedCount == 0 {
-		return nil, errors.NotFound("flag")
+		return errors.NotFound("flag")
 	}
-	return r.FindByID(ctx, idHex)
+	return nil
 }
 
 func (r FlagRepository) Delete(ctx context.Context, idHex string) error {

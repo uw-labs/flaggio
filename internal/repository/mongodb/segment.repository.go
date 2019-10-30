@@ -83,7 +83,6 @@ func (r SegmentRepository) Create(ctx context.Context, f flaggio.NewSegment) (*f
 	_, err := r.col.InsertOne(ctx, &segmentModel{
 		ID:          id,
 		CreatedAt:   time.Now(),
-		Key:         f.Key,
 		Name:        f.Name,
 		Description: f.Description,
 		Rules:       []segmentRuleModel{},
@@ -101,9 +100,6 @@ func (r SegmentRepository) Update(ctx context.Context, idHex string, f flaggio.U
 	}
 	mods := bson.M{
 		"updatedAt": time.Now(),
-	}
-	if f.Key != nil {
-		mods["key"] = *f.Key
 	}
 	if f.Name != nil {
 		mods["name"] = *f.Name
