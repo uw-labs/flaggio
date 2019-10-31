@@ -4,8 +4,8 @@ import { Redirect, useParams } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import { FlagDetails } from './components';
-import { DELETE_FLAG_QUERY, FLAG_QUERY } from './queries';
-import { newFlag } from './models';
+import { DELETE_FLAG_QUERY, FLAG_QUERY, UPDATE_FLAG_QUERY } from './queries';
+import { formatFlag, newFlag } from './models';
 import { FLAGS_QUERY } from '../FlagList/queries';
 import { reject } from 'lodash';
 
@@ -19,6 +19,7 @@ const FlagForm = () => {
   const { id } = useParams();
   const [toFlagsPage, setToFlagsPage] = React.useState(false);
   const { loading, error, data } = useQuery(FLAG_QUERY, { variables: { id } });
+  const [updateFlag] = useMutation(UPDATE_FLAG_QUERY);
   const [deleteFlag] = useMutation(DELETE_FLAG_QUERY, {
     update(cache, { data: { deleteFlag: id } }) {
       const { flags } = cache.readQuery({ query: FLAGS_QUERY });
@@ -38,6 +39,11 @@ const FlagForm = () => {
   const classes = useStyles();
   if (loading) return <div>"Loading..."</div>;
   if (error) return <div>"Error while loading flag details :("</div>;
+  const handleUpdateFlag = flag => {
+    console.log(flag);
+    updateFlag({ variables: { id: flag.id, input: formatFlag(flag) } })
+      .then(() => setToFlagsPage(true));
+  };
   const handleDeleteFlag = id => {
     deleteFlag({ variables: { id } })
       .then(() => setToFlagsPage(true));
@@ -52,6 +58,7 @@ const FlagForm = () => {
             flag={newFlag(data.flag)}
             operations={data.operations.enumValues.map(v => v.name)}
             segments={data.segments}
+            onUpdateFlag={handleUpdateFlag}
             onDeleteFlag={handleDeleteFlag}
           />
         </Grid>

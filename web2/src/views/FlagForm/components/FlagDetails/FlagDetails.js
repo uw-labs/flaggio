@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const FlagDetails = props => {
-  const { className, flag: flg, operations, segments, onDeleteFlag, ...rest } = props;
+  const { className, flag: flg, operations, segments, onUpdateFlag, onDeleteFlag, ...rest } = props;
   const [flag, setFlag] = useState(flg);
   const [tab, setTab] = React.useState(0);
   const [deleteFlagDlgOpen, setDeleteFlagDlgOpen] = React.useState(false);
@@ -207,16 +207,8 @@ const FlagDetails = props => {
           </Tooltip>
           <div style={{ flexGrow: 1 }}/>
           <Link to="/flags">
-            <Button className={classes.actionButton}>Cancel</Button>
+            <Button className={classes.actionButton}>Go back</Button>
           </Link>
-          <Button
-            color="primary"
-            variant="outlined"
-            className={classes.actionButton}
-            onClick={() => console.log(flag)}
-          >
-            Save
-          </Button>
         </CardActions>
       </form>
     </Card>
@@ -228,6 +220,7 @@ FlagDetails.propTypes = {
   flag: PropTypes.object.isRequired,
   operations: PropTypes.arrayOf(PropTypes.string).isRequired,
   segments: PropTypes.arrayOf(PropTypes.object).isRequired,
+  onUpdateFlag: PropTypes.func.isRequired,
   onDeleteFlag: PropTypes.func.isRequired,
 };
 

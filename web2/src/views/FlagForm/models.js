@@ -48,3 +48,9 @@ export const newDistribution = (distribution = {}) => ({
   variant: distribution.variant || { id: '' },
   percentage: distribution.percentage || 100,
 });
+
+export const formatFlag = (flag) => ({
+  key: flag.key,
+  name: flag.name,
+  description: flag.description || null,
+});

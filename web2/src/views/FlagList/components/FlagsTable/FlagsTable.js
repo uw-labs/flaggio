@@ -123,6 +123,7 @@ const FlagsTable = props => {
 FlagsTable.propTypes = {
   className: PropTypes.string,
   flags: PropTypes.array.isRequired,
+  toggleFlag: PropTypes.func.isRequired,
 };
 
 export default FlagsTable;

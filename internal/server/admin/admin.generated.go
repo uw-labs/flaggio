@@ -5678,7 +5678,7 @@ func (ec *executionContext) unmarshalNAny2ᚕinterface(ctx context.Context, v in
 	var err error
 	res := make([]interface{}, len(vSlice))
 	for i := range vSlice {
-		res[i], err = ec.unmarshalNAny2interface(ctx, vSlice[i])
+		res[i], err = ec.unmarshalOAny2interface(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -5689,7 +5689,7 @@ func (ec *executionContext) unmarshalNAny2ᚕinterface(ctx context.Context, v in
 func (ec *executionContext) marshalNAny2ᚕinterface(ctx context.Context, sel ast.SelectionSet, v []interface{}) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	for i := range v {
-		ret[i] = ec.marshalNAny2interface(ctx, sel, v[i])
+		ret[i] = ec.marshalOAny2interface(ctx, sel, v[i])
 	}
 
 	return ret
