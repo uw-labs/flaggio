@@ -698,20 +698,18 @@ input UpdateFlag {
     name: String
     description: String
     enabled: Boolean
+    defaultVariantWhenOn: ID
+    defaultVariantWhenOff: ID
 }
 
 input NewVariant {
     description: String
     value: Any!
-    defaultWhenOn: Boolean
-    defaultWhenOff: Boolean
 }
 
 input UpdateVariant {
     description: String
     value: Any
-    defaultWhenOn: Boolean
-    defaultWhenOff: Boolean
 }
 
 input NewConstraint {
@@ -4738,18 +4736,6 @@ func (ec *executionContext) unmarshalInputNewVariant(ctx context.Context, obj in
 			if err != nil {
 				return it, err
 			}
-		case "defaultWhenOn":
-			var err error
-			it.DefaultWhenOn, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "defaultWhenOff":
-			var err error
-			it.DefaultWhenOff, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
 		}
 	}
 
@@ -4783,6 +4769,18 @@ func (ec *executionContext) unmarshalInputUpdateFlag(ctx context.Context, obj in
 		case "enabled":
 			var err error
 			it.Enabled, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "defaultVariantWhenOn":
+			var err error
+			it.DefaultVariantWhenOn, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "defaultVariantWhenOff":
+			var err error
+			it.DefaultVariantWhenOff, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4873,18 +4871,6 @@ func (ec *executionContext) unmarshalInputUpdateVariant(ctx context.Context, obj
 		case "value":
 			var err error
 			it.Value, err = ec.unmarshalOAny2interface(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "defaultWhenOn":
-			var err error
-			it.DefaultWhenOn, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "defaultWhenOff":
-			var err error
-			it.DefaultWhenOff, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6513,6 +6499,29 @@ func (ec *executionContext) marshalOFlag2ᚖgithubᚗcomᚋvictorkohlᚋflaggio�
 		return graphql.Null
 	}
 	return ec._Flag(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOID2string(ctx context.Context, v interface{}) (string, error) {
+	return graphql.UnmarshalID(v)
+}
+
+func (ec *executionContext) marshalOID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
+	return graphql.MarshalID(v)
+}
+
+func (ec *executionContext) unmarshalOID2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalOID2string(ctx, v)
+	return &res, err
+}
+
+func (ec *executionContext) marshalOID2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec.marshalOID2string(ctx, sel, *v)
 }
 
 func (ec *executionContext) unmarshalOInt2int(ctx context.Context, v interface{}) (int, error) {

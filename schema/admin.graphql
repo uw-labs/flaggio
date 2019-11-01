@@ -9,20 +9,18 @@ input UpdateFlag {
     name: String
     description: String
     enabled: Boolean
+    defaultVariantWhenOn: ID
+    defaultVariantWhenOff: ID
 }
 
 input NewVariant {
     description: String
     value: Any!
-    defaultWhenOn: Boolean
-    defaultWhenOff: Boolean
 }
 
 input UpdateVariant {
     description: String
     value: Any
-    defaultWhenOn: Boolean
-    defaultWhenOff: Boolean
 }
 
 input NewConstraint {

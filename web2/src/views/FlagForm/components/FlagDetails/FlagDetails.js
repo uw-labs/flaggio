@@ -20,9 +20,19 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { Link } from 'react-router-dom';
 import { reject, set } from 'lodash';
 import DeleteFlagDialog from '../DeleteFlagDialog';
-import { newConstraint, newRule, newVariant } from '../../models';
+import { formatFlag, formatRule, formatVariant, newConstraint, newRule, newVariant } from '../../models';
 import VariantFields from '../VariantFields';
 import RuleFields from '../RuleFields';
+import { useMutation } from '@apollo/react-hooks';
+import {
+  CREATE_FLAG_RULE_QUERY,
+  CREATE_VARIANT_QUERY,
+  DELETE_FLAG_RULE_QUERY,
+  DELETE_VARIANT_QUERY,
+  UPDATE_FLAG_QUERY,
+  UPDATE_FLAG_RULE_QUERY,
+  UPDATE_VARIANT_QUERY,
+} from '../../queries';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -32,16 +42,23 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const FlagDetails = props => {
-  const { className, flag: flg, operations, segments, onUpdateFlag, onDeleteFlag, ...rest } = props;
+  const { className, flag: flg, operations, segments, onSaveFlag, onDeleteFlag, ...rest } = props;
   const [flag, setFlag] = useState(flg);
   const [tab, setTab] = React.useState(0);
   const [deleteFlagDlgOpen, setDeleteFlagDlgOpen] = React.useState(false);
+  const [deletedItems, setDeletedItems] = React.useState([]);
   const classes = useStyles();
 
   const handleAddVariant = () => setFlag({ ...flag, variants: [...flag.variants, newVariant()] });
-  const handleDelVariant = variant => () => setFlag({ ...flag, variants: reject(flag.variants, v => v === variant) });
+  const handleDelVariant = variant => () => {
+    setDeletedItems([...deletedItems, { type: 'variant', id: variant.id, flagId: flag.id }]);
+    setFlag({ ...flag, variants: reject(flag.variants, v => v === variant) });
+  };
   const handleAddRule = () => setFlag({ ...flag, rules: [...flag.rules, newRule()] });
-  const handleDelRule = rule => () => setFlag({ ...flag, rules: reject(flag.rules, r => r === rule) });
+  const handleDelRule = rule => () => {
+    setDeletedItems([...deletedItems, { type: 'rule', id: rule.id, flagId: flag.id }]);
+    setFlag({ ...flag, rules: reject(flag.rules, r => r === rule) });
+  };
   const handleAddConstraint = rule => () => {
     setFlag({
       ...flag, rules: flag.rules.map(r => {
@@ -58,10 +75,14 @@ const FlagDetails = props => {
       }),
     });
   };
-  const handleChange = (prefix = '') => event => {
-    setFlag(set({ ...flag }, `${prefix}${event.target.name}`, event.target.value));
+  const handleChange = (prefix = '', prefix2 = '') => event => {
+    set(flag, `${prefix}__changed`, true);
+    set(flag, `${prefix + prefix2}__changed`, true);
+    setFlag(
+      set({ ...flag }, `${prefix + prefix2}${event.target.name}`, event.target.value),
+    );
   };
-  const handleChange2Deep = (prefix = '') => (prefix2 = '') => handleChange(prefix + prefix2);
+  const handleChange2Deep = (prefix = '') => (prefix2 = '') => handleChange(prefix, prefix2);
 
   return (
     <Card
@@ -207,8 +228,16 @@ const FlagDetails = props => {
           </Tooltip>
           <div style={{ flexGrow: 1 }}/>
           <Link to="/flags">
-            <Button className={classes.actionButton}>Go back</Button>
+            <Button className={classes.actionButton}>Cancel</Button>
           </Link>
+          <Button
+            color="primary"
+            variant="outlined"
+            className={classes.actionButton}
+            onClick={() => onSaveFlag(flag, deletedItems)}
+          >
+            Save
+          </Button>
         </CardActions>
       </form>
     </Card>
@@ -220,7 +249,7 @@ FlagDetails.propTypes = {
   flag: PropTypes.object.isRequired,
   operations: PropTypes.arrayOf(PropTypes.string).isRequired,
   segments: PropTypes.arrayOf(PropTypes.object).isRequired,
-  onUpdateFlag: PropTypes.func.isRequired,
+  onSaveFlag: PropTypes.func.isRequired,
   onDeleteFlag: PropTypes.func.isRequired,
 };
 
