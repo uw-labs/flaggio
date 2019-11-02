@@ -1,4 +1,5 @@
 import uuid from 'uuid/v1';
+import { isArray } from 'lodash';
 import { Operations, VariantType } from './copy';
 
 export const OperationTypes = Object.keys(Operations)
@@ -13,7 +14,9 @@ export const newFlag = (flag = {}) => ({
   name: flag.name || '',
   key: flag.key || '',
   description: flag.description || '',
-  variants: flag.variants ? flag.variants.map(v => newVariant(v)) : [],
+  variants: isArray(flag.variants) && flag.variants.length > 0 ?
+    flag.variants.map(v => newVariant(v)) :
+    [newVariant()],
   rules: flag.rules ? flag.rules.map(r => newRule(r)) : [],
   defaultVariantWhenOn: flag.defaultVariantWhenOn,
   defaultVariantWhenOff: flag.defaultVariantWhenOff,
@@ -89,6 +92,7 @@ const cast = (value, type) => {
       return Boolean(value);
     case VariantTypes.NUMBER:
       return Number(value);
+    default:
+      return value;
   }
-  return value;
 };

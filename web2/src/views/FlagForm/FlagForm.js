@@ -49,7 +49,7 @@ const FlagForm = () => {
     if (flag.__changed) {
       await updateFlag({ variables: { id: flag.id, input: formatFlag(flag) } });
     }
-    //TODO: fix scenario where rule references a new variant
+    // TODO: fix scenario where rule references a new variant
     await Promise.all([
       ...flag.variants.map(variant => {
         const variables = {
@@ -63,6 +63,7 @@ const FlagForm = () => {
         if (variant.__changed) {
           return updateVariant({ variables });
         }
+        return null;
       }),
       ...flag.rules.map(rule => {
         const variables = {
@@ -76,6 +77,7 @@ const FlagForm = () => {
         if (rule.__changed) {
           return updateRule({ variables });
         }
+        return null;
       }),
       ...deletedItems.map(item => {
         switch (item.type) {
@@ -83,6 +85,8 @@ const FlagForm = () => {
             return deleteVariant({ variables: item });
           case 'rule':
             return deleteRule({ variables: item });
+          default:
+            return null;
         }
       }),
     ]);

@@ -18,25 +18,15 @@ type VariantRepository struct {
 }
 
 func (r VariantRepository) Create(ctx context.Context, flagIDHex string, v flaggio.NewVariant) (string, error) {
-	var defaultWhenOn, defaultWhenOff bool
-	if v.DefaultWhenOn != nil {
-		defaultWhenOn = *v.DefaultWhenOn
-	}
-	if v.DefaultWhenOff != nil {
-		defaultWhenOff = *v.DefaultWhenOff
-	}
 	vrntModel := &variantModel{
-		ID:             primitive.NewObjectID(),
-		Description:    v.Description,
-		Value:          v.Value,
-		DefaultWhenOn:  defaultWhenOn,
-		DefaultWhenOff: defaultWhenOff,
+		ID:          primitive.NewObjectID(),
+		Description: v.Description,
+		Value:       v.Value,
 	}
 	flagID, err := primitive.ObjectIDFromHex(flagIDHex)
 	if err != nil {
 		return "", err
 	}
-	// TODO: check if passing flag id is needed, add unique indexes on all _id fields
 	filter := bson.M{"_id": flagID}
 	res, err := r.flagRepo.col.UpdateOne(ctx, filter, bson.M{
 		"$push": bson.M{"variants": vrntModel},
@@ -70,13 +60,6 @@ func (r VariantRepository) Update(ctx context.Context, flagIDHex, idHex string, 
 	if v.Value != nil {
 		mods["variants.$.value"] = v.Value
 	}
-	if v.DefaultWhenOn != nil {
-		mods["variants.$.defaultWhenOn"] = *v.DefaultWhenOn
-	}
-	if v.DefaultWhenOff != nil {
-		mods["variants.$.defaultWhenOff"] = *v.DefaultWhenOff
-	}
-	// TODO: inc flag version
 	res, err := r.flagRepo.col.UpdateOne(
 		ctx,
 		bson.M{"_id": flagID, "variants._id": id},

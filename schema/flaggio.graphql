@@ -9,6 +9,8 @@ type Flag {
     enabled: Boolean!
     variants: [Variant!]!
     rules: [FlagRule!]!
+    defaultVariantWhenOn: Variant
+    defaultVariantWhenOff: Variant
     createdAt: Time!
     updatedAt: Time
 }
@@ -17,8 +19,6 @@ type Variant {
     id: ID!
     description: String
     value: Any!
-    defaultWhenOn: Boolean!
-    defaultWhenOff: Boolean!
 }
 
 type Constraint {

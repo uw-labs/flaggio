@@ -8,16 +8,18 @@ import (
 )
 
 type flagModel struct {
-	ID          primitive.ObjectID `bson:"_id"`
-	Key         string             `bson:"key"`
-	Name        string             `bson:"name"`
-	Description *string            `bson:"description"`
-	Enabled     bool               `bson:"enabled"`
-	Version     int                `bson:"version"`
-	Variants    []variantModel     `bson:"variants"`
-	Rules       []flagRuleModel    `bson:"rules"`
-	CreatedAt   time.Time          `bson:"createdAt"`
-	UpdatedAt   *time.Time         `bson:"updatedAt"`
+	ID                    primitive.ObjectID `bson:"_id"`
+	Key                   string             `bson:"key"`
+	Name                  string             `bson:"name"`
+	Description           *string            `bson:"description"`
+	Enabled               bool               `bson:"enabled"`
+	Version               int                `bson:"version"`
+	Variants              []variantModel     `bson:"variants"`
+	Rules                 []flagRuleModel    `bson:"rules"`
+	DefaultVariantWhenOn  primitive.ObjectID `bson:"defaultVariantWhenOn"`
+	DefaultVariantWhenOff primitive.ObjectID `bson:"defaultVariantWhenOff"`
+	CreatedAt             time.Time          `bson:"createdAt"`
+	UpdatedAt             *time.Time         `bson:"updatedAt"`
 }
 
 func (f flagModel) asFlag() *flaggio.Flag {
@@ -33,34 +35,32 @@ func (f flagModel) asFlag() *flaggio.Flag {
 		rules[idx] = rl.asRule(variantsMap)
 	}
 	return &flaggio.Flag{
-		ID:          f.ID.Hex(),
-		Key:         f.Key,
-		Name:        f.Name,
-		Description: f.Description,
-		Enabled:     f.Enabled,
-		Version:     f.Version,
-		Variants:    variants,
-		Rules:       rules,
-		CreatedAt:   f.CreatedAt,
-		UpdatedAt:   f.UpdatedAt,
+		ID:                    f.ID.Hex(),
+		Key:                   f.Key,
+		Name:                  f.Name,
+		Description:           f.Description,
+		Enabled:               f.Enabled,
+		Version:               f.Version,
+		Variants:              variants,
+		Rules:                 rules,
+		DefaultVariantWhenOn:  variantsMap[f.DefaultVariantWhenOn.Hex()],
+		DefaultVariantWhenOff: variantsMap[f.DefaultVariantWhenOff.Hex()],
+		CreatedAt:             f.CreatedAt,
+		UpdatedAt:             f.UpdatedAt,
 	}
 }
 
 type variantModel struct {
-	ID             primitive.ObjectID `bson:"_id"`
-	Description    *string            `bson:"description"`
-	Value          interface{}        `bson:"value"`
-	DefaultWhenOn  bool               `bson:"defaultWhenOn"`
-	DefaultWhenOff bool               `bson:"defaultWhenOff"`
+	ID          primitive.ObjectID `bson:"_id"`
+	Description *string            `bson:"description"`
+	Value       interface{}        `bson:"value"`
 }
 
 func (v variantModel) asVariant() *flaggio.Variant {
 	return &flaggio.Variant{
-		ID:             v.ID.Hex(),
-		Description:    v.Description,
-		Value:          v.Value,
-		DefaultWhenOn:  v.DefaultWhenOn,
-		DefaultWhenOff: v.DefaultWhenOff,
+		ID:          v.ID.Hex(),
+		Description: v.Description,
+		Value:       v.Value,
 	}
 }
 

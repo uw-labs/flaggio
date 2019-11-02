@@ -20,19 +20,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { Link } from 'react-router-dom';
 import { reject, set } from 'lodash';
 import DeleteFlagDialog from '../DeleteFlagDialog';
-import { formatFlag, formatRule, formatVariant, newConstraint, newRule, newVariant } from '../../models';
+import { newConstraint, newRule, newVariant } from '../../models';
 import VariantFields from '../VariantFields';
 import RuleFields from '../RuleFields';
-import { useMutation } from '@apollo/react-hooks';
-import {
-  CREATE_FLAG_RULE_QUERY,
-  CREATE_VARIANT_QUERY,
-  DELETE_FLAG_RULE_QUERY,
-  DELETE_VARIANT_QUERY,
-  UPDATE_FLAG_QUERY,
-  UPDATE_FLAG_RULE_QUERY,
-  UPDATE_VARIANT_QUERY,
-} from '../../queries';
 
 const useStyles = makeStyles(theme => ({
   root: {},

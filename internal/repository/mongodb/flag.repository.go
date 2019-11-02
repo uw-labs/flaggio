@@ -117,6 +117,20 @@ func (r FlagRepository) Update(ctx context.Context, idHex string, f flaggio.Upda
 	if f.Enabled != nil {
 		mods["enabled"] = *f.Enabled
 	}
+	if f.DefaultVariantWhenOn != nil {
+		oid, err := primitive.ObjectIDFromHex(*f.DefaultVariantWhenOn)
+		if err != nil {
+			return err
+		}
+		mods["defaultVariantWhenOn"] = oid
+	}
+	if f.DefaultVariantWhenOff != nil {
+		oid, err := primitive.ObjectIDFromHex(*f.DefaultVariantWhenOff)
+		if err != nil {
+			return err
+		}
+		mods["defaultVariantWhenOff"] = oid
+	}
 	if len(mods) == 0 {
 		return errors.ErrNothingToUpdate
 	}

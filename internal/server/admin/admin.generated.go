@@ -58,15 +58,17 @@ type ComplexityRoot struct {
 	}
 
 	Flag struct {
-		CreatedAt   func(childComplexity int) int
-		Description func(childComplexity int) int
-		Enabled     func(childComplexity int) int
-		ID          func(childComplexity int) int
-		Key         func(childComplexity int) int
-		Name        func(childComplexity int) int
-		Rules       func(childComplexity int) int
-		UpdatedAt   func(childComplexity int) int
-		Variants    func(childComplexity int) int
+		CreatedAt             func(childComplexity int) int
+		DefaultVariantWhenOff func(childComplexity int) int
+		DefaultVariantWhenOn  func(childComplexity int) int
+		Description           func(childComplexity int) int
+		Enabled               func(childComplexity int) int
+		ID                    func(childComplexity int) int
+		Key                   func(childComplexity int) int
+		Name                  func(childComplexity int) int
+		Rules                 func(childComplexity int) int
+		UpdatedAt             func(childComplexity int) int
+		Variants              func(childComplexity int) int
 	}
 
 	FlagRule struct {
@@ -117,11 +119,9 @@ type ComplexityRoot struct {
 	}
 
 	Variant struct {
-		DefaultWhenOff func(childComplexity int) int
-		DefaultWhenOn  func(childComplexity int) int
-		Description    func(childComplexity int) int
-		ID             func(childComplexity int) int
-		Value          func(childComplexity int) int
+		Description func(childComplexity int) int
+		ID          func(childComplexity int) int
+		Value       func(childComplexity int) int
 	}
 }
 
@@ -214,6 +214,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Flag.CreatedAt(childComplexity), true
+
+	case "Flag.defaultVariantWhenOff":
+		if e.complexity.Flag.DefaultVariantWhenOff == nil {
+			break
+		}
+
+		return e.complexity.Flag.DefaultVariantWhenOff(childComplexity), true
+
+	case "Flag.defaultVariantWhenOn":
+		if e.complexity.Flag.DefaultVariantWhenOn == nil {
+			break
+		}
+
+		return e.complexity.Flag.DefaultVariantWhenOn(childComplexity), true
 
 	case "Flag.description":
 		if e.complexity.Flag.Description == nil {
@@ -590,20 +604,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.SegmentRule.ID(childComplexity), true
 
-	case "Variant.defaultWhenOff":
-		if e.complexity.Variant.DefaultWhenOff == nil {
-			break
-		}
-
-		return e.complexity.Variant.DefaultWhenOff(childComplexity), true
-
-	case "Variant.defaultWhenOn":
-		if e.complexity.Variant.DefaultWhenOn == nil {
-			break
-		}
-
-		return e.complexity.Variant.DefaultWhenOn(childComplexity), true
-
 	case "Variant.description":
 		if e.complexity.Variant.Description == nil {
 			break
@@ -789,6 +789,8 @@ type Flag {
     enabled: Boolean!
     variants: [Variant!]!
     rules: [FlagRule!]!
+    defaultVariantWhenOn: Variant
+    defaultVariantWhenOff: Variant
     createdAt: Time!
     updatedAt: Time
 }
@@ -797,8 +799,6 @@ type Variant {
     id: ID!
     description: String
     value: Any!
-    defaultWhenOn: Boolean!
-    defaultWhenOff: Boolean!
 }
 
 type Constraint {
@@ -1797,6 +1797,74 @@ func (ec *executionContext) _Flag_rules(ctx context.Context, field graphql.Colle
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalNFlagRule2ᚕᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐFlagRule(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Flag_defaultVariantWhenOn(ctx context.Context, field graphql.CollectedField, obj *flaggio.Flag) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Flag",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DefaultVariantWhenOn, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*flaggio.Variant)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOVariant2ᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Flag_defaultVariantWhenOff(ctx context.Context, field graphql.CollectedField, obj *flaggio.Flag) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Flag",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DefaultVariantWhenOff, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*flaggio.Variant)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOVariant2ᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Flag_createdAt(ctx context.Context, field graphql.CollectedField, obj *flaggio.Flag) (ret graphql.Marshaler) {
@@ -3341,80 +3409,6 @@ func (ec *executionContext) _Variant_value(ctx context.Context, field graphql.Co
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalNAny2interface(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Variant_defaultWhenOn(ctx context.Context, field graphql.CollectedField, obj *flaggio.Variant) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "Variant",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.DefaultWhenOn, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Variant_defaultWhenOff(ctx context.Context, field graphql.CollectedField, obj *flaggio.Variant) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "Variant",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.DefaultWhenOff, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
@@ -5022,6 +5016,10 @@ func (ec *executionContext) _Flag(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "defaultVariantWhenOn":
+			out.Values[i] = ec._Flag_defaultVariantWhenOn(ctx, field, obj)
+		case "defaultVariantWhenOff":
+			out.Values[i] = ec._Flag_defaultVariantWhenOff(ctx, field, obj)
 		case "createdAt":
 			out.Values[i] = ec._Flag_createdAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -5363,16 +5361,6 @@ func (ec *executionContext) _Variant(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "defaultWhenOn":
-			out.Values[i] = ec._Variant_defaultWhenOn(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "defaultWhenOff":
-			out.Values[i] = ec._Variant_defaultWhenOff(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -5664,7 +5652,7 @@ func (ec *executionContext) unmarshalNAny2ᚕinterface(ctx context.Context, v in
 	var err error
 	res := make([]interface{}, len(vSlice))
 	for i := range vSlice {
-		res[i], err = ec.unmarshalOAny2interface(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNAny2interface(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -5675,7 +5663,7 @@ func (ec *executionContext) unmarshalNAny2ᚕinterface(ctx context.Context, v in
 func (ec *executionContext) marshalNAny2ᚕinterface(ctx context.Context, sel ast.SelectionSet, v []interface{}) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	for i := range v {
-		ret[i] = ec.marshalOAny2interface(ctx, sel, v[i])
+		ret[i] = ec.marshalNAny2interface(ctx, sel, v[i])
 	}
 
 	return ret
@@ -6602,6 +6590,17 @@ func (ec *executionContext) marshalOTime2ᚖtimeᚐTime(ctx context.Context, sel
 		return graphql.Null
 	}
 	return ec.marshalOTime2timeᚐTime(ctx, sel, *v)
+}
+
+func (ec *executionContext) marshalOVariant2githubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx context.Context, sel ast.SelectionSet, v flaggio.Variant) graphql.Marshaler {
+	return ec._Variant(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOVariant2ᚖgithubᚗcomᚋvictorkohlᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx context.Context, sel ast.SelectionSet, v *flaggio.Variant) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Variant(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValue(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {

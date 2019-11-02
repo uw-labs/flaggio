@@ -27,8 +27,12 @@ export const FLAG_QUERY = gql`
                 id
                 description
                 value
-                defaultWhenOn
-                defaultWhenOff
+            }
+            defaultVariantWhenOn {
+                id
+            }
+            defaultVariantWhenOff {
+                id
             }
         }
         segments {

@@ -10,16 +10,18 @@ var _ Identifier = Flag{}
 var _ Evaluator = Flag{}
 
 type Flag struct {
-	ID          string
-	Key         string
-	Name        string
-	Description *string
-	Enabled     bool
-	Version     int
-	Variants    []*Variant
-	Rules       []*FlagRule
-	CreatedAt   time.Time
-	UpdatedAt   *time.Time
+	ID                    string
+	Key                   string
+	Name                  string
+	Description           *string
+	Enabled               bool
+	Version               int
+	Variants              []*Variant
+	Rules                 []*FlagRule
+	DefaultVariantWhenOn  *Variant
+	DefaultVariantWhenOff *Variant
+	CreatedAt             time.Time
+	UpdatedAt             *time.Time
 }
 
 func (f Flag) GetID() string {
@@ -30,7 +32,7 @@ func (f Flag) Evaluate(usrContext map[string]interface{}) (EvalResult, error) {
 	var answer interface{}
 	var next []Evaluator
 	if f.Enabled {
-		vrnt := VariantList(f.Variants).DefaultWhenOn()
+		vrnt := f.DefaultVariantWhenOn
 		if vrnt == nil {
 			return EvalResult{}, errors.ErrNoDefaultVariant
 		}
@@ -39,7 +41,7 @@ func (f Flag) Evaluate(usrContext map[string]interface{}) (EvalResult, error) {
 			next = append(next, rl)
 		}
 	} else {
-		vrnt := VariantList(f.Variants).DefaultWhenOff()
+		vrnt := f.DefaultVariantWhenOff
 		if vrnt == nil {
 			return EvalResult{}, errors.ErrNoDefaultVariant
 		}
