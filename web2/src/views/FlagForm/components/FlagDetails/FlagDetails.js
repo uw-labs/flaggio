@@ -10,7 +10,11 @@ import {
   CardContent,
   CardHeader,
   Divider,
+  FormControl,
   Grid,
+  InputLabel,
+  MenuItem,
+  Select,
   Tab,
   Tabs,
   TextField,
@@ -20,12 +24,18 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { Link } from 'react-router-dom';
 import { reject, set } from 'lodash';
 import DeleteFlagDialog from '../DeleteFlagDialog';
-import { newConstraint, newRule, newVariant } from '../../models';
+import { newConstraint, newRule, newVariant, VariantTypes } from '../../models';
 import VariantFields from '../VariantFields';
 import RuleFields from '../RuleFields';
+import { BooleanType } from '../../copy';
 
 const useStyles = makeStyles(theme => ({
   root: {},
+  formControl: {
+    fullWidth: true,
+    display: 'flex',
+    wrap: 'nowrap',
+  },
   actionButton: {
     margin: theme.spacing(1),
   },
@@ -140,7 +150,7 @@ const FlagDetails = props => {
             </Grid>
           </CardContent>
           <CardHeader
-            subheader="Possible values that this flag can return"
+            subheader="Possible values this flag can return"
             title="Variants"
           />
           <Divider/>
@@ -157,6 +167,46 @@ const FlagDetails = props => {
                 />
               ))
             }
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <FormControl
+                  className={classes.formControl}
+                  margin="dense"
+                >
+                  <InputLabel>If no rules are matched, return</InputLabel>
+                  <Select
+                    value={flag.defaultVariantWhenOn.id}
+                    name="defaultVariantWhenOn.id"
+                    onChange={handleChange()}
+                  >
+                    {flag.variants.map(variant => (
+                      <MenuItem key={variant.id} value={variant.id}>
+                        {typeof variant.value === VariantTypes.BOOLEAN ? BooleanType[variant.value] : variant.value}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={6}>
+                <FormControl
+                  className={classes.formControl}
+                  margin="dense"
+                >
+                  <InputLabel>If flag is disabled, return</InputLabel>
+                  <Select
+                    value={flag.defaultVariantWhenOff.id}
+                    name="defaultVariantWhenOff.id"
+                    onChange={handleChange()}
+                  >
+                    {flag.variants.map(variant => (
+                      <MenuItem key={variant.id} value={variant.id}>
+                        {typeof variant.value === VariantTypes.BOOLEAN ? BooleanType[variant.value] : variant.value}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+            </Grid>
           </CardContent>
         </Box>
 

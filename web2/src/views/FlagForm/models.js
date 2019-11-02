@@ -18,8 +18,8 @@ export const newFlag = (flag = {}) => ({
     flag.variants.map(v => newVariant(v)) :
     [newVariant()],
   rules: flag.rules ? flag.rules.map(r => newRule(r)) : [],
-  defaultVariantWhenOn: flag.defaultVariantWhenOn,
-  defaultVariantWhenOff: flag.defaultVariantWhenOff,
+  defaultVariantWhenOn: flag.defaultVariantWhenOn || { id: '' },
+  defaultVariantWhenOff: flag.defaultVariantWhenOff || { id: '' },
 });
 
 export const newVariant = (variant = {}) => ({
@@ -57,10 +57,13 @@ export const newDistribution = (distribution = {}) => ({
   percentage: distribution.percentage || 100,
 });
 
+// TODO: fix referencing for new variants
 export const formatFlag = flag => ({
   key: flag.key,
   name: flag.name,
   description: flag.description,
+  defaultVariantWhenOn: flag.defaultVariantWhenOn.id,
+  defaultVariantWhenOff: flag.defaultVariantWhenOff.id,
 });
 
 export const formatVariant = variant => ({
