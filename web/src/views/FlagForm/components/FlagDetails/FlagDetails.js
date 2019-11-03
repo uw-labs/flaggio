@@ -28,6 +28,7 @@ import { newConstraint, newRule, newVariant, VariantTypes } from '../../models';
 import VariantFields from '../VariantFields';
 import RuleFields from '../RuleFields';
 import { BooleanType } from '../../copy';
+import slugify from '@sindresorhus/slugify';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -132,7 +133,7 @@ const FlagDetails = props => {
                   name="key"
                   onChange={handleChange()}
                   required
-                  value={flag.key}
+                  value={flag.key || slugify(flag.name, { separator: '.' })}
                   variant="outlined"
                 />
               </Grid>
