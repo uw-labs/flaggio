@@ -71,7 +71,7 @@ const RuleFields = props => {
               value={rule.distributions[0].variant.id}
               name="distributions[0].variant.id"
               onChange={onUpdateRule}
-              labelWidth="50"
+              labelWidth={50}
             >
               {variants.map(variant => (
                 <MenuItem key={variant.id} value={variant.id}>

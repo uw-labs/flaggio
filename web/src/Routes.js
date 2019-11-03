@@ -22,6 +22,12 @@ const Routes = () => {
         component={FlagFormView}
         exact
         layout={MainLayout}
+        path="/flags/new"
+      />
+      <RouteWithLayout
+        component={FlagFormView}
+        exact
+        layout={MainLayout}
         path="/flags/:id"
       />
       <RouteWithLayout

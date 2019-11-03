@@ -57,13 +57,12 @@ export const newDistribution = (distribution = {}) => ({
   percentage: distribution.percentage || 100,
 });
 
-// TODO: fix referencing for new variants
-export const formatFlag = flag => ({
+export const formatFlag = (flag, variantsRef) => ({
   key: flag.key,
   name: flag.name,
   description: flag.description,
-  defaultVariantWhenOn: flag.defaultVariantWhenOn.id,
-  defaultVariantWhenOff: flag.defaultVariantWhenOff.id,
+  defaultVariantWhenOn: variantsRef[flag.defaultVariantWhenOn.id] || flag.defaultVariantWhenOn.id,
+  defaultVariantWhenOff: variantsRef[flag.defaultVariantWhenOff.id] || flag.defaultVariantWhenOff.id,
 });
 
 export const formatVariant = variant => ({
@@ -71,9 +70,9 @@ export const formatVariant = variant => ({
   value: cast(variant.value, variant.type),
 });
 
-export const formatRule = rule => ({
+export const formatRule = (rule, variantsRef) => ({
   constraints: rule.constraints.map(c => formatConstraint(c)),
-  distributions: rule.distributions.map(d => formatDistribution(d)),
+  distributions: rule.distributions.map(d => formatDistribution(d, variantsRef)),
 });
 
 export const formatConstraint = constraint => ({
@@ -82,8 +81,8 @@ export const formatConstraint = constraint => ({
   values: constraint.values,
 });
 
-export const formatDistribution = distribution => ({
-  variantId: distribution.variant.id,
+export const formatDistribution = (distribution, variantsRef) => ({
+  variantId: variantsRef[distribution.variant.id] || distribution.variant.id,
   percentage: distribution.percentage,
 });
 

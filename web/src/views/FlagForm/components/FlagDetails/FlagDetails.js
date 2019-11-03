@@ -180,7 +180,7 @@ const FlagDetails = props => {
                     value={flag.defaultVariantWhenOn.id}
                     name="defaultVariantWhenOn.id"
                     onChange={handleChange()}
-                    labelWidth="190"
+                    labelWidth={190}
                   >
                     {flag.variants.map(variant => (
                       <MenuItem key={variant.id} value={variant.id}>
@@ -202,7 +202,7 @@ const FlagDetails = props => {
                     value={flag.defaultVariantWhenOff.id}
                     name="defaultVariantWhenOff.id"
                     onChange={handleChange()}
-                    labelWidth="155"
+                    labelWidth={155}
                   >
                     {flag.variants.map(variant => (
                       <MenuItem key={variant.id} value={variant.id}>
@@ -258,20 +258,24 @@ const FlagDetails = props => {
 
         <Divider/>
         <CardActions>
-          <DeleteFlagDialog
-            flag={flag}
-            open={deleteFlagDlgOpen}
-            onConfirm={() => onDeleteFlag(flag.id)}
-            onClose={() => setDeleteFlagDlgOpen(false)}
-          />
-          <Tooltip title="Delete flag" placement="top">
-            <Button
-              color="secondary"
-              onClick={() => setDeleteFlagDlgOpen(true)}
-            >
-              <DeleteIcon/>
-            </Button>
-          </Tooltip>
+          {!flag.__new && (
+            <>
+              <DeleteFlagDialog
+                flag={flag}
+                open={deleteFlagDlgOpen}
+                onConfirm={() => onDeleteFlag(flag.id)}
+                onClose={() => setDeleteFlagDlgOpen(false)}
+              />
+              <Tooltip title="Delete flag" placement="top">
+                <Button
+                  color="secondary"
+                  onClick={() => setDeleteFlagDlgOpen(true)}
+                >
+                  <DeleteIcon/>
+                </Button>
+              </Tooltip>
+            </>
+          )}
           <div style={{ flexGrow: 1 }}/>
           <Link to="/flags">
             <Button className={classes.actionButton}>Cancel</Button>

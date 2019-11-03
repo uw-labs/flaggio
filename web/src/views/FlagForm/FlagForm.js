@@ -5,12 +5,14 @@ import { Grid } from '@material-ui/core';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import { FlagDetails } from './components';
 import {
+  CREATE_FLAG_QUERY,
   CREATE_FLAG_RULE_QUERY,
   CREATE_VARIANT_QUERY,
   DELETE_FLAG_QUERY,
   DELETE_FLAG_RULE_QUERY,
   DELETE_VARIANT_QUERY,
   FLAG_QUERY,
+  OPERATIONS_SEGMENTS_QUERY,
   UPDATE_FLAG_QUERY,
   UPDATE_FLAG_RULE_QUERY,
   UPDATE_VARIANT_QUERY,
@@ -28,7 +30,8 @@ const useStyles = makeStyles(theme => ({
 const FlagForm = () => {
   const { id } = useParams();
   const [toFlagsPage, setToFlagsPage] = React.useState(false);
-  const { loading, error, data } = useQuery(FLAG_QUERY, { variables: { id } });
+  const { loading, error, data = {}, refetch } = useQuery(FLAG_QUERY, { variables: { id }, skip: id === undefined });
+  const { loading: loadingOps, error: errorOps, data: dataOps } = useQuery(OPERATIONS_SEGMENTS_QUERY);
   const [deleteFlag] = useMutation(DELETE_FLAG_QUERY, {
     update(cache, { data: { deleteFlag: id } }) {
       const { flags } = cache.readQuery({ query: FLAGS_QUERY });
@@ -38,6 +41,7 @@ const FlagForm = () => {
       });
     },
   });
+  const [createFlag] = useMutation(CREATE_FLAG_QUERY);
   const [updateFlag] = useMutation(UPDATE_FLAG_QUERY);
   const [createVariant] = useMutation(CREATE_VARIANT_QUERY);
   const [updateVariant] = useMutation(UPDATE_VARIANT_QUERY);
@@ -46,30 +50,43 @@ const FlagForm = () => {
   const [updateRule] = useMutation(UPDATE_FLAG_RULE_QUERY);
   const [deleteRule] = useMutation(DELETE_FLAG_RULE_QUERY);
   const handleSaveFlag = async (flag, deletedItems) => {
-    if (flag.__changed) {
-      await updateFlag({ variables: { id: flag.id, input: formatFlag(flag) } });
+    const variantsRef = {};
+    if (flag.__new) {
+      const { key, name } = flag;
+      await createFlag({
+        variables: { input: { key, name } },
+        update(cache, { data: { createFlag: { id } } }) {
+          flag.id = id;
+        },
+      });
     }
-    // TODO: fix scenario where rule references a new variant
-    await Promise.all([
-      ...flag.variants.map(variant => {
+    await Promise.all(
+      flag.variants.map(variant => {
         const variables = {
           id: variant.id,
           flagId: flag.id,
           input: formatVariant(variant),
         };
         if (variant.__new) {
-          return createVariant({ variables });
+          return createVariant({
+            variables,
+            update(cache, { data: { createVariant: id } }) {
+              variantsRef[variant.id] = id;
+            },
+          });
         }
         if (variant.__changed) {
           return updateVariant({ variables });
         }
         return null;
       }),
+    );
+    await Promise.all([
       ...flag.rules.map(rule => {
         const variables = {
           id: rule.id,
           flagId: flag.id,
-          input: formatRule(rule),
+          input: formatRule(rule, variantsRef),
         };
         if (rule.__new) {
           return createRule({ variables });
@@ -90,7 +107,17 @@ const FlagForm = () => {
         }
       }),
     ]);
+    if (flag.__changed) {
+      await updateFlag({ variables: { id: flag.id, input: formatFlag(flag, variantsRef) } });
+    }
+    if (!flag.__new) {
+      await refetch();
+    }
     setToFlagsPage(true);
+  };
+  const handleDeleteFlag = id => {
+    deleteFlag({ variables: { id } })
+      .then(() => setToFlagsPage(true));
   };
   useEffect(() => {
     const handleEsc = (event) => {
@@ -100,12 +127,8 @@ const FlagForm = () => {
     return () => window.removeEventListener('keydown', handleEsc);
   }, []);
   const classes = useStyles();
-  if (loading) return <div>"Loading..."</div>;
-  if (error) return <div>"Error while loading flag details :("</div>;
-  const handleDeleteFlag = id => {
-    deleteFlag({ variables: { id } })
-      .then(() => setToFlagsPage(true));
-  };
+  if (loading || loadingOps) return <div>"Loading..."</div>;
+  if (error || errorOps) return <div>"Error while loading flag details :("</div>;
 
   return (
     <div className={classes.root}>
@@ -114,8 +137,8 @@ const FlagForm = () => {
         <Grid item xs={12}>
           <FlagDetails
             flag={newFlag(data.flag)}
-            operations={data.operations.enumValues.map(v => v.name)}
-            segments={data.segments}
+            operations={dataOps.operations.enumValues.map(v => v.name)}
+            segments={dataOps.segments}
             onSaveFlag={handleSaveFlag}
             onDeleteFlag={handleDeleteFlag}
           />

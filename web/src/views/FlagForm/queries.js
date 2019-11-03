@@ -1,7 +1,7 @@
 import { gql } from 'apollo-boost';
 
 export const FLAG_QUERY = gql`
-    query getFlag($id: ID!){
+    query getFlag($id: ID!) {
         flag(id: $id) {
             id
             key
@@ -35,20 +35,25 @@ export const FLAG_QUERY = gql`
                 id
             }
         }
-        segments {
-            id
-            name
-        }
+    }
+`;
+
+export const OPERATIONS_SEGMENTS_QUERY = gql`
+    query operationsAndSegments {
         operations: __type(name: "Operation") {
             enumValues {
                 name
             }
         }
+        segments {
+            id
+            name
+        }
     }
 `;
 
 export const CREATE_FLAG_QUERY = gql`
-    mutation createFlag($input: NewFlag!){
+    mutation createFlag($input: NewFlag!) {
         createFlag(input: $input) {
             id
         }
@@ -68,7 +73,7 @@ export const UPDATE_FLAG_QUERY = gql`
 `;
 
 export const DELETE_FLAG_QUERY = gql`
-    mutation deleteFlag($id: ID!){
+    mutation deleteFlag($id: ID!) {
         deleteFlag(id: $id)
     }
 `;
