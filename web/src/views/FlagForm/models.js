@@ -1,6 +1,7 @@
 import uuid from 'uuid/v1';
 import { isArray } from 'lodash';
 import { Operations, VariantType } from './copy';
+import { cast, inferCast } from '../../helpers/cast';
 
 export const OperationTypes = Object.keys(Operations)
   .reduce((ops, op) => ({ ...ops, [op]: op }), {});
@@ -78,23 +79,11 @@ export const formatRule = (rule, variantsRef) => ({
 export const formatConstraint = constraint => ({
   property: constraint.property,
   operation: constraint.operation,
-  values: constraint.values,
+  values: isArray(constraint.values) && constraint.values.length > 0 ?
+    constraint.values.map(v => inferCast(v)) : [],
 });
 
 export const formatDistribution = (distribution, variantsRef) => ({
   variantId: variantsRef[distribution.variant.id] || distribution.variant.id,
   percentage: distribution.percentage,
 });
-
-const cast = (value, type) => {
-  switch (type) {
-    case VariantTypes.STRING:
-      return String(value);
-    case VariantTypes.BOOLEAN:
-      return Boolean(value);
-    case VariantTypes.NUMBER:
-      return Number(value);
-    default:
-      return value;
-  }
-};
