@@ -1,8 +1,8 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/styles';
-import { useMutation, useQuery } from '@apollo/react-hooks';
-import { FlagsTable, FlagsToolbar } from './components';
-import { FLAGS_QUERY, TOGGLE_FLAG_QUERY } from './queries';
+import { useQuery } from '@apollo/react-hooks';
+import { SegmentsTable, SegmentsToolbar } from './components';
+import { SEGMENTS_QUERY } from './queries';
 import { CircularProgress, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
@@ -25,28 +25,27 @@ function EmptyMessage({ message }) {
   )
 }
 
-const FlagList = () => {
+const SegmentList = () => {
   const classes = useStyles();
-  const { loading, error, data } = useQuery(FLAGS_QUERY);
-  const [toggleFlag] = useMutation(TOGGLE_FLAG_QUERY);
+  const { loading, error, data } = useQuery(SEGMENTS_QUERY);
   let content;
   switch (true) {
     case loading:
       content = <CircularProgress className={classes.progress}/>;
       break;
     case  error:
-      content = <EmptyMessage message="There were an error while loading the flag list :("/>;
+      content = <EmptyMessage message="There were an error while loading the segment list :("/>;
       break;
-    case !data || !data.flags || data.flags.length === 0:
-      content = <EmptyMessage message="No flags for this project yet"/>;
+    case !data || !data.segments || data.segments.length === 0:
+      content = <EmptyMessage message="No segments for this project yet"/>;
       break;
     default:
-      content = <FlagsTable flags={data.flags} toggleFlag={toggleFlag}/>;
+      content = <SegmentsTable segments={data.segments}/>;
   }
 
   return (
     <div className={classes.root}>
-      <FlagsToolbar/>
+      <SegmentsToolbar/>
       <div className={classes.content}>
         {content}
       </div>
@@ -54,4 +53,4 @@ const FlagList = () => {
   );
 };
 
-export default FlagList;
+export default SegmentList;
