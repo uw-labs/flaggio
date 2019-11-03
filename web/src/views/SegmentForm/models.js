@@ -1,7 +1,7 @@
 import uuid from 'uuid/v1';
 import { isArray } from 'lodash';
 import { Operations } from './copy';
-import { inferCast } from '../../helpers/cast';
+import { inferCast } from '../../helpers';
 
 export const OperationTypes = Object.keys(Operations)
   .reduce((ops, op) => ({ ...ops, [op]: op }), {});

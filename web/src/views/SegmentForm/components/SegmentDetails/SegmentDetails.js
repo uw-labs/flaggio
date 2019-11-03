@@ -39,6 +39,7 @@ const SegmentDetails = props => {
   const [deletedItems, setDeletedItems] = React.useState([]);
   const classes = useStyles();
 
+  // TODO: delete segments from flag rules
   const handleAddRule = () => setSegment({ ...segment, rules: [...segment.rules, newRule()] });
   const handleDelRule = rule => () => {
     setDeletedItems([...deletedItems, { type: 'rule', id: rule.id, segmentId: segment.id }]);
