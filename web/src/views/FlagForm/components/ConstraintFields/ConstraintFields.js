@@ -45,7 +45,9 @@ const ConstraintFields = props => {
           onChange={onUpdateConstraint}
           fullWidth
           disabled={includes([OperationTypes.IS_IN_SEGMENT, OperationTypes.ISNT_IN_SEGMENT], constraint.operation)}
+          required={!includes([OperationTypes.IS_IN_SEGMENT, OperationTypes.ISNT_IN_SEGMENT], constraint.operation)}
           variant="outlined"
+          InputProps={{labelWidth:"65"}}
         />
       </Grid>
       <Grid item xs={4}>
@@ -53,13 +55,14 @@ const ConstraintFields = props => {
           className={classes.formControl}
           margin="dense"
           variant="outlined"
+          required
         >
           <InputLabel>Operation</InputLabel>
           <Select
             value={constraint.operation}
             name="operation"
-            required
             onChange={onUpdateConstraint}
+            labelWidth="70"
           >
             {operations.map(operation => (
               <MenuItem key={operation} value={operation}>{Operations[operation] || operation}</MenuItem>
@@ -80,6 +83,7 @@ const ConstraintFields = props => {
               name="values[0]"
               required
               onChange={onUpdateConstraint}
+              labelWidth="60"
             >
               {segments.map(segment => (
                 <MenuItem key={segment.id} value={segment.id}>{segment.name}</MenuItem>
@@ -95,7 +99,9 @@ const ConstraintFields = props => {
             onChange={onUpdateConstraint}
             fullWidth
             disabled={includes([OperationTypes.EXISTS, OperationTypes.DOESNT_EXIST], constraint.operation)}
+            required={!includes([OperationTypes.EXISTS, OperationTypes.DOESNT_EXIST], constraint.operation)}
             variant="outlined"
+            InputProps={{labelWidth:"45"}}
           />
         )}
       </Grid>

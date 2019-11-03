@@ -64,12 +64,14 @@ const RuleFields = props => {
             className={classes.formControl}
             margin="dense"
             variant="outlined"
+            required
           >
             <InputLabel>Return</InputLabel>
             <Select
               value={rule.distributions[0].variant.id}
               name="distributions[0].variant.id"
               onChange={onUpdateRule}
+              labelWidth="50"
             >
               {variants.map(variant => (
                 <MenuItem key={variant.id} value={variant.id}>

@@ -34,6 +34,7 @@ const VariantFields = ({ variant, isLast, onAddVariant, onUpdateVariant, onDelet
             name="type"
             required
             onChange={onUpdateVariant}
+            labelWidth="30"
           >
             {Object.keys(VariantTypes).map(type => (
               <MenuItem key={type} value={VariantTypes[type]}>{VariantType[type]}</MenuItem>
@@ -49,13 +50,14 @@ const VariantFields = ({ variant, isLast, onAddVariant, onUpdateVariant, onDelet
                 className={classes.formControl}
                 margin="dense"
                 variant="outlined"
+                required
               >
                 <InputLabel>Value</InputLabel>
                 <Select
                   value={variant.value}
                   name="value"
-                  required
                   onChange={onUpdateVariant}
+                  labelWidth="45"
                 >
                   {[true, false].map(val => (
                     <MenuItem key={val} value={val}>{BooleanType[val]}</MenuItem>

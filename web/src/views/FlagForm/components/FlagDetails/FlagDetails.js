@@ -172,12 +172,15 @@ const FlagDetails = props => {
                 <FormControl
                   className={classes.formControl}
                   margin="dense"
+                  variant="outlined"
+                  required
                 >
                   <InputLabel>If no rules are matched, return</InputLabel>
                   <Select
                     value={flag.defaultVariantWhenOn.id}
                     name="defaultVariantWhenOn.id"
                     onChange={handleChange()}
+                    labelWidth="190"
                   >
                     {flag.variants.map(variant => (
                       <MenuItem key={variant.id} value={variant.id}>
@@ -191,12 +194,15 @@ const FlagDetails = props => {
                 <FormControl
                   className={classes.formControl}
                   margin="dense"
+                  variant="outlined"
+                  required
                 >
                   <InputLabel>If flag is disabled, return</InputLabel>
                   <Select
                     value={flag.defaultVariantWhenOff.id}
                     name="defaultVariantWhenOff.id"
                     onChange={handleChange()}
+                    labelWidth="155"
                   >
                     {flag.variants.map(variant => (
                       <MenuItem key={variant.id} value={variant.id}>
