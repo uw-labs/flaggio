@@ -5,9 +5,8 @@
 package flaggio_mock
 
 import (
-	reflect "reflect"
-
 	gomock "github.com/golang/mock/gomock"
+	reflect "reflect"
 )
 
 // MockOperator is a mock of Operator interface

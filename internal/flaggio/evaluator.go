@@ -2,6 +2,7 @@ package flaggio
 
 import (
 	"fmt"
+	"strings"
 )
 
 type Evaluator interface {
@@ -29,7 +30,9 @@ func (r EvalResult) Stack() (stack []*StackTrace) {
 			id = &v
 		}
 		stack = append(stack, &StackTrace{
-			Type:   fmt.Sprintf("%T", prev.evaluator),
+			Type: strings.Replace(
+				fmt.Sprintf("%T", prev.evaluator), "flaggio.", "", 1,
+			),
 			ID:     id,
 			Answer: prev.Answer,
 		})

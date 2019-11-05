@@ -23,6 +23,5 @@ extend type Query {
     evaluateAll(
         userId: ID!
         context: Map!
-        debug: Boolean
     ): [Evaluation!]!
 }

@@ -90,7 +90,7 @@ type ComplexityRoot struct {
 
 	Query struct {
 		Evaluate    func(childComplexity int, flagKey string, userID string, context map[string]interface{}, debug *bool) int
-		EvaluateAll func(childComplexity int, userID string, context map[string]interface{}, debug *bool) int
+		EvaluateAll func(childComplexity int, userID string, context map[string]interface{}) int
 		Ping        func(childComplexity int) int
 	}
 
@@ -127,7 +127,7 @@ type MutationResolver interface {
 type QueryResolver interface {
 	Ping(ctx context.Context) (*bool, error)
 	Evaluate(ctx context.Context, flagKey string, userID string, context map[string]interface{}, debug *bool) (*flaggio.Evaluation, error)
-	EvaluateAll(ctx context.Context, userID string, context map[string]interface{}, debug *bool) ([]*flaggio.Evaluation, error)
+	EvaluateAll(ctx context.Context, userID string, context map[string]interface{}) ([]*flaggio.Evaluation, error)
 }
 
 type executableSchema struct {
@@ -342,7 +342,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.EvaluateAll(childComplexity, args["userId"].(string), args["context"].(map[string]interface{}), args["debug"].(*bool)), true
+		return e.complexity.Query.EvaluateAll(childComplexity, args["userId"].(string), args["context"].(map[string]interface{})), true
 
 	case "Query.ping":
 		if e.complexity.Query.Ping == nil {
@@ -536,7 +536,6 @@ extend type Query {
     evaluateAll(
         userId: ID!
         context: Map!
-        debug: Boolean
     ): [Evaluation!]!
 }
 `},
@@ -672,14 +671,6 @@ func (ec *executionContext) field_Query_evaluateAll_args(ctx context.Context, ra
 		}
 	}
 	args["context"] = arg1
-	var arg2 *bool
-	if tmp, ok := rawArgs["debug"]; ok {
-		arg2, err = ec.unmarshalOBoolean2ᚖbool(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["debug"] = arg2
 	return args, nil
 }
 
@@ -1759,7 +1750,7 @@ func (ec *executionContext) _Query_evaluateAll(ctx context.Context, field graphq
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().EvaluateAll(rctx, args["userId"].(string), args["context"].(map[string]interface{}), args["debug"].(*bool))
+		return ec.resolvers.Query().EvaluateAll(rctx, args["userId"].(string), args["context"].(map[string]interface{}))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

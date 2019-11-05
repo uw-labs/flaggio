@@ -49,7 +49,6 @@ func (r RuleRepository) CreateFlagRule(ctx context.Context, flagIDHex string, fr
 	if err != nil {
 		return "", err
 	}
-	// TODO: check if passing flag id is needed, add unique indexes on all _id fields
 	filter := bson.M{"_id": flagID}
 	res, err := r.flagRepo.col.UpdateOne(ctx, filter, bson.M{
 		"$push": bson.M{"rules": flgRuleModel},
