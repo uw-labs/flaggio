@@ -31,7 +31,7 @@ func Command() cli.Command {
 			cli.StringFlag{
 				Name:   "database-uri",
 				Usage:  "Database URI",
-				EnvVar: "API_DATABASE_URI",
+				EnvVar: "DATABASE_URI",
 				Value:  "mongodb://localhost:27017/flaggio",
 			},
 		},
