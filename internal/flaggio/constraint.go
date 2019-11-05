@@ -1,10 +1,10 @@
 package flaggio
 
-//go:generate mockgen -destination=./mocks/operator_mock.go -package=flaggio_mock github.com/victorkohl/flaggio/internal/flaggio Operator
+//go:generate mockgen -destination=./mocks/operator_mock.go -package=flaggio_mock github.com/victorkt/flaggio/internal/flaggio Operator
 
 import (
 	"github.com/sirupsen/logrus"
-	"github.com/victorkohl/flaggio/internal/operator"
+	"github.com/victorkt/flaggio/internal/operator"
 )
 
 var _ operator.Validator = Constraint{}

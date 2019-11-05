@@ -3,7 +3,7 @@ package flaggio
 import (
 	"time"
 
-	"github.com/victorkohl/flaggio/internal/errors"
+	"github.com/victorkt/flaggio/internal/errors"
 )
 
 var _ Identifier = Flag{}

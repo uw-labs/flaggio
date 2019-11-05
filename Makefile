@@ -5,18 +5,18 @@ GIT_SUMMARY := $(shell git describe --tags --dirty --always)
 GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 BUILD_STAMP := $(shell date -u '+%Y-%m-%dT%H:%M:%S%z')
 LDFLAGS = -ldflags '-s \
-	-X "github.com/victorkohl/flaggio/main.ApplicationName=$(1)" \
-	-X "github.com/victorkohl/flaggio/main.ApplicationDescription=$(2)" \
-	-X "github.com/victorkohl/flaggio/main.GitSummary=$(GIT_SUMMARY)" \
-	-X "github.com/victorkohl/flaggio/main.GitBranch=$(GIT_BRANCH)" \
-	-X "github.com/victorkohl/flaggio/main.BuildStamp=$(BUILD_STAMP)"'
+	-X "github.com/victorkt/flaggio/main.ApplicationName=$(1)" \
+	-X "github.com/victorkt/flaggio/main.ApplicationDescription=$(2)" \
+	-X "github.com/victorkt/flaggio/main.GitSummary=$(GIT_SUMMARY)" \
+	-X "github.com/victorkt/flaggio/main.GitBranch=$(GIT_BRANCH)" \
+	-X "github.com/victorkt/flaggio/main.BuildStamp=$(BUILD_STAMP)"'
 .info:
 	@echo GIT_SUMMARY: $(GIT_SUMMARY)
 	@echo GIT_BRANCH: $(GIT_BRANCH)
 	@echo BUILD_STAMP: $(BUILD_STAMP)
 	@echo LDFLAGS: $(LDFLAGS)
 
-NAMESPACE=victorkohl
+NAMESPACE=victorkt
 DOCKER_REGISTRY=hub.docker.com
 DOCKER_CONTAINER_NAME=flaggio
 DOCKER_REPOSITORY=$(DOCKER_REGISTRY)/$(NAMESPACE)/$(DOCKER_CONTAINER_NAME)

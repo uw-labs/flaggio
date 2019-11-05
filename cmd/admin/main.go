@@ -10,8 +10,8 @@ import (
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
-	"github.com/victorkohl/flaggio/internal/repository/mongodb"
-	"github.com/victorkohl/flaggio/internal/server/admin"
+	"github.com/victorkt/flaggio/internal/repository/mongodb"
+	"github.com/victorkt/flaggio/internal/server/admin"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )

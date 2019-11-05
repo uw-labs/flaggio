@@ -1,7 +1,7 @@
 package admin
 
 import (
-	"github.com/victorkohl/flaggio/internal/repository"
+	"github.com/victorkt/flaggio/internal/repository"
 )
 
 type Resolver struct {

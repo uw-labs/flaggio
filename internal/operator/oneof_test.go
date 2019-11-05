@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/victorkohl/flaggio/internal/operator"
+	"github.com/victorkt/flaggio/internal/operator"
 )
 
 func TestOneOf_Operate(t *testing.T) {

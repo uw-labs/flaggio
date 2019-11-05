@@ -3,8 +3,8 @@ package api
 import (
 	"context"
 
-	"github.com/victorkohl/flaggio/internal/errors"
-	"github.com/victorkohl/flaggio/internal/flaggio"
+	"github.com/victorkt/flaggio/internal/errors"
+	"github.com/victorkt/flaggio/internal/flaggio"
 )
 
 var _ QueryResolver = &queryResolver{}

@@ -4,9 +4,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/victorkohl/flaggio/internal/errors"
-	"github.com/victorkohl/flaggio/internal/flaggio"
-	"github.com/victorkohl/flaggio/internal/repository"
+	"github.com/victorkt/flaggio/internal/errors"
+	"github.com/victorkt/flaggio/internal/flaggio"
+	"github.com/victorkt/flaggio/internal/repository"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )

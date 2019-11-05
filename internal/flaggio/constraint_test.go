@@ -5,7 +5,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	flaggio_mock "github.com/victorkohl/flaggio/internal/flaggio/mocks"
+	flaggio_mock "github.com/victorkt/flaggio/internal/flaggio/mocks"
 )
 
 func TestConstraint_Validate(t *testing.T) {

@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/victorkohl/flaggio/internal/operator"
+	"github.com/victorkt/flaggio/internal/operator"
 )
 
 var _ operator.Validator = mockValidator{}

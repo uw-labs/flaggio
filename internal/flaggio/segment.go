@@ -3,7 +3,7 @@ package flaggio
 import (
 	"time"
 
-	"github.com/victorkohl/flaggio/internal/operator"
+	"github.com/victorkt/flaggio/internal/operator"
 )
 
 var _ Identifier = Segment{}

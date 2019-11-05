@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/victorkohl/flaggio/internal/flaggio"
+	"github.com/victorkt/flaggio/internal/flaggio"
 )
 
 func TestDistributionList_Distribute(t *testing.T) {

@@ -5,8 +5,8 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
-	"github.com/victorkohl/flaggio/cmd/admin"
-	"github.com/victorkohl/flaggio/cmd/api"
+	"github.com/victorkt/flaggio/cmd/admin"
+	"github.com/victorkt/flaggio/cmd/api"
 )
 
 func main() {
