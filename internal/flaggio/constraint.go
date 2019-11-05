@@ -7,7 +7,7 @@ import (
 	"github.com/victorkt/flaggio/internal/operator"
 )
 
-var _ operator.Validator = Constraint{}
+var _ operator.Validator = (*Constraint)(nil)
 
 type Operator interface {
 	Operate(usrValue interface{}, validValues []interface{}) bool
@@ -58,11 +58,11 @@ type ConstraintList []*Constraint
 
 func (l ConstraintList) Validate(usrContext map[string]interface{}) bool {
 	for _, c := range l {
-		if c.Validate(usrContext) {
-			return true
+		if !c.Validate(usrContext) {
+			return false
 		}
 	}
-	return false
+	return true
 }
 
 func (l ConstraintList) Populate(identifiers []Identifier) {

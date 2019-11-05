@@ -74,3 +74,40 @@ func TestConstraint_Validate(t *testing.T) {
 		})
 	}
 }
+
+func TestConstraintList_Validate(t *testing.T) {
+	tt := []struct {
+		desc           string
+		cnstrnts       ConstraintList
+		usrContext     map[string]interface{}
+		operatorResult bool
+		expectedResult bool
+	}{
+		{
+			desc: "returns false when any constraint is false",
+			cnstrnts: ConstraintList{
+				&Constraint{Property: "key", Operation: OperationOneOf, Values: []interface{}{1}},
+				&Constraint{Property: "key", Operation: OperationOneOf, Values: []interface{}{2}},
+			},
+			usrContext:     map[string]interface{}{"key": 1},
+			expectedResult: false,
+		},
+		{
+			desc: "returns true when all constraints returns true",
+			cnstrnts: ConstraintList{
+				&Constraint{Property: "key", Operation: OperationOneOf, Values: []interface{}{1}},
+				&Constraint{Property: "key2", Operation: OperationOneOf, Values: []interface{}{2}},
+			},
+			usrContext:     map[string]interface{}{"key": 1, "key2": 2},
+			operatorResult: true,
+			expectedResult: true,
+		},
+	}
+
+	for _, test := range tt {
+		t.Run(test.desc, func(t *testing.T) {
+			res := test.cnstrnts.Validate(test.usrContext)
+			assert.Equal(t, test.expectedResult, res)
+		})
+	}
+}

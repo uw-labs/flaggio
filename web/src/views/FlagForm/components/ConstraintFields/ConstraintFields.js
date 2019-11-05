@@ -64,7 +64,7 @@ const ConstraintFields = props => {
             onChange={onUpdateConstraint}
             labelWidth={70}
           >
-            {operations.map(operation => (
+            {operations.filter(op => !!Operations[op]).map(operation => (
               <MenuItem key={operation} value={operation}>{Operations[operation] || operation}</MenuItem>
             ))}
           </Select>
