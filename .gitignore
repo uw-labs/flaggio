@@ -13,6 +13,7 @@
 
 # dependencies
 /web*/node_modules
+/web*/build
 /web/.pnp
 .pnp.js
 
