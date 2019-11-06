@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"time"
 
 	"github.com/99designs/gqlgen/handler"
 	"github.com/go-chi/chi"
@@ -48,7 +49,7 @@ func startAPI(ctx context.Context, c *cli.Context) (*http.Server, error) {
 	router.Use(cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:3000"}, // TODO: make configurable
 		AllowCredentials: true,
-		Debug:            true,
+		// Debug:            true,
 	}).Handler)
 
 	upgrader := websocket.Upgrader{
@@ -67,7 +68,12 @@ func startAPI(ctx context.Context, c *cli.Context) (*http.Server, error) {
 	))
 
 	port := c.String("api-port")
-	srv := &http.Server{Addr: ":" + port, Handler: router}
+	srv := &http.Server{
+		Addr:         ":" + port,
+		Handler:      router,
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
 
 	go func() {
 		logrus.Infof("api server started. connect to http://localhost:%s/playground for GraphQL playground", port)

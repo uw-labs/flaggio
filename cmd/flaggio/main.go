@@ -81,6 +81,7 @@ func main() {
 				adminSrv = srv
 			}
 			<-done
+			cancel()
 
 			logrus.Info("shutting down server ...")
 

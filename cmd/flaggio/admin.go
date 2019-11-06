@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/99designs/gqlgen/handler"
 	"github.com/go-chi/chi"
@@ -52,7 +53,7 @@ func startAdmin(ctx context.Context, c *cli.Context) (*http.Server, error) {
 	router.Use(cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:3000"},
 		AllowCredentials: true,
-		Debug:            true,
+		// Debug:            true,
 	}).Handler)
 
 	upgrader := websocket.Upgrader{
@@ -64,16 +65,28 @@ func startAdmin(ctx context.Context, c *cli.Context) (*http.Server, error) {
 		WriteBufferSize: 1024,
 	}
 
-	router.Handle("/playground", handler.Playground("GraphQL playground", "/query"))
-	router.Handle("/query", handler.GraphQL(
+	router.Get("/playground", handler.Playground("GraphQL playground", "/query"))
+	router.Post("/query", handler.GraphQL(
 		admin.NewExecutableSchema(admin.Config{Resolvers: resolvers}),
 		handler.WebsocketUpgrader(upgrader),
 	))
-	workDir, _ := os.Getwd()
-	fileServer(router, "/", http.Dir(workDir+"/web/build"))
+	if !c.Bool("no-admin-ui") {
+		workDir, _ := os.Getwd()
+		buildPath := workDir + "/web/build"
+		fileServer(router, "/static", http.Dir(buildPath+"/static"))
+		fileServer(router, "/images", http.Dir(buildPath+"/images"))
+		router.Get("/*", func(w http.ResponseWriter, r *http.Request) {
+			http.ServeFile(w, r, buildPath+"/index.html")
+		})
+	}
 
 	port := c.String("admin-port")
-	srv := &http.Server{Addr: ":" + port, Handler: router}
+	srv := &http.Server{
+		Addr:         ":" + port,
+		Handler:      router,
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
 
 	go func() {
 		logrus.Infof("admin server started. connect to http://localhost:%s/playground for GraphQL playground", port)
