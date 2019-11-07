@@ -14,6 +14,7 @@ import Routes from './Routes';
 const browserHistory = createBrowserHistory();
 
 const client = new ApolloClient({
+  // uri: 'https://flags.vkt.sh/query',
   uri: 'http://localhost:8081/query',
 });
 

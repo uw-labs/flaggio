@@ -31,6 +31,11 @@ func main() {
 				Value:  "mongodb://localhost:27017/flaggio",
 			},
 			cli.StringFlag{
+				Name:   "build-path",
+				Usage:  "UI build absolute path",
+				EnvVar: "BUILD_PATH",
+			},
+			cli.StringFlag{
 				Name:   "api-port",
 				Usage:  "Port the API server will listen to",
 				EnvVar: "API_PORT",

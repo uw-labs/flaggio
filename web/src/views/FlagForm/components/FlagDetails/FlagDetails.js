@@ -84,6 +84,11 @@ const FlagDetails = props => {
     );
   };
   const handleChange2Deep = (prefix = '') => (prefix2 = '') => handleChange(prefix, prefix2);
+  const getKeySlug = () => slugify(flag.name, { separator: '.' });
+  const handleSetSlugifiedKey = () => {
+    if (flag.key) return;
+    handleChange()({ target: { name: 'key', value: getKeySlug() } });
+  };
 
   return (
     <Card
@@ -120,6 +125,7 @@ const FlagDetails = props => {
                   margin="dense"
                   name="name"
                   onChange={handleChange()}
+                  onBlur={handleSetSlugifiedKey}
                   required
                   value={flag.name}
                   variant="outlined"
@@ -133,7 +139,7 @@ const FlagDetails = props => {
                   name="key"
                   onChange={handleChange()}
                   required
-                  value={flag.key || slugify(flag.name, { separator: '.' })}
+                  value={flag.key || getKeySlug()}
                   variant="outlined"
                 />
               </Grid>

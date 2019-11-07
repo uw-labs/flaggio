@@ -73,6 +73,10 @@ func startAdmin(ctx context.Context, c *cli.Context) (*http.Server, error) {
 	if !c.Bool("no-admin-ui") {
 		workDir, _ := os.Getwd()
 		buildPath := workDir + "/web/build"
+		if c.IsSet("build-path") {
+			buildPath = c.String("build-path")
+		}
+
 		fileServer(router, "/static", http.Dir(buildPath+"/static"))
 		fileServer(router, "/images", http.Dir(buildPath+"/images"))
 		router.Get("/*", func(w http.ResponseWriter, r *http.Request) {

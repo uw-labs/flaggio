@@ -55,8 +55,13 @@ const FlagForm = () => {
       const { key, name } = flag;
       await createFlag({
         variables: { input: { key, name } },
-        update(cache, { data: { createFlag: { id } } }) {
-          flag.id = id;
+        update(cache, { data: { createFlag: createdFlag } }) {
+          flag.id = createdFlag.id;
+          const { flags } = cache.readQuery({ query: FLAGS_QUERY });
+          cache.writeQuery({
+            query: FLAGS_QUERY,
+            data: { flags: [...flags, createdFlag] },
+          });
         },
       });
     }

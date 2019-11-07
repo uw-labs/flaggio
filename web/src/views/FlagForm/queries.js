@@ -56,6 +56,12 @@ export const CREATE_FLAG_QUERY = gql`
     mutation createFlag($input: NewFlag!) {
         createFlag(input: $input) {
             id
+            key
+            name
+            enabled
+            description
+            createdAt
+            __typename
         }
     }
 `;
