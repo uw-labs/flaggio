@@ -5,31 +5,40 @@ import (
 	"errors"
 )
 
+// OneOf operator will check if the value from the user context equals to
+// any of the configured values on the flag.
 type OneOf struct{}
 
-func (o OneOf) Operate(usrValue interface{}, validValues []interface{}) bool {
+// Operate will check the value from the user context against the configured validators
+func (o OneOf) Operate(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
 		ok, err := equals(v, usrValue)
 		if err != nil {
-			return false
+			return false, err
 		}
 		if ok {
-			return true
+			return true, nil
 		}
 	}
-	return false
+	return false, nil
 }
 
+// NotOneOf operator will check if the value from the user context doesn't equal to
+// any of the configured values on the flag.
 type NotOneOf struct{}
 
-func (o NotOneOf) Operate(usrValue interface{}, validValues []interface{}) bool {
+// Operate will check the value from the user context against the configured validators
+func (o NotOneOf) Operate(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
 		ok, err := equals(v, usrValue)
-		if err != nil || ok {
-			return false
+		if err != nil {
+			return false, err
+		}
+		if ok {
+			return false, nil
 		}
 	}
-	return true
+	return true, nil
 }
 
 func equals(cnstrnValue, userValue interface{}) (bool, error) {

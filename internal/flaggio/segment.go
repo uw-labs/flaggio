@@ -22,11 +22,15 @@ func (s Segment) GetID() string {
 	return s.ID
 }
 
-func (s Segment) Validate(usrContext map[string]interface{}) bool {
+func (s Segment) Validate(usrContext map[string]interface{}) (bool, error) {
 	for _, rl := range s.Rules {
-		if ConstraintList(rl.Constraints).Validate(usrContext) {
-			return true
+		ok, err := ConstraintList(rl.Constraints).Validate(usrContext)
+		if err != nil {
+			return false, err
+		}
+		if ok {
+			return true, nil
 		}
 	}
-	return false
+	return false, nil
 }

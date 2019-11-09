@@ -4,34 +4,40 @@ import (
 	"regexp"
 )
 
+// MatchesRegex operator will check if the value from the user context matches
+// any regexes configured on the flag.
 type MatchesRegex struct{}
 
-func (o MatchesRegex) Operate(usrValue interface{}, validValues []interface{}) bool {
+// Operate will check the value from the user context against the configured validators
+func (o MatchesRegex) Operate(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
 		ok, err := matches(v, usrValue)
 		if err != nil {
-			return false
+			return false, err
 		}
 		if ok {
-			return true
+			return true, nil
 		}
 	}
-	return false
+	return false, nil
 }
 
+// DoesntMatchRegex operator will check if the value from the user context doesn't match
+// any regexes configured on the flag.
 type DoesntMatchRegex struct{}
 
-func (o DoesntMatchRegex) Operate(usrValue interface{}, validValues []interface{}) bool {
+// Operate will check the value from the user context against the configured validators
+func (o DoesntMatchRegex) Operate(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
 		ok, err := matches(v, usrValue)
 		if err != nil {
-			return false
+			return false, err
 		}
 		if ok {
-			return false
+			return false, nil
 		}
 	}
-	return true
+	return true, nil
 }
 
 func matches(cnstrnValue, userValue interface{}) (bool, error) {

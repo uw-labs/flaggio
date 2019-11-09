@@ -415,7 +415,8 @@ func TestOneOf_Operate(t *testing.T) {
 	for _, test := range tt {
 		t.Run(test.desc, func(t *testing.T) {
 			op := operator.OneOf{}
-			res := op.Operate(test.usrContext[test.property], test.values)
+			res, err := op.Operate(test.usrContext[test.property], test.values)
+			assert.NoError(t, err)
 			assert.Equal(t, test.expectedResult, res)
 		})
 	}
@@ -836,7 +837,8 @@ func TestNotOneOf_Operate(t *testing.T) {
 	for _, test := range tt {
 		t.Run(test.desc, func(t *testing.T) {
 			op := operator.NotOneOf{}
-			res := op.Operate(test.usrContext[test.property], test.values)
+			res, err := op.Operate(test.usrContext[test.property], test.values)
+			assert.NoError(t, err)
 			assert.Equal(t, test.expectedResult, res)
 		})
 	}

@@ -1,53 +1,75 @@
 package operator
 
 import (
+	"fmt"
+
 	"github.com/sirupsen/logrus"
+	"github.com/victorkt/flaggio/internal/errors"
 )
 
+// Validator validates the user context somehow and returns true when
+// the validations are satisfied.
 type Validator interface {
-	Validate(usrContext map[string]interface{}) bool
+	Validate(usrContext map[string]interface{}) (bool, error)
 }
 
+// Validates operator will check if the value from the user context validates
+// against the configured validator on the flag.
 type Validates struct{}
 
-func (o Validates) Operate(usrValue interface{}, validValues []interface{}) bool {
+// Operate will check the value from the user context against the configured validators
+func (o Validates) Operate(usrValue interface{}, validValues []interface{}) (bool, error) {
 	uv, ok := usrValue.(map[string]interface{})
 	if !ok {
-		logrus.WithField("value", uv).Error("expected user value to be a map[string]interface{}")
-		return false
+		return false, errors.InvalidFlag(
+			fmt.Sprintf("expected user value to be a map[string]interface{}, got: %s", uv),
+		)
 	}
 	for _, v := range validValues {
 		vldtr, ok := v.(Validator)
 		if !ok || vldtr == nil {
+			// this happens when the reference is invalid on the flag
+			// one possible scenario is the segment was deleted but the flag constraint
+			// wasn't updated
 			logrus.WithField("value", v).Error("expected value to be an Evaluator")
-			return false
+			return false, nil
 		}
-		valid := vldtr.Validate(uv)
+		valid, err := vldtr.Validate(uv)
+		if err != nil {
+			return false, err
+		}
 		if !valid {
-			return false
+			return false, nil
 		}
 	}
-	return true
+	return true, nil
 }
 
+// DoesntValidate operator will check if the value from the user context doesn't validate
+// against the configured validator on the flag.
 type DoesntValidate struct{}
 
-func (o DoesntValidate) Operate(usrValue interface{}, validValues []interface{}) bool {
+// Operate will check the value from the user context against the configured  validators
+func (o DoesntValidate) Operate(usrValue interface{}, validValues []interface{}) (bool, error) {
 	uv, ok := usrValue.(map[string]interface{})
 	if !ok {
-		logrus.WithField("value", uv).Error("expected user value to be a map[string]interface{}")
-		return false
+		return false, errors.InvalidFlag(
+			fmt.Sprintf("expected user value to be a map[string]interface{}, got: %s", uv),
+		)
 	}
 	for _, v := range validValues {
 		evltr, ok := v.(Validator)
 		if !ok || evltr == nil {
 			logrus.WithField("value", v).Error("expected value to be an Evaluator")
-			return false
+			return false, nil
 		}
-		valid := evltr.Validate(uv)
+		valid, err := evltr.Validate(uv)
+		if err != nil {
+			return false, err
+		}
 		if valid {
-			return false
+			return false, nil
 		}
 	}
-	return true
+	return true, nil
 }

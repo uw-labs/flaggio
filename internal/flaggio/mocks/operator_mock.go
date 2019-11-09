@@ -33,11 +33,12 @@ func (m *MockOperator) EXPECT() *MockOperatorMockRecorder {
 }
 
 // Operate mocks base method
-func (m *MockOperator) Operate(arg0 interface{}, arg1 []interface{}) bool {
+func (m *MockOperator) Operate(arg0 interface{}, arg1 []interface{}) (bool, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Operate", arg0, arg1)
 	ret0, _ := ret[0].(bool)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Operate indicates an expected call of Operate

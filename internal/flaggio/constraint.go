@@ -3,16 +3,22 @@ package flaggio
 //go:generate mockgen -destination=./mocks/operator_mock.go -package=flaggio_mock github.com/victorkt/flaggio/internal/flaggio Operator
 
 import (
-	"github.com/sirupsen/logrus"
+	"fmt"
+
+	"github.com/victorkt/flaggio/internal/errors"
 	"github.com/victorkt/flaggio/internal/operator"
 )
 
 var _ operator.Validator = (*Constraint)(nil)
 
+// Operator runs some logic using the value from the payload and the
+// value from the flag configuration to determine if the operation is
+// satisfied or not.
 type Operator interface {
-	Operate(usrValue interface{}, validValues []interface{}) bool
+	Operate(usrValue interface{}, validValues []interface{}) (bool, error)
 }
 
+// Constraint holds all the information needed for an operation to be executed.
 type Constraint struct {
 	ID        string
 	Property  string
@@ -20,14 +26,15 @@ type Constraint struct {
 	Values    []interface{}
 }
 
-func (c Constraint) Validate(usrContext map[string]interface{}) bool {
+// Validate will check if a property in the user context passes some operation based on
+// some configured valid values. Some operations don't need the property to be defined,
+// while some others don't required any valid values.
+func (c Constraint) Validate(usrContext map[string]interface{}) (bool, error) {
 	op, ok := operatorMap[c.Operation]
 	if !ok {
 		// unknown operation, this is a configuration problem
-		logrus.WithField("operation", c.Operation).Error("unknown operation")
-		return false
+		return false, errors.InvalidFlag(fmt.Sprintf("unknown operation: %s", c.Operation))
 	}
-	// TODO: check if worth to return errors
 	switch c.Operation {
 	case OperationIsInSegment, OperationIsntInSegment:
 		return op.Operate(usrContext, c.Values)
@@ -36,6 +43,9 @@ func (c Constraint) Validate(usrContext map[string]interface{}) bool {
 	}
 }
 
+// Populate will try to populate all references on this constraint
+// depending on the operation type. For OperationIsInSegment and
+// OperationIsntInSegment, the flag will have a reference to a segment.
 func (c *Constraint) Populate(identifiers []Identifier) {
 	switch c.Operation {
 	case OperationIsInSegment, OperationIsntInSegment:
@@ -54,17 +64,25 @@ func (c *Constraint) populateSegments(identifiers []Identifier) {
 	}
 }
 
+// ConstraintList is a slice of *Constraint
 type ConstraintList []*Constraint
 
-func (l ConstraintList) Validate(usrContext map[string]interface{}) bool {
+// Validate will check if all the constraints on this list passes their validation.
+// If any of the constraints don't validate to true, the result is false.
+func (l ConstraintList) Validate(usrContext map[string]interface{}) (bool, error) {
 	for _, c := range l {
-		if !c.Validate(usrContext) {
-			return false
+		ok, err := c.Validate(usrContext)
+		if err != nil {
+			return false, err
+		}
+		if !ok {
+			return false, nil
 		}
 	}
-	return true
+	return true, nil
 }
 
+// Populate will try to populate all references on this constraint list
 func (l ConstraintList) Populate(identifiers []Identifier) {
 	for _, c := range l {
 		c.Populate(identifiers)

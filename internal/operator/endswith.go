@@ -4,34 +4,40 @@ import (
 	"strings"
 )
 
+// EndsWith operator will check if the value from the user context ends with
+// any of the configured values on the flag.
 type EndsWith struct{}
 
-func (o EndsWith) Operate(usrValue interface{}, validValues []interface{}) bool {
+// Operate will check the value from the user context against the configured validators
+func (o EndsWith) Operate(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
 		ok, err := endsWith(v, usrValue)
 		if err != nil {
-			return false
+			return false, err
 		}
 		if ok {
-			return true
+			return true, nil
 		}
 	}
-	return false
+	return false, nil
 }
 
+// DoesntEndWith operator will check if the value from the user context doesn't end with
+// any of the configured values on the flag.
 type DoesntEndWith struct{}
 
-func (o DoesntEndWith) Operate(usrValue interface{}, validValues []interface{}) bool {
+// Operate will check the value from the user context against the configured validators
+func (o DoesntEndWith) Operate(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
 		ok, err := endsWith(v, usrValue)
 		if err != nil {
-			return false
+			return false, err
 		}
 		if ok {
-			return false
+			return false, nil
 		}
 	}
-	return true
+	return true, nil
 }
 
 func endsWith(cnstrnValue, userValue interface{}) (bool, error) {

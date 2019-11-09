@@ -35,6 +35,9 @@ var (
 	ErrNoDefaultVariant = Err{
 		msg:        "no default variant defined for flag",
 		statusCode: http.StatusUnprocessableEntity, appCode: "NoDefaultVariant"}
+	ErrInvalidFlag = Err{
+		msg:        "invalid flag",
+		statusCode: http.StatusUnprocessableEntity, appCode: "InvalidFlag"}
 	ErrNoVariantToDistribute = Err{
 		msg:        "no variants to distribute, please check the rule configuration",
 		statusCode: http.StatusUnprocessableEntity, appCode: "NoVariantToDistribute"}
@@ -52,4 +55,8 @@ func NotFound(entity string) error {
 
 func BadRequest(message string) error {
 	return fmt.Errorf("%w: %s", ErrBadRequest, message)
+}
+
+func InvalidFlag(message string) error {
+	return fmt.Errorf("%w: %s", ErrInvalidFlag, message)
 }

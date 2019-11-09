@@ -4,34 +4,40 @@ import (
 	"strings"
 )
 
+// StartsWith operator will check if the value from the user context starts with
+// any of the configured values on the flag.
 type StartsWith struct{}
 
-func (o StartsWith) Operate(usrValue interface{}, validValues []interface{}) bool {
+// Operate will check the value from the user context against the configured validators
+func (o StartsWith) Operate(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
 		ok, err := startsWith(v, usrValue)
 		if err != nil {
-			return false
+			return false, err
 		}
 		if ok {
-			return true
+			return true, nil
 		}
 	}
-	return false
+	return false, nil
 }
 
+// DoesntStartWith operator will check if the value from the user context doesn't start with
+// any of the configured values on the flag.
 type DoesntStartWith struct{}
 
-func (o DoesntStartWith) Operate(usrValue interface{}, validValues []interface{}) bool {
+// Operate will check the value from the user context against the configured validators
+func (o DoesntStartWith) Operate(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
 		ok, err := startsWith(v, usrValue)
 		if err != nil {
-			return false
+			return false, err
 		}
 		if ok {
-			return false
+			return false, nil
 		}
 	}
-	return true
+	return true, nil
 }
 
 func startsWith(cnstrnValue, userValue interface{}) (bool, error) {

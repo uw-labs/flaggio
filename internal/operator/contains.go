@@ -5,34 +5,40 @@ import (
 	"strings"
 )
 
+// Contains operator will check if the value from the user context contains
+// any of the configured values on the flag.
 type Contains struct{}
 
-func (o Contains) Operate(usrValue interface{}, validValues []interface{}) bool {
+// Operate will check the value from the user payload against the configured validators
+func (o Contains) Operate(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
 		ok, err := contains(v, usrValue)
 		if err != nil {
-			return false
+			return false, err
 		}
 		if ok {
-			return true
+			return true, nil
 		}
 	}
-	return false
+	return false, nil
 }
 
+// DoesntContain operator will check if the value from the user context doesn't contain
+// any of the configured values on the flag.
 type DoesntContain struct{}
 
-func (o DoesntContain) Operate(usrValue interface{}, validValues []interface{}) bool {
+// Operate will check the value from the user payload against the configured validators
+func (o DoesntContain) Operate(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
 		ok, err := contains(v, usrValue)
 		if err != nil {
-			return false
+			return false, err
 		}
 		if ok {
-			return false
+			return false, nil
 		}
 	}
-	return true
+	return true, nil
 }
 
 func contains(cnstrnValue, userValue interface{}) (bool, error) {

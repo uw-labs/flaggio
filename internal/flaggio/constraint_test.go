@@ -1,6 +1,7 @@
 package flaggio
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -17,12 +18,14 @@ func TestConstraint_Validate(t *testing.T) {
 		operatorResult   bool
 		expectedUsrValue interface{}
 		expectedResult   bool
+		expectedError    error
 	}{
 		{
-			desc:           "returns false on unknown operators",
+			desc:           "returns error on unknown operators",
 			cnstrnt:        Constraint{Property: "key", Operation: "INVALID", Values: []interface{}{}},
 			operatorCalls:  0,
 			expectedResult: false,
+			expectedError:  errors.New("invalid flag: unknown operation: INVALID"),
 		},
 		{
 			desc:             "returns true when operator returns true",
@@ -67,9 +70,14 @@ func TestConstraint_Validate(t *testing.T) {
 				operatorMap = oldOperatorMap
 			}()
 
-			op.EXPECT().Operate(test.expectedUsrValue, gomock.Any()).Times(test.operatorCalls).Return(test.operatorResult)
+			op.EXPECT().Operate(test.expectedUsrValue, gomock.Any()).Times(test.operatorCalls).Return(test.operatorResult, nil)
 
-			res := test.cnstrnt.Validate(test.usrContext)
+			res, err := test.cnstrnt.Validate(test.usrContext)
+			if test.expectedError != nil {
+				assert.EqualError(t, err, test.expectedError.Error())
+			} else {
+				assert.NoError(t, err)
+			}
 			assert.Equal(t, test.expectedResult, res)
 		})
 	}
@@ -106,7 +114,8 @@ func TestConstraintList_Validate(t *testing.T) {
 
 	for _, test := range tt {
 		t.Run(test.desc, func(t *testing.T) {
-			res := test.cnstrnts.Validate(test.usrContext)
+			res, err := test.cnstrnts.Validate(test.usrContext)
+			assert.NoError(t, err)
 			assert.Equal(t, test.expectedResult, res)
 		})
 	}

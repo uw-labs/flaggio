@@ -25,12 +25,13 @@ type FlagRule struct {
 
 func (r FlagRule) Evaluate(usrContext map[string]interface{}) (EvalResult, error) {
 	var next []Evaluator
-	if ConstraintList(r.Constraints).Validate(usrContext) {
+	ok, err := ConstraintList(r.Constraints).Validate(usrContext)
+	if ok {
 		next = []Evaluator{DistributionList(r.Distributions)}
 	}
 	return EvalResult{
 		Next: next,
-	}, nil
+	}, err
 }
 
 type SegmentRule struct {
