@@ -35,6 +35,17 @@ func main() {
 				Usage:  "UI build absolute path",
 				EnvVar: "BUILD_PATH",
 			},
+			cli.StringSliceFlag{
+				Name:   "cors-allowed-origins",
+				Usage:  "CORS allowed origins separated by comma",
+				EnvVar: "CORS_ALLOWED_ORIGINS",
+			},
+			cli.BoolFlag{
+				Name:   "cors-debug",
+				Usage:  "CORS debug logging",
+				EnvVar: "CORS_DEBUG",
+				Hidden: true,
+			},
 			cli.StringFlag{
 				Name:   "api-port",
 				Usage:  "Port the API server will listen to",
@@ -61,6 +72,12 @@ func main() {
 				Name:   "no-admin-ui",
 				Usage:  "Don't start the admin UI",
 				EnvVar: "NO_ADMIN_UI",
+			},
+			cli.StringFlag{
+				Name:   "app-env",
+				Usage:  "Environment this application is running on. Valid values are: dev, production",
+				EnvVar: "APP_ENV",
+				Value:  "production",
 			},
 		},
 		Action: func(c *cli.Context) error {

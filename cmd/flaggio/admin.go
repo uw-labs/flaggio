@@ -10,7 +10,6 @@ import (
 
 	"github.com/99designs/gqlgen/handler"
 	"github.com/go-chi/chi"
-	"github.com/gorilla/websocket"
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
@@ -22,10 +21,8 @@ import (
 
 func startAdmin(ctx context.Context, c *cli.Context) (*http.Server, error) {
 	logrus.Info("starting admin server ...")
-	client, err := mongo.Connect(
-		ctx,
-		options.Client().ApplyURI(c.String("database-uri")),
-	)
+	isDev := c.String("app-env") == "dev"
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(c.String("database-uri")))
 	if err != nil {
 		return nil, err
 	}
@@ -51,25 +48,18 @@ func startAdmin(ctx context.Context, c *cli.Context) (*http.Server, error) {
 	// Add CORS middleware around every request
 	// See https://github.com/rs/cors for full option listing
 	router.Use(cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:3000"},
+		AllowedOrigins:   c.StringSlice("cors-allowed-origins"),
 		AllowCredentials: true,
-		// Debug:            true,
+		Debug:            c.Bool("cors-debug"),
 	}).Handler)
 
-	upgrader := websocket.Upgrader{
-		CheckOrigin: func(r *http.Request) bool {
-			// Check against your desired domains here
-			return r.Host == "example.org"
-		},
-		ReadBufferSize:  1024,
-		WriteBufferSize: 1024,
-	}
-
-	router.Get("/playground", handler.Playground("GraphQL playground", "/query"))
 	router.Post("/query", handler.GraphQL(
 		admin.NewExecutableSchema(admin.Config{Resolvers: resolvers}),
-		handler.WebsocketUpgrader(upgrader),
 	))
+	if isDev {
+		router.Get("/playground", handler.Playground("GraphQL playground", "/query"))
+	}
+
 	if !c.Bool("no-admin-ui") {
 		workDir, _ := os.Getwd()
 		buildPath := workDir + "/web/build"
@@ -79,6 +69,9 @@ func startAdmin(ctx context.Context, c *cli.Context) (*http.Server, error) {
 
 		fileServer(router, "/static", http.Dir(buildPath+"/static"))
 		fileServer(router, "/images", http.Dir(buildPath+"/images"))
+		router.Get("/manifest.json", func(w http.ResponseWriter, r *http.Request) {
+			http.ServeFile(w, r, buildPath+"/manifest.json")
+		})
 		router.Get("/*", func(w http.ResponseWriter, r *http.Request) {
 			http.ServeFile(w, r, buildPath+"/index.html")
 		})
@@ -93,7 +86,10 @@ func startAdmin(ctx context.Context, c *cli.Context) (*http.Server, error) {
 	}
 
 	go func() {
-		logrus.Infof("admin server started. connect to http://localhost:%s/playground for GraphQL playground", port)
+		logrus.Infof("admin server started. listening on port %s", port)
+		if isDev {
+			logrus.Infof("GraphQL playground enabled: http://localhost:%s", port)
+		}
 		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			logrus.Fatalf("admin server failed to listen: %s", err)
 		}

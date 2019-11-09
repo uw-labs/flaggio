@@ -1,7 +1,7 @@
 package flaggio
 
-var _ Identifier = Rule{}
-var _ Evaluator = FlagRule{}
+var _ Identifier = (*Rule)(nil)
+var _ Evaluator = (*FlagRule)(nil)
 
 type Rule struct {
 	ID          string

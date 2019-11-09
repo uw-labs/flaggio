@@ -44,7 +44,6 @@ build:
 
 gqlgen:
 	go run github.com/99designs/gqlgen -v -c gqlgen.admin.yml
-	go run github.com/99designs/gqlgen -v -c gqlgen.api.yml
 
 gen:
 	go generate ./...

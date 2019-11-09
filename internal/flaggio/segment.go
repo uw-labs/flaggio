@@ -6,8 +6,8 @@ import (
 	"github.com/victorkt/flaggio/internal/operator"
 )
 
-var _ Identifier = Segment{}
-var _ operator.Validator = Segment{}
+var _ Identifier = (*Segment)(nil)
+var _ operator.Validator = (*Segment)(nil)
 
 type Segment struct {
 	ID          string

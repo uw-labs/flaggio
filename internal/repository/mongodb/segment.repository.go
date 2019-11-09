@@ -108,7 +108,7 @@ func (r SegmentRepository) Update(ctx context.Context, idHex string, f flaggio.U
 		mods["description"] = *f.Description
 	}
 	if len(mods) == 0 {
-		return errors.ErrNothingToUpdate
+		return errors.BadRequest("nothing to update")
 	}
 	filter := bson.M{"_id": id}
 	update := bson.M{"$set": mods}

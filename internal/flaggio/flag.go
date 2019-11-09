@@ -6,8 +6,8 @@ import (
 	"github.com/victorkt/flaggio/internal/errors"
 )
 
-var _ Identifier = Flag{}
-var _ Evaluator = Flag{}
+var _ Identifier = (*Flag)(nil)
+var _ Evaluator = (*Flag)(nil)
 
 type Flag struct {
 	ID                    string

@@ -382,28 +382,6 @@ func TestOneOf_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "float32 equals float32",
-			usrContext:     map[string]interface{}{"prop": float32(8.1)},
-			property:       "prop",
-			values:         []interface{}{float32(8.1)},
-			expectedResult: true,
-		},
-		{
-			desc:           "float32 equals float32 from list",
-			usrContext:     map[string]interface{}{"prop": float32(8.1)},
-			property:       "prop",
-			values:         []interface{}{float32(8.0), float32(8.1)},
-			expectedResult: true,
-		},
-		{
-			desc:           "float32 not equals float32",
-			usrContext:     map[string]interface{}{"prop": float32(8.1)},
-			property:       "prop",
-			values:         []interface{}{float32(8.2)},
-			expectedResult: false,
-		},
-		// ========================================================================
-		{
 			desc:           "float64 equals float64",
 			usrContext:     map[string]interface{}{"prop": float64(9.1)},
 			property:       "prop",
@@ -821,28 +799,6 @@ func TestNotOneOf_Operate(t *testing.T) {
 			usrContext:     map[string]interface{}{"prop": uint64(6)},
 			property:       "prop",
 			values:         []interface{}{uint(7)},
-			expectedResult: true,
-		},
-		// ========================================================================
-		{
-			desc:           "float32 not equals float32",
-			usrContext:     map[string]interface{}{"prop": float32(8.1)},
-			property:       "prop",
-			values:         []interface{}{float32(8.1)},
-			expectedResult: false,
-		},
-		{
-			desc:           "float32 not equals float32 from list",
-			usrContext:     map[string]interface{}{"prop": float32(8.1)},
-			property:       "prop",
-			values:         []interface{}{float32(8.0), float32(8.1)},
-			expectedResult: false,
-		},
-		{
-			desc:           "float32 equals float32",
-			usrContext:     map[string]interface{}{"prop": float32(8.1)},
-			property:       "prop",
-			values:         []interface{}{float32(8.2)},
 			expectedResult: true,
 		},
 		// ========================================================================

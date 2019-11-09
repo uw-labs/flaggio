@@ -2,6 +2,7 @@ package mongodb
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/victorkt/flaggio/internal/errors"
@@ -32,7 +33,7 @@ func (r RuleRepository) CreateFlagRule(ctx context.Context, flagIDHex string, fr
 	for idx, d := range fr.Distributions {
 		variantID, err := primitive.ObjectIDFromHex(d.VariantID)
 		if err != nil {
-			return "", errors.New("invalid variant ID for distribution[%d]", idx)
+			return "", errors.BadRequest(fmt.Sprintf("invalid variant ID for distribution[%d]", idx))
 		}
 		distributions[idx] = distributionModel{
 			ID:         primitive.NewObjectID(),
@@ -86,7 +87,7 @@ func (r RuleRepository) UpdateFlagRule(ctx context.Context, flagIDHex, idHex str
 	for idx, d := range fr.Distributions {
 		variantID, err := primitive.ObjectIDFromHex(d.VariantID)
 		if err != nil {
-			return errors.New("invalid variant ID for distribution[%d]", idx)
+			return errors.BadRequest(fmt.Sprintf("invalid variant ID for distribution[%d]", idx))
 		}
 		distributions[idx] = distributionModel{
 			ID:         primitive.NewObjectID(),

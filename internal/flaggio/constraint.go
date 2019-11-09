@@ -89,7 +89,6 @@ var operatorMap = map[Operation]Operator{
 	OperationMatchesRegex:     operator.MatchesRegex{},
 	OperationDoesntMatchRegex: operator.DoesntMatchRegex{},
 	// TODO: date operations
-	// TODO: ip address operator
 	OperationIsInSegment:   operator.Validates{},
 	OperationIsntInSegment: operator.DoesntValidate{},
 }

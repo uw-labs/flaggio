@@ -1,6 +1,7 @@
 package operator
 
 import (
+	"encoding/json"
 	"errors"
 )
 
@@ -34,8 +35,7 @@ func (o NotOneOf) Operate(usrValue interface{}, validValues []interface{}) bool 
 func equals(cnstrnValue, userValue interface{}) (bool, error) {
 	switch v := cnstrnValue.(type) {
 	// float32 <-> float64 conversions return different number precisions
-	// TODO: make sure all floats are 64bits
-	case string, bool, float32, float64:
+	case string, bool, float64:
 		return v == userValue, nil
 	case int, int32, int64:
 		v1, _ := toInt64(v)
@@ -70,6 +70,8 @@ func toInt64(n interface{}) (int64, error) {
 		return int64(v), nil
 	case int64:
 		return v, nil
+	case json.Number:
+		return v.Int64()
 	default:
 		return 0, errors.New("not an integer")
 	}

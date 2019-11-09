@@ -132,7 +132,7 @@ func (r FlagRepository) Update(ctx context.Context, idHex string, f flaggio.Upda
 		mods["defaultVariantWhenOff"] = oid
 	}
 	if len(mods) == 0 {
-		return errors.ErrNothingToUpdate
+		return errors.BadRequest("nothing to update")
 	}
 	filter := bson.M{"_id": id}
 	update := bson.M{
