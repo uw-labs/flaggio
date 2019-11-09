@@ -94,15 +94,6 @@ func greater(cnstrnValue, userValue interface{}, orEqual bool) (bool, error) {
 			return n2 >= n1, nil
 		}
 		return n2 > n1, nil
-	case float32:
-		flt, ok := userValue.(float32)
-		if !ok {
-			return false, nil
-		}
-		if orEqual {
-			return flt >= cv, nil
-		}
-		return flt > cv, nil
 	case float64:
 		flt, ok := userValue.(float64)
 		if !ok {
@@ -139,15 +130,6 @@ func lower(cnstrnValue, userValue interface{}, orEqual bool) (bool, error) {
 			return n2 <= n1, nil
 		}
 		return n2 < n1, nil
-	case float32:
-		flt, ok := userValue.(float32)
-		if !ok {
-			return false, nil
-		}
-		if orEqual {
-			return flt <= cv, nil
-		}
-		return flt < cv, nil
 	case float64:
 		flt, ok := userValue.(float64)
 		if !ok {

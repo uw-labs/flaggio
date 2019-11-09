@@ -43,7 +43,6 @@ func (o NotOneOf) Operate(usrValue interface{}, validValues []interface{}) (bool
 
 func equals(cnstrnValue, userValue interface{}) (bool, error) {
 	switch v := cnstrnValue.(type) {
-	// float32 <-> float64 conversions return different number precisions
 	case string, bool, float64:
 		return v == userValue, nil
 	case int, int32, int64:
