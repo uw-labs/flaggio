@@ -81,9 +81,9 @@ enum Operation {
 }
 
 type Query {
-    ping: Boolean
+    ping: Boolean!
 }
 
 type Mutation {
-    ping: Boolean
+    ping: Boolean!
 }

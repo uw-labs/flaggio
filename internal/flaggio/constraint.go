@@ -60,7 +60,7 @@ func (c *Constraint) populateSegments(identifiers []Identifier) {
 	}
 }
 
-// ConstraintList is a slice of *Constraint
+// ConstraintList is a slice of *Constraint.
 type ConstraintList []*Constraint
 
 // Validate will check if all the constraints on this list passes their validation.
@@ -78,14 +78,14 @@ func (l ConstraintList) Validate(usrContext map[string]interface{}) (bool, error
 	return true, nil
 }
 
-// Populate will try to populate all references on this constraint list
+// Populate will try to populate all references on this constraint list.
 func (l ConstraintList) Populate(identifiers []Identifier) {
 	for _, c := range l {
 		c.Populate(identifiers)
 	}
 }
 
-// Maps the GraphQL enum to the operator func
+// Maps the GraphQL enum to the operator func.
 var operatorMap = map[Operation]Operator{
 	OperationOneOf:            operator.OneOf,
 	OperationNotOneOf:         operator.NotOneOf,

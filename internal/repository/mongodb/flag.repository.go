@@ -15,11 +15,13 @@ import (
 
 var _ repository.Flag = FlagRepository{}
 
+// FlagRepository implements repository.Flag interface using mongodb.
 type FlagRepository struct {
 	db  *mongo.Database
 	col *mongo.Collection
 }
 
+// FindAll returns a list of flags, based on an optional offset and limit.
 func (r FlagRepository) FindAll(ctx context.Context, offset, limit *int64) ([]*flaggio.Flag, error) {
 	cursor, err := r.col.Find(ctx, bson.M{}, &options.FindOptions{
 		Skip:  offset,
@@ -47,6 +49,7 @@ func (r FlagRepository) FindAll(ctx context.Context, offset, limit *int64) ([]*f
 	return flags, nil
 }
 
+// FindByID returns a flag that has a given ID.
 func (r FlagRepository) FindByID(ctx context.Context, idHex string) (*flaggio.Flag, error) {
 	id, err := primitive.ObjectIDFromHex(idHex)
 	if err != nil {
@@ -64,6 +67,7 @@ func (r FlagRepository) FindByID(ctx context.Context, idHex string) (*flaggio.Fl
 	return f.asFlag(), nil
 }
 
+// FindByKey returns a flag that has a given key.
 func (r FlagRepository) FindByKey(ctx context.Context, key string) (*flaggio.Flag, error) {
 	// filter for the flag key
 	filter := bson.M{"key": key}
@@ -78,6 +82,7 @@ func (r FlagRepository) FindByKey(ctx context.Context, key string) (*flaggio.Fla
 	return f.asFlag(), nil
 }
 
+// Create creates a new flag.
 func (r FlagRepository) Create(ctx context.Context, f flaggio.NewFlag) (string, error) {
 	id := primitive.NewObjectID()
 	_, err := r.col.InsertOne(ctx, &flagModel{
@@ -97,6 +102,7 @@ func (r FlagRepository) Create(ctx context.Context, f flaggio.NewFlag) (string, 
 	return id.Hex(), nil
 }
 
+// Update updates a flag.
 func (r FlagRepository) Update(ctx context.Context, idHex string, f flaggio.UpdateFlag) error {
 	id, err := primitive.ObjectIDFromHex(idHex)
 	if err != nil {
@@ -149,6 +155,7 @@ func (r FlagRepository) Update(ctx context.Context, idHex string, f flaggio.Upda
 	return nil
 }
 
+// Delete deletes a flag.
 func (r FlagRepository) Delete(ctx context.Context, idHex string) error {
 	id, err := primitive.ObjectIDFromHex(idHex)
 	if err != nil {
@@ -164,6 +171,8 @@ func (r FlagRepository) Delete(ctx context.Context, idHex string) error {
 	return nil
 }
 
+// NewMongoFlagRepository returns a new flag repository that uses mongodb as underlying storage.
+// It also creates all needed indexes, if they don't yet exist.
 func NewMongoFlagRepository(ctx context.Context, db *mongo.Database) (*FlagRepository, error) {
 	col := db.Collection("flags")
 	_, err := col.Indexes().CreateMany(ctx, []mongo.IndexModel{

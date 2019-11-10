@@ -13,10 +13,12 @@ import (
 
 var _ repository.Variant = VariantRepository{}
 
+// VariantRepository implements repository.Variant interface using mongodb.
 type VariantRepository struct {
 	flagRepo *FlagRepository
 }
 
+// Create creates a new variant under a flag.
 func (r VariantRepository) Create(ctx context.Context, flagIDHex string, v flaggio.NewVariant) (string, error) {
 	vrntModel := &variantModel{
 		ID:          primitive.NewObjectID(),
@@ -42,6 +44,7 @@ func (r VariantRepository) Create(ctx context.Context, flagIDHex string, v flagg
 	return vrntModel.ID.Hex(), nil
 }
 
+// Update updates a variant under a flag.
 func (r VariantRepository) Update(ctx context.Context, flagIDHex, idHex string, v flaggio.UpdateVariant) error {
 	flagID, err := primitive.ObjectIDFromHex(flagIDHex)
 	if err != nil {
@@ -74,6 +77,7 @@ func (r VariantRepository) Update(ctx context.Context, flagIDHex, idHex string, 
 	return nil
 }
 
+// Delete deletes a variant under a flag.
 func (r VariantRepository) Delete(ctx context.Context, flagIDHex, idHex string) error {
 	flagID, err := primitive.ObjectIDFromHex(flagIDHex)
 	if err != nil {
@@ -97,6 +101,8 @@ func (r VariantRepository) Delete(ctx context.Context, flagIDHex, idHex string) 
 	return nil
 }
 
+// NewMongoVariantRepository returns a new variant repository that uses mongodb
+// as underlying storage.
 func NewMongoVariantRepository(flagRepo *FlagRepository) *VariantRepository {
 	return &VariantRepository{
 		flagRepo: flagRepo,

@@ -15,11 +15,13 @@ import (
 
 var _ repository.Segment = SegmentRepository{}
 
+// SegmentRepository implements repository.Segment interface using mongodb.
 type SegmentRepository struct {
 	db  *mongo.Database
 	col *mongo.Collection
 }
 
+// FindAll returns a list of segments, based on an optional offset and limit.
 func (r SegmentRepository) FindAll(ctx context.Context, offset, limit *int64) ([]*flaggio.Segment, error) {
 	cursor, err := r.col.Find(ctx, bson.M{}, &options.FindOptions{
 		Skip:  offset,
@@ -47,6 +49,7 @@ func (r SegmentRepository) FindAll(ctx context.Context, offset, limit *int64) ([
 	return segments, nil
 }
 
+// FindByID returns a segment that has a given ID.
 func (r SegmentRepository) FindByID(ctx context.Context, idHex string) (*flaggio.Segment, error) {
 	id, err := primitive.ObjectIDFromHex(idHex)
 	if err != nil {
@@ -64,20 +67,7 @@ func (r SegmentRepository) FindByID(ctx context.Context, idHex string) (*flaggio
 	return f.asSegment(), nil
 }
 
-func (r SegmentRepository) FindByKey(ctx context.Context, key string) (*flaggio.Segment, error) {
-	// filter for the segment key
-	filter := bson.M{"key": key}
-
-	var f segmentModel
-	if err := r.col.FindOne(ctx, filter).Decode(&f); err != nil {
-		if err == mongo.ErrNoDocuments {
-			return nil, errors.NotFound("segment")
-		}
-		return nil, err
-	}
-	return f.asSegment(), nil
-}
-
+// Create creates a new segment.
 func (r SegmentRepository) Create(ctx context.Context, f flaggio.NewSegment) (*flaggio.Segment, error) {
 	id := primitive.NewObjectID()
 	_, err := r.col.InsertOne(ctx, &segmentModel{
@@ -93,6 +83,7 @@ func (r SegmentRepository) Create(ctx context.Context, f flaggio.NewSegment) (*f
 	return r.FindByID(ctx, id.Hex())
 }
 
+// Update updates a segment.
 func (r SegmentRepository) Update(ctx context.Context, idHex string, f flaggio.UpdateSegment) error {
 	id, err := primitive.ObjectIDFromHex(idHex)
 	if err != nil {
@@ -122,6 +113,7 @@ func (r SegmentRepository) Update(ctx context.Context, idHex string, f flaggio.U
 	return nil
 }
 
+// Delete deletes a segment.
 func (r SegmentRepository) Delete(ctx context.Context, idHex string) error {
 	id, err := primitive.ObjectIDFromHex(idHex)
 	if err != nil {
@@ -137,6 +129,8 @@ func (r SegmentRepository) Delete(ctx context.Context, idHex string) error {
 	return nil
 }
 
+// NewMongoSegmentRepository returns a new segment repository that uses mongodb as underlying storage.
+// It also creates all needed indexes, if they don't yet exist.
 func NewMongoSegmentRepository(ctx context.Context, db *mongo.Database) (*SegmentRepository, error) {
 	col := db.Collection("segments")
 	_, err := col.Indexes().CreateMany(ctx, []mongo.IndexModel{

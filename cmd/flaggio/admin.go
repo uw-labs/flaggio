@@ -35,12 +35,12 @@ func startAdmin(ctx context.Context, c *cli.Context, logger *logrus.Entry) error
 	if err != nil {
 		return err
 	}
-	resolvers := admin.NewResolver(
-		flgRepo,
-		mongodb.NewMongoVariantRepository(flgRepo),
-		mongodb.NewMongoRuleRepository(flgRepo, sgmntRepo),
-		sgmntRepo,
-	)
+	resolver := &admin.Resolver{
+		FlagRepo:    flgRepo,
+		VariantRepo: mongodb.NewMongoVariantRepository(flgRepo),
+		RuleRepo:    mongodb.NewMongoRuleRepository(flgRepo, sgmntRepo),
+		SegmentRepo: sgmntRepo,
+	}
 
 	router := chi.NewRouter()
 
@@ -53,7 +53,7 @@ func startAdmin(ctx context.Context, c *cli.Context, logger *logrus.Entry) error
 	}).Handler)
 
 	router.Post("/query", handler.GraphQL(
-		admin.NewExecutableSchema(admin.Config{Resolvers: resolvers}),
+		admin.NewExecutableSchema(admin.Config{Resolvers: resolver}),
 	))
 	if isDev {
 		router.Get("/playground", handler.Playground("GraphQL playground", "/query"))

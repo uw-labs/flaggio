@@ -126,7 +126,7 @@ type ComplexityRoot struct {
 }
 
 type MutationResolver interface {
-	Ping(ctx context.Context) (*bool, error)
+	Ping(ctx context.Context) (bool, error)
 	CreateFlag(ctx context.Context, input flaggio.NewFlag) (*flaggio.Flag, error)
 	UpdateFlag(ctx context.Context, id string, input flaggio.UpdateFlag) (*flaggio.Flag, error)
 	DeleteFlag(ctx context.Context, id string) (string, error)
@@ -144,7 +144,7 @@ type MutationResolver interface {
 	DeleteSegment(ctx context.Context, id string) (string, error)
 }
 type QueryResolver interface {
-	Ping(ctx context.Context) (*bool, error)
+	Ping(ctx context.Context) (bool, error)
 	Flags(ctx context.Context, offset *int, limit *int) ([]*flaggio.Flag, error)
 	Flag(ctx context.Context, id string) (*flaggio.Flag, error)
 	Segments(ctx context.Context, offset *int, limit *int) ([]*flaggio.Segment, error)
@@ -861,11 +861,11 @@ enum Operation {
 }
 
 type Query {
-    ping: Boolean
+    ping: Boolean!
 }
 
 type Mutation {
-    ping: Boolean
+    ping: Boolean!
 }`},
 )
 
@@ -2065,12 +2065,15 @@ func (ec *executionContext) _Mutation_ping(ctx context.Context, field graphql.Co
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_createFlag(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2759,12 +2762,15 @@ func (ec *executionContext) _Query_ping(ctx context.Context, field graphql.Colle
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_flags(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -5082,6 +5088,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = graphql.MarshalString("Mutation")
 		case "ping":
 			out.Values[i] = ec._Mutation_ping(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "createFlag":
 			out.Values[i] = ec._Mutation_createFlag(ctx, field)
 			if out.Values[i] == graphql.Null {
@@ -5192,6 +5201,9 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_ping(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
 				return res
 			})
 		case "flags":

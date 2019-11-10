@@ -10,9 +10,8 @@ var _ QueryResolver = &queryResolver{}
 
 type queryResolver struct{ *Resolver }
 
-func (r *queryResolver) Ping(ctx context.Context) (*bool, error) {
-	pong := true
-	return &pong, nil
+func (r *queryResolver) Ping(ctx context.Context) (bool, error) {
+	return true, nil
 }
 
 func (r *queryResolver) Flags(ctx context.Context, offset, limit *int) ([]*flaggio.Flag, error) {
@@ -29,11 +28,11 @@ func (r *queryResolver) Flags(ctx context.Context, offset, limit *int) ([]*flagg
 		v := int64(*limit)
 		lmt = &v
 	}
-	return r.flagRepo.FindAll(ctx, ofst, lmt)
+	return r.FlagRepo.FindAll(ctx, ofst, lmt)
 }
 
 func (r *queryResolver) Flag(ctx context.Context, id string) (*flaggio.Flag, error) {
-	return r.flagRepo.FindByID(ctx, id)
+	return r.FlagRepo.FindByID(ctx, id)
 }
 
 func (r *queryResolver) Segments(ctx context.Context, offset, limit *int) ([]*flaggio.Segment, error) {
@@ -50,9 +49,9 @@ func (r *queryResolver) Segments(ctx context.Context, offset, limit *int) ([]*fl
 		v := int64(*limit)
 		lmt = &v
 	}
-	return r.segmentRepo.FindAll(ctx, ofst, lmt)
+	return r.SegmentRepo.FindAll(ctx, ofst, lmt)
 }
 
 func (r *queryResolver) Segment(ctx context.Context, id string) (*flaggio.Segment, error) {
-	return r.segmentRepo.FindByID(ctx, id)
+	return r.SegmentRepo.FindByID(ctx, id)
 }
