@@ -2,11 +2,10 @@ package main
 
 import (
 	"context"
-	"net/http"
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
@@ -14,7 +13,7 @@ import (
 
 var (
 	AppName        = "flaggio"
-	AppDescription = ""
+	AppDescription = "Feature flag solution"
 	AppVersion     = ""
 )
 
@@ -79,49 +78,69 @@ func main() {
 				EnvVar: "APP_ENV",
 				Value:  "production",
 			},
+			cli.StringFlag{
+				Name:   "log-formatter",
+				Usage:  "Sets the log formatter for the application. Valid values are: text, json",
+				EnvVar: "LOG_FORMATTER",
+				Value:  "json",
+			},
+			cli.StringFlag{
+				Name:   "log-level",
+				Usage:  "Sets the log level for the application",
+				EnvVar: "LOG_LEVEL",
+				Value:  "info",
+			},
 		},
 		Action: func(c *cli.Context) error {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
+			logger := logrus.New()
+			logLevel, err := logrus.ParseLevel(c.String("log-level"))
+			if err != nil {
+				return err
+			}
+			logger.SetLevel(logLevel)
+			switch c.String("log-formatter") {
+			case "text":
+				logger.SetFormatter(new(logrus.TextFormatter))
+			case "json":
+				logger.SetFormatter(new(logrus.JSONFormatter))
+			default:
+				return fmt.Errorf("invalid formatter: %s", c.String("log-formatter"))
+			}
+
 			done := make(chan os.Signal, 1)
 			signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
-			var adminSrv, apiSrv *http.Server
+			errs := make(chan error, 1)
 			if !c.Bool("no-api") {
-				srv, err := startAPI(ctx, c)
-				if err != nil {
-					return err
-				}
-				apiSrv = srv
+				go func() {
+					err := startAPI(ctx, c, logger.WithField("app", "api"))
+					if err != nil {
+						errs <- err
+					}
+				}()
 			}
 			if !c.Bool("no-admin") {
-				srv, err := startAdmin(ctx, c)
-				if err != nil {
+				go func() {
+					err := startAdmin(ctx, c, logger.WithField("app", "admin"))
+					if err != nil {
+						errs <- err
+					}
+				}()
+			}
+
+			for {
+				select {
+				case err := <-errs:
 					return err
-				}
-				adminSrv = srv
-			}
-			<-done
-			cancel()
-
-			logrus.Info("shutting down server ...")
-
-			shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-			defer cancel()
-
-			if adminSrv != nil {
-				if err := adminSrv.Shutdown(shutdownCtx); err != nil {
-					logrus.Fatalf("admin server shutdown failed: %+v", err)
+				case <-done:
+					cancel()
+				case <-ctx.Done():
+					return ctx.Err()
 				}
 			}
-			if apiSrv != nil {
-				if err := apiSrv.Shutdown(shutdownCtx); err != nil {
-					logrus.Fatalf("api server shutdown failed: %+v", err)
-				}
-			}
-			logrus.Info("shutdown complete")
-			return nil
 		},
 	}
 

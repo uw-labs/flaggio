@@ -2,11 +2,11 @@ package main
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"time"
 
 	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
@@ -17,24 +17,27 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func startAPI(ctx context.Context, c *cli.Context) (*http.Server, error) {
-	logrus.Info("starting API server ...")
+func startAPI(ctx context.Context, c *cli.Context, logger *logrus.Entry) error {
+	logger.Info("starting api server ...")
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(c.String("database-uri")))
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	db := client.Database("flaggio") // TODO: make configurable
 	flgRepo, err := mongodb.NewMongoFlagRepository(ctx, db)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	sgmntRepo, err := mongodb.NewMongoSegmentRepository(ctx, db)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	router := chi.NewRouter()
+	router.Use(middleware.RequestID)
+	router.Use(middleware.RequestLogger(&middleware.DefaultLogFormatter{Logger: logger}))
+	router.Use(middleware.Recoverer)
 
 	// Add CORS middleware around every request
 	// See https://github.com/rs/cors for full option listing
@@ -56,10 +59,15 @@ func startAPI(ctx context.Context, c *cli.Context) (*http.Server, error) {
 	}
 
 	go func() {
-		logrus.Infof("api server started. listening on port %s", port)
-		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			logrus.Fatalf("api server failed to listen: %s", err)
+		<-ctx.Done()
+
+		shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer shutdownCancel()
+
+		if err := srv.Shutdown(shutdownCtx); err != nil {
+			logrus.Fatalf("api server shutdown failed: %+v", err)
 		}
 	}()
-	return srv, nil
+	logger.Infof("api server started. listening on port %s", port)
+	return srv.ListenAndServe()
 }

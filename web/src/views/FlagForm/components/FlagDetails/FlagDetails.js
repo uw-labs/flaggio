@@ -105,7 +105,6 @@ const FlagDetails = props => {
         >
           <Tab label="General"/>
           <Tab label="Rules"/>
-          <Tab label="Evaluation" disabled/>
         </Tabs>
 
         {/*********** GENERAL TAB ***********/}

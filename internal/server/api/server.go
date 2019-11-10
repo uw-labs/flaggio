@@ -33,6 +33,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // Setup all routes
 func (s *Server) routes() {
-	s.router.Post("/evaluate", s.handleEvaluateAll)
-	s.router.Post("/evaluate/{key}", s.handleEvaluate)
+	// API version 1
+	s.router.Route("/v1", func(r chi.Router) {
+		r.Post("/evaluate", s.handleEvaluateAll)
+		r.Post("/evaluate/{key}", s.handleEvaluate)
+	})
 }

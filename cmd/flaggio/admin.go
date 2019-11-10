@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"os"
 	"strings"
@@ -19,22 +18,22 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func startAdmin(ctx context.Context, c *cli.Context) (*http.Server, error) {
-	logrus.Info("starting admin server ...")
+func startAdmin(ctx context.Context, c *cli.Context, logger *logrus.Entry) error {
+	logger.Info("starting admin server ...")
 	isDev := c.String("app-env") == "dev"
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(c.String("database-uri")))
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	db := client.Database("flaggio") // TODO: make configurable
 	flgRepo, err := mongodb.NewMongoFlagRepository(ctx, db)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	sgmntRepo, err := mongodb.NewMongoSegmentRepository(ctx, db)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	resolvers := admin.NewResolver(
 		flgRepo,
@@ -86,15 +85,20 @@ func startAdmin(ctx context.Context, c *cli.Context) (*http.Server, error) {
 	}
 
 	go func() {
-		logrus.Infof("admin server started. listening on port %s", port)
-		if isDev {
-			logrus.Infof("GraphQL playground enabled: http://localhost:%s", port)
-		}
-		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			logrus.Fatalf("admin server failed to listen: %s", err)
+		<-ctx.Done()
+
+		shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer shutdownCancel()
+
+		if err := srv.Shutdown(shutdownCtx); err != nil {
+			logrus.Fatalf("admin server shutdown failed: %+v", err)
 		}
 	}()
-	return srv, nil
+	logger.Infof("admin server started. listening on port %s", port)
+	if isDev {
+		logger.Infof("GraphQL playground enabled: http://localhost:%s", port)
+	}
+	return srv.ListenAndServe()
 }
 
 func fileServer(r chi.Router, path string, root http.FileSystem) {
