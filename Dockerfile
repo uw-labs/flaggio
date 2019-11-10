@@ -1,6 +1,6 @@
-############################
+######################################
 # STEP 1 build go executable binary
-############################
+######################################
 FROM golang:alpine AS go_builder
 
 RUN apk update && apk add --no-cache git make ca-certificates tzdata && update-ca-certificates
@@ -15,10 +15,12 @@ COPY . .
 RUN make install && \
     GOOS=linux GOARCH=amd64 make build
 
-############################
+######################################
 # STEP 2 build frontend app
-############################
+######################################
 FROM node:alpine AS node_builder
+
+ENV NODE_ENV production
 
 WORKDIR /flaggio
 
@@ -26,10 +28,9 @@ COPY --from=go_builder /flaggio/web /flaggio
 
 RUN npm install && npm run build
 
-
-############################
+######################################
 # STEP 3 build image
-############################
+######################################
 FROM scratch
 
 COPY --from=go_builder /usr/share/zoneinfo /usr/share/zoneinfo
