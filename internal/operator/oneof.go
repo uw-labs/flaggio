@@ -7,10 +7,7 @@ import (
 
 // OneOf operator will check if the value from the user context equals to
 // any of the configured values on the flag.
-type OneOf struct{}
-
-// Operate will check the value from the user context against the configured validators
-func (o OneOf) Operate(usrValue interface{}, validValues []interface{}) (bool, error) {
+func OneOf(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
 		ok, err := equals(v, usrValue)
 		if err != nil {
@@ -25,10 +22,7 @@ func (o OneOf) Operate(usrValue interface{}, validValues []interface{}) (bool, e
 
 // NotOneOf operator will check if the value from the user context doesn't equal to
 // any of the configured values on the flag.
-type NotOneOf struct{}
-
-// Operate will check the value from the user context against the configured validators
-func (o NotOneOf) Operate(usrValue interface{}, validValues []interface{}) (bool, error) {
+func NotOneOf(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
 		ok, err := equals(v, usrValue)
 		if err != nil {

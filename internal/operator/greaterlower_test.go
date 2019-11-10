@@ -198,8 +198,7 @@ func TestGreater_Operate(t *testing.T) {
 
 	for _, test := range tt {
 		t.Run(test.desc, func(t *testing.T) {
-			op := operator.Greater{}
-			res, err := op.Operate(test.usrContext[test.property], test.values)
+			res, err := operator.Greater(test.usrContext[test.property], test.values)
 			assert.NoError(t, err)
 			assert.Equal(t, test.expectedResult, res)
 		})
@@ -397,8 +396,7 @@ func TestGreaterOrEqual_Operate(t *testing.T) {
 
 	for _, test := range tt {
 		t.Run(test.desc, func(t *testing.T) {
-			op := operator.GreaterOrEqual{}
-			res, err := op.Operate(test.usrContext[test.property], test.values)
+			res, err := operator.GreaterOrEqual(test.usrContext[test.property], test.values)
 			assert.NoError(t, err)
 			assert.Equal(t, test.expectedResult, res)
 		})
@@ -596,8 +594,7 @@ func TestLower_Operate(t *testing.T) {
 
 	for _, test := range tt {
 		t.Run(test.desc, func(t *testing.T) {
-			op := operator.Lower{}
-			res, err := op.Operate(test.usrContext[test.property], test.values)
+			res, err := operator.Lower(test.usrContext[test.property], test.values)
 			assert.NoError(t, err)
 			assert.Equal(t, test.expectedResult, res)
 		})
@@ -795,8 +792,7 @@ func TestLowerOrEqual_Operate(t *testing.T) {
 
 	for _, test := range tt {
 		t.Run(test.desc, func(t *testing.T) {
-			op := operator.LowerOrEqual{}
-			res, err := op.Operate(test.usrContext[test.property], test.values)
+			res, err := operator.LowerOrEqual(test.usrContext[test.property], test.values)
 			assert.NoError(t, err)
 			assert.Equal(t, test.expectedResult, res)
 		})

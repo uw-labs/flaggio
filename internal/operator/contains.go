@@ -7,10 +7,7 @@ import (
 
 // Contains operator will check if the value from the user context contains
 // any of the configured values on the flag.
-type Contains struct{}
-
-// Operate will check the value from the user payload against the configured validators
-func (o Contains) Operate(usrValue interface{}, validValues []interface{}) (bool, error) {
+func Contains(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
 		ok, err := contains(v, usrValue)
 		if err != nil {
@@ -25,10 +22,7 @@ func (o Contains) Operate(usrValue interface{}, validValues []interface{}) (bool
 
 // DoesntContain operator will check if the value from the user context doesn't contain
 // any of the configured values on the flag.
-type DoesntContain struct{}
-
-// Operate will check the value from the user payload against the configured validators
-func (o DoesntContain) Operate(usrValue interface{}, validValues []interface{}) (bool, error) {
+func DoesntContain(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
 		ok, err := contains(v, usrValue)
 		if err != nil {

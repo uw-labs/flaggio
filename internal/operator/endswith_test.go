@@ -48,8 +48,7 @@ func TestEndsWith_Operate(t *testing.T) {
 
 	for _, test := range tt {
 		t.Run(test.desc, func(t *testing.T) {
-			op := operator.EndsWith{}
-			res, err := op.Operate(test.usrContext[test.property], test.values)
+			res, err := operator.EndsWith(test.usrContext[test.property], test.values)
 			assert.NoError(t, err)
 			assert.Equal(t, test.expectedResult, res)
 		})
@@ -97,8 +96,7 @@ func TestDoesntEndWith_Operate(t *testing.T) {
 
 	for _, test := range tt {
 		t.Run(test.desc, func(t *testing.T) {
-			op := operator.DoesntEndWith{}
-			res, err := op.Operate(test.usrContext[test.property], test.values)
+			res, err := operator.DoesntEndWith(test.usrContext[test.property], test.values)
 			assert.NoError(t, err)
 			assert.Equal(t, test.expectedResult, res)
 		})

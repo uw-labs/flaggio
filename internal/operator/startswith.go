@@ -6,10 +6,7 @@ import (
 
 // StartsWith operator will check if the value from the user context starts with
 // any of the configured values on the flag.
-type StartsWith struct{}
-
-// Operate will check the value from the user context against the configured validators
-func (o StartsWith) Operate(usrValue interface{}, validValues []interface{}) (bool, error) {
+func StartsWith(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
 		ok, err := startsWith(v, usrValue)
 		if err != nil {
@@ -24,10 +21,7 @@ func (o StartsWith) Operate(usrValue interface{}, validValues []interface{}) (bo
 
 // DoesntStartWith operator will check if the value from the user context doesn't start with
 // any of the configured values on the flag.
-type DoesntStartWith struct{}
-
-// Operate will check the value from the user context against the configured validators
-func (o DoesntStartWith) Operate(usrValue interface{}, validValues []interface{}) (bool, error) {
+func DoesntStartWith(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
 		ok, err := startsWith(v, usrValue)
 		if err != nil {

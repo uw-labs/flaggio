@@ -31,8 +31,7 @@ func TestExists_Operate(t *testing.T) {
 
 	for _, test := range tt {
 		t.Run(test.desc, func(t *testing.T) {
-			op := operator.Exists{}
-			res, err := op.Operate(test.usrContext[test.property], test.values)
+			res, err := operator.Exists(test.usrContext[test.property], test.values)
 			assert.NoError(t, err)
 			assert.Equal(t, test.expectedResult, res)
 		})
@@ -63,8 +62,7 @@ func TestDoesntExist_Operate(t *testing.T) {
 
 	for _, test := range tt {
 		t.Run(test.desc, func(t *testing.T) {
-			op := operator.DoesntExist{}
-			res, err := op.Operate(test.usrContext[test.property], test.values)
+			res, err := operator.DoesntExist(test.usrContext[test.property], test.values)
 			assert.NoError(t, err)
 			assert.Equal(t, test.expectedResult, res)
 		})

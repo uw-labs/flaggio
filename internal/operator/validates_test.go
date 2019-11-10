@@ -69,8 +69,7 @@ func TestValidates_Operate(t *testing.T) {
 
 	for _, test := range tt {
 		t.Run(test.desc, func(t *testing.T) {
-			op := operator.Validates{}
-			res, err := op.Operate(test.usrContext, test.values)
+			res, err := operator.Validates(test.usrContext, test.values)
 			assert.Equal(t, test.expectedError, err)
 			assert.Equal(t, test.expectedResult, res)
 		})
@@ -127,8 +126,7 @@ func TestDoesntValidate_Operate(t *testing.T) {
 
 	for _, test := range tt {
 		t.Run(test.desc, func(t *testing.T) {
-			op := operator.DoesntValidate{}
-			res, err := op.Operate(test.usrContext, test.values)
+			res, err := operator.DoesntValidate(test.usrContext, test.values)
 			assert.Equal(t, test.expectedError, err)
 			assert.Equal(t, test.expectedResult, res)
 		})

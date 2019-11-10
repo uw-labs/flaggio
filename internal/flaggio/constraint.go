@@ -1,7 +1,5 @@
 package flaggio
 
-//go:generate mockgen -destination=./mocks/operator_mock.go -package=flaggio_mock github.com/victorkt/flaggio/internal/flaggio Operator
-
 import (
 	"fmt"
 
@@ -11,12 +9,10 @@ import (
 
 var _ operator.Validator = (*Constraint)(nil)
 
-// Operator runs some logic using the value from the payload and the
+// Operator runs some logic using the value from the user context and the
 // value from the flag configuration to determine if the operation is
 // satisfied or not.
-type Operator interface {
-	Operate(usrValue interface{}, validValues []interface{}) (bool, error)
-}
+type Operator func(usrValue interface{}, validValues []interface{}) (bool, error)
 
 // Constraint holds all the information needed for an operation to be executed.
 type Constraint struct {
@@ -30,16 +26,16 @@ type Constraint struct {
 // some configured valid values. Some operations don't need the property to be defined,
 // while some others don't required any valid values.
 func (c Constraint) Validate(usrContext map[string]interface{}) (bool, error) {
-	op, ok := operatorMap[c.Operation]
+	operate, ok := operatorMap[c.Operation]
 	if !ok {
 		// unknown operation, this is a configuration problem
 		return false, errors.InvalidFlag(fmt.Sprintf("unknown operation: %s", c.Operation))
 	}
 	switch c.Operation {
 	case OperationIsInSegment, OperationIsntInSegment:
-		return op.Operate(usrContext, c.Values)
+		return operate(usrContext, c.Values)
 	default:
-		return op.Operate(usrContext[c.Property], c.Values)
+		return operate(usrContext[c.Property], c.Values)
 	}
 }
 
@@ -89,24 +85,24 @@ func (l ConstraintList) Populate(identifiers []Identifier) {
 	}
 }
 
+// Maps the GraphQL enum to the operator func
 var operatorMap = map[Operation]Operator{
-	OperationOneOf:            operator.OneOf{},
-	OperationNotOneOf:         operator.NotOneOf{},
-	OperationGreater:          operator.Greater{},
-	OperationGreaterOrEqual:   operator.GreaterOrEqual{},
-	OperationLower:            operator.Lower{},
-	OperationLowerOrEqual:     operator.LowerOrEqual{},
-	OperationExists:           operator.Exists{},
-	OperationDoesntExist:      operator.DoesntExist{},
-	OperationContains:         operator.Contains{},
-	OperationDoesntContain:    operator.DoesntContain{},
-	OperationStartsWith:       operator.StartsWith{},
-	OperationDoesntStartWith:  operator.DoesntStartWith{},
-	OperationEndsWith:         operator.EndsWith{},
-	OperationDoesntEndWith:    operator.DoesntEndWith{},
-	OperationMatchesRegex:     operator.MatchesRegex{},
-	OperationDoesntMatchRegex: operator.DoesntMatchRegex{},
-	// TODO: date operations
-	OperationIsInSegment:   operator.Validates{},
-	OperationIsntInSegment: operator.DoesntValidate{},
+	OperationOneOf:            operator.OneOf,
+	OperationNotOneOf:         operator.NotOneOf,
+	OperationGreater:          operator.Greater,
+	OperationGreaterOrEqual:   operator.GreaterOrEqual,
+	OperationLower:            operator.Lower,
+	OperationLowerOrEqual:     operator.LowerOrEqual,
+	OperationExists:           operator.Exists,
+	OperationDoesntExist:      operator.DoesntExist,
+	OperationContains:         operator.Contains,
+	OperationDoesntContain:    operator.DoesntContain,
+	OperationStartsWith:       operator.StartsWith,
+	OperationDoesntStartWith:  operator.DoesntStartWith,
+	OperationEndsWith:         operator.EndsWith,
+	OperationDoesntEndWith:    operator.DoesntEndWith,
+	OperationMatchesRegex:     operator.MatchesRegex,
+	OperationDoesntMatchRegex: operator.DoesntMatchRegex,
+	OperationIsInSegment:      operator.Validates,
+	OperationIsntInSegment:    operator.DoesntValidate,
 }

@@ -48,8 +48,7 @@ func TestMatchesRegex_Operate(t *testing.T) {
 
 	for _, test := range tt {
 		t.Run(test.desc, func(t *testing.T) {
-			op := operator.MatchesRegex{}
-			res, err := op.Operate(test.usrContext[test.property], test.values)
+			res, err := operator.MatchesRegex(test.usrContext[test.property], test.values)
 			assert.NoError(t, err)
 			assert.Equal(t, test.expectedResult, res)
 		})
@@ -97,8 +96,7 @@ func TestDoesntMatchRegex_Operate(t *testing.T) {
 
 	for _, test := range tt {
 		t.Run(test.desc, func(t *testing.T) {
-			op := operator.DoesntMatchRegex{}
-			res, err := op.Operate(test.usrContext[test.property], test.values)
+			res, err := operator.DoesntMatchRegex(test.usrContext[test.property], test.values)
 			assert.NoError(t, err)
 			assert.Equal(t, test.expectedResult, res)
 		})

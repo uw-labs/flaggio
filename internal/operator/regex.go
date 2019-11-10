@@ -6,10 +6,7 @@ import (
 
 // MatchesRegex operator will check if the value from the user context matches
 // any regexes configured on the flag.
-type MatchesRegex struct{}
-
-// Operate will check the value from the user context against the configured validators
-func (o MatchesRegex) Operate(usrValue interface{}, validValues []interface{}) (bool, error) {
+func MatchesRegex(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
 		ok, err := matches(v, usrValue)
 		if err != nil {
@@ -24,10 +21,7 @@ func (o MatchesRegex) Operate(usrValue interface{}, validValues []interface{}) (
 
 // DoesntMatchRegex operator will check if the value from the user context doesn't match
 // any regexes configured on the flag.
-type DoesntMatchRegex struct{}
-
-// Operate will check the value from the user context against the configured validators
-func (o DoesntMatchRegex) Operate(usrValue interface{}, validValues []interface{}) (bool, error) {
+func DoesntMatchRegex(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
 		ok, err := matches(v, usrValue)
 		if err != nil {

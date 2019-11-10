@@ -48,8 +48,7 @@ func TestContains_Operate(t *testing.T) {
 
 	for _, test := range tt {
 		t.Run(test.desc, func(t *testing.T) {
-			op := operator.Contains{}
-			res, err := op.Operate(test.usrContext[test.property], test.values)
+			res, err := operator.Contains(test.usrContext[test.property], test.values)
 			assert.NoError(t, err)
 			assert.Equal(t, test.expectedResult, res)
 		})
@@ -97,8 +96,7 @@ func TestDoesntContain_Operate(t *testing.T) {
 
 	for _, test := range tt {
 		t.Run(test.desc, func(t *testing.T) {
-			op := operator.DoesntContain{}
-			res, err := op.Operate(test.usrContext[test.property], test.values)
+			res, err := operator.DoesntContain(test.usrContext[test.property], test.values)
 			assert.NoError(t, err)
 			assert.Equal(t, test.expectedResult, res)
 		})

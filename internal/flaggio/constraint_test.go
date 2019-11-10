@@ -2,11 +2,11 @@ package flaggio
 
 import (
 	"errors"
+	"fmt"
+	"reflect"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	flaggio_mock "github.com/victorkt/flaggio/internal/flaggio/mocks"
 )
 
 func TestConstraint_Validate(t *testing.T) {
@@ -58,19 +58,21 @@ func TestConstraint_Validate(t *testing.T) {
 
 	for _, test := range tt {
 		t.Run(test.desc, func(t *testing.T) {
-			mockCtrl := gomock.NewController(t)
-			defer mockCtrl.Finish()
-			op := flaggio_mock.NewMockOperator(mockCtrl)
-			oldOperatorMap := make(map[Operation]Operator, len(operatorMap))
-			for key, val := range operatorMap {
-				oldOperatorMap[key] = val
-				operatorMap[key] = op
+			var mockCalls int
+			mockOp := func(usrValue interface{}, validValues []interface{}) (bool, error) {
+				mockCalls++
+				if !reflect.DeepEqual(usrValue, test.expectedUsrValue) {
+					return false, fmt.Errorf("expected user value to be: %+v, got: %+v", test.expectedUsrValue, usrValue)
+				}
+				return test.operatorResult, nil
 			}
-			defer func() {
-				operatorMap = oldOperatorMap
-			}()
-
-			op.EXPECT().Operate(test.expectedUsrValue, gomock.Any()).Times(test.operatorCalls).Return(test.operatorResult, nil)
+			oldOperator, ok := operatorMap[test.cnstrnt.Operation]
+			if ok {
+				operatorMap[test.cnstrnt.Operation] = mockOp
+				defer func() {
+					operatorMap[test.cnstrnt.Operation] = oldOperator
+				}()
+			}
 
 			res, err := test.cnstrnt.Validate(test.usrContext)
 			if test.expectedError != nil {
@@ -78,6 +80,7 @@ func TestConstraint_Validate(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 			}
+			assert.Equal(t, test.operatorCalls, mockCalls)
 			assert.Equal(t, test.expectedResult, res)
 		})
 	}

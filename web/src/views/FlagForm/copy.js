@@ -15,10 +15,6 @@ export const Operations = {
   DOESNT_END_WITH: "Doesn't end with",
   MATCHES_REGEX: "Matches regex",
   DOESNT_MATCH_REGEX: "Doesn't match regex",
-  // BEFORE_DATE: "Before date",
-  // BEFORE_OR_SAME_DATE: "Before or same date",
-  // AFTER_DATE: "After date",
-  // AFTER_OR_SAME_DATE: "After or same date",
   IS_IN_SEGMENT: "Is in segment",
   ISNT_IN_SEGMENT: "Isn't in segment",
 };

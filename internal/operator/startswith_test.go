@@ -48,8 +48,7 @@ func TestStartsWith_Operate(t *testing.T) {
 
 	for _, test := range tt {
 		t.Run(test.desc, func(t *testing.T) {
-			op := operator.StartsWith{}
-			res, err := op.Operate(test.usrContext[test.property], test.values)
+			res, err := operator.StartsWith(test.usrContext[test.property], test.values)
 			assert.NoError(t, err)
 			assert.Equal(t, test.expectedResult, res)
 		})
@@ -97,8 +96,7 @@ func TestDoesntStartWith_Operate(t *testing.T) {
 
 	for _, test := range tt {
 		t.Run(test.desc, func(t *testing.T) {
-			op := operator.DoesntStartWith{}
-			res, err := op.Operate(test.usrContext[test.property], test.values)
+			res, err := operator.DoesntStartWith(test.usrContext[test.property], test.values)
 			assert.NoError(t, err)
 			assert.Equal(t, test.expectedResult, res)
 		})

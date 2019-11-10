@@ -2,10 +2,7 @@ package operator
 
 // Greater operator will check if the value from the user context is greater
 // than any of the configured values on the flag.
-type Greater struct{}
-
-// Operate will check the value from the user context against the configured validators
-func (o Greater) Operate(usrValue interface{}, validValues []interface{}) (bool, error) {
+func Greater(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
 		ok, err := greater(v, usrValue, false)
 		if err != nil {
@@ -20,10 +17,7 @@ func (o Greater) Operate(usrValue interface{}, validValues []interface{}) (bool,
 
 // GreaterOrEqual operator will check if the value from the user context is greater
 // or equal than any of the configured values on the flag.
-type GreaterOrEqual struct{}
-
-// Operate will check the value from the user context against the configured validators
-func (o GreaterOrEqual) Operate(usrValue interface{}, validValues []interface{}) (bool, error) {
+func GreaterOrEqual(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
 		ok, err := greater(v, usrValue, true)
 		if err != nil {
@@ -38,10 +32,7 @@ func (o GreaterOrEqual) Operate(usrValue interface{}, validValues []interface{})
 
 // Lower operator will check if the value from the user context is lower
 // than any of the configured values on the flag.
-type Lower struct{}
-
-// Operate will check the value from the user context against the configured validators
-func (o Lower) Operate(usrValue interface{}, validValues []interface{}) (bool, error) {
+func Lower(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
 		ok, err := lower(v, usrValue, false)
 		if err != nil {
@@ -56,10 +47,7 @@ func (o Lower) Operate(usrValue interface{}, validValues []interface{}) (bool, e
 
 // LowerOrEqual operator will check if the value from the user context is lower
 // or equal than any of the configured values on the flag.
-type LowerOrEqual struct{}
-
-// Operate will check the value from the user context against the configured validators
-func (o LowerOrEqual) Operate(usrValue interface{}, validValues []interface{}) (bool, error) {
+func LowerOrEqual(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
 		ok, err := lower(v, usrValue, true)
 		if err != nil {
