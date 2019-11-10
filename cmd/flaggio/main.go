@@ -40,6 +40,7 @@ func main() {
 				Name:   "build-path",
 				Usage:  "UI build absolute path",
 				EnvVar: "BUILD_PATH",
+				Value:  "/",
 			},
 			cli.StringSliceFlag{
 				Name:   "cors-allowed-origins",
