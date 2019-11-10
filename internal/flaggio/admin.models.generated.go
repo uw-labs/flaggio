@@ -95,10 +95,6 @@ const (
 	OperationDoesntEndWith    Operation = "DOESNT_END_WITH"
 	OperationMatchesRegex     Operation = "MATCHES_REGEX"
 	OperationDoesntMatchRegex Operation = "DOESNT_MATCH_REGEX"
-	OperationBeforeDate       Operation = "BEFORE_DATE"
-	OperationBeforeOrSameDate Operation = "BEFORE_OR_SAME_DATE"
-	OperationAfterDate        Operation = "AFTER_DATE"
-	OperationAfterOrSameDate  Operation = "AFTER_OR_SAME_DATE"
 	OperationIsInSegment      Operation = "IS_IN_SEGMENT"
 	OperationIsntInSegment    Operation = "ISNT_IN_SEGMENT"
 )
@@ -120,17 +116,13 @@ var AllOperation = []Operation{
 	OperationDoesntEndWith,
 	OperationMatchesRegex,
 	OperationDoesntMatchRegex,
-	OperationBeforeDate,
-	OperationBeforeOrSameDate,
-	OperationAfterDate,
-	OperationAfterOrSameDate,
 	OperationIsInSegment,
 	OperationIsntInSegment,
 }
 
 func (e Operation) IsValid() bool {
 	switch e {
-	case OperationOneOf, OperationNotOneOf, OperationGreater, OperationGreaterOrEqual, OperationLower, OperationLowerOrEqual, OperationExists, OperationDoesntExist, OperationContains, OperationDoesntContain, OperationStartsWith, OperationDoesntStartWith, OperationEndsWith, OperationDoesntEndWith, OperationMatchesRegex, OperationDoesntMatchRegex, OperationBeforeDate, OperationBeforeOrSameDate, OperationAfterDate, OperationAfterOrSameDate, OperationIsInSegment, OperationIsntInSegment:
+	case OperationOneOf, OperationNotOneOf, OperationGreater, OperationGreaterOrEqual, OperationLower, OperationLowerOrEqual, OperationExists, OperationDoesntExist, OperationContains, OperationDoesntContain, OperationStartsWith, OperationDoesntStartWith, OperationEndsWith, OperationDoesntEndWith, OperationMatchesRegex, OperationDoesntMatchRegex, OperationIsInSegment, OperationIsntInSegment:
 		return true
 	}
 	return false

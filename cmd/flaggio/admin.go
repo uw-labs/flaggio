@@ -76,7 +76,7 @@ func startAdmin(ctx context.Context, c *cli.Context, logger *logrus.Entry) error
 		})
 	}
 
-	port := c.String("admin-port")
+	port := "8081"
 	srv := &http.Server{
 		Addr:         ":" + port,
 		Handler:      router,

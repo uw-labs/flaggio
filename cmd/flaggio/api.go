@@ -47,7 +47,7 @@ func startAPI(ctx context.Context, c *cli.Context, logger *logrus.Entry) error {
 		Debug:            c.Bool("cors-debug"),
 	}).Handler)
 
-	port := c.String("api-port")
+	port := "8080"
 	srv := &http.Server{
 		Addr: ":" + port,
 		Handler: api.NewServer(

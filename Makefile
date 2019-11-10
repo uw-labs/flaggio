@@ -4,12 +4,12 @@
 GIT_SUMMARY := $(shell git describe --tags --dirty --always)
 GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 BUILD_STAMP := $(shell date -u '+%Y-%m-%dT%H:%M:%S%z')
-LDFLAGS = -ldflags '-s \
-	-X "github.com/victorkt/flaggio/main.ApplicationName=$(1)" \
-	-X "github.com/victorkt/flaggio/main.ApplicationDescription=$(2)" \
-	-X "github.com/victorkt/flaggio/main.GitSummary=$(GIT_SUMMARY)" \
-	-X "github.com/victorkt/flaggio/main.GitBranch=$(GIT_BRANCH)" \
-	-X "github.com/victorkt/flaggio/main.BuildStamp=$(BUILD_STAMP)"'
+LDFLAGS = -ldflags '-w -s \
+	-X "main.ApplicationName=$(1)" \
+	-X "main.ApplicationDescription=$(2)" \
+	-X "main.GitSummary=$(GIT_SUMMARY)" \
+	-X "main.GitBranch=$(GIT_BRANCH)" \
+	-X "main.BuildStamp=$(BUILD_STAMP)"'
 .info:
 	@echo GIT_SUMMARY: $(GIT_SUMMARY)
 	@echo GIT_BRANCH: $(GIT_BRANCH)
@@ -35,15 +35,10 @@ lint: ## Run linting
 test: ## Run tests
 	go test -race -v ./...
 
-build: CGO_ENABLED=0 ## Build project
 build:
-	rm -rf bin
-	mkdir bin
-	go build -a $(call LDFLAGS,admin,Manage flaggio application) -o bin/admin ./cmd/admin/
-	go build -a $(call LDFLAGS,flaggio,Evaluate user context and return flag values) -o bin/flaggio ./cmd/flaggio/
-
-gqlgen:
-	go run github.com/99designs/gqlgen -v -c gqlgen.admin.yml
+	rm -rf bin && \
+	mkdir bin && \
+	CGO_ENABLED=0 go build -a $(call LDFLAGS,flaggio,Self hosted feature flag solution) -o bin/flaggio ./cmd/flaggio/
 
 gen:
 	go generate ./...

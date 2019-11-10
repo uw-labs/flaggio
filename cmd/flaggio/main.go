@@ -12,16 +12,23 @@ import (
 )
 
 var (
-	AppName        = "flaggio"
-	AppDescription = "Feature flag solution"
-	AppVersion     = ""
+	ApplicationName        = "flaggio"
+	ApplicationDescription = "Self hosted feature flag solution"
+	ApplicationVersion     = "0.1.0"
+	GitSummary             = ""
+	GitBranch              = ""
+	BuildStamp             = ""
 )
+
+func build() string {
+	return fmt.Sprintf("%s[%s] (%s)", GitBranch, GitSummary, BuildStamp)
+}
 
 func main() {
 	app := cli.App{
-		Name:        AppName,
-		Description: AppDescription,
-		Version:     AppVersion,
+		Name:        ApplicationName,
+		Description: ApplicationDescription,
+		Version:     ApplicationVersion,
 		Flags: []cli.Flag{
 			cli.StringFlag{
 				Name:   "database-uri",
@@ -44,18 +51,6 @@ func main() {
 				Usage:  "CORS debug logging",
 				EnvVar: "CORS_DEBUG",
 				Hidden: true,
-			},
-			cli.StringFlag{
-				Name:   "api-port",
-				Usage:  "Port the API server will listen to",
-				EnvVar: "API_PORT",
-				Value:  "25880",
-			},
-			cli.StringFlag{
-				Name:   "admin-port",
-				Usage:  "Port the admin server will listen to",
-				EnvVar: "ADMIN_PORT",
-				Value:  "25881",
 			},
 			cli.BoolFlag{
 				Name:   "no-api",
@@ -109,6 +104,9 @@ func main() {
 			default:
 				return fmt.Errorf("invalid formatter: %s", c.String("log-formatter"))
 			}
+
+			logger.WithFields(logrus.Fields{"version": ApplicationVersion, "build": build()}).
+				Infof("starting %s application", ApplicationName)
 
 			done := make(chan os.Signal, 1)
 			signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)

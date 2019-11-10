@@ -2,16 +2,16 @@
 # Refer to https://gqlgen.com/config/ for detailed documentation.
 
 schema:
-  - schema/flaggio.graphql
-  - schema/admin.graphql
+  - flaggio.graphql
+  - admin.graphql
 exec:
-  filename: internal/server/admin/admin.generated.go
+  filename: ../internal/server/admin/admin.generated.go
   package: admin
 model:
-  filename: internal/flaggio/admin.models.generated.go
+  filename: ../internal/flaggio/admin.models.generated.go
   package: flaggio
 resolver:
-  filename: internal/server/admin/resolver.go
+  filename: ../internal/server/admin/resolver.go
   type: Resolver
 autobind:
   - github.com/victorkt/flaggio/internal/flaggio

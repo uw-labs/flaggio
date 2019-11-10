@@ -687,7 +687,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var parsedSchema = gqlparser.MustLoadSchema(
-	&ast.Source{Name: "schema/admin.graphql", Input: `input NewFlag {
+	&ast.Source{Name: "admin.graphql", Input: `input NewFlag {
     key: String!
     name: String!
     description: String
@@ -778,7 +778,7 @@ extend type Mutation {
     updateSegment(id: ID!, input: UpdateSegment!): Boolean!
     deleteSegment(id: ID!): ID!
 }`},
-	&ast.Source{Name: "schema/flaggio.graphql", Input: `scalar Time
+	&ast.Source{Name: "flaggio.graphql", Input: `scalar Time
 scalar Any
 
 type Flag {
@@ -856,10 +856,6 @@ enum Operation {
     DOESNT_END_WITH
     MATCHES_REGEX
     DOESNT_MATCH_REGEX
-    BEFORE_DATE
-    BEFORE_OR_SAME_DATE
-    AFTER_DATE
-    AFTER_OR_SAME_DATE
     IS_IN_SEGMENT
     ISNT_IN_SEGMENT
 }
