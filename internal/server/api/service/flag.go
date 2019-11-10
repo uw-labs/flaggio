@@ -108,7 +108,7 @@ type EvaluationRequest struct {
 	Debug       *bool               `json:"debug,omitempty"`
 }
 
-// Bind binds additional data to the EvaluationRequest.
+// Bind adds additional data to the EvaluationRequest.
 // Some special fields are added to the user context:
 // * $userId is the user ID provided in the request
 // * $ip is the network address that sent the request. if the
