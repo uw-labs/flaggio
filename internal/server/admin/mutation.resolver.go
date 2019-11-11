@@ -34,13 +34,12 @@ func (r *mutationResolver) DeleteFlag(ctx context.Context, id string) (string, e
 	return id, err
 }
 
-func (r *mutationResolver) CreateVariant(ctx context.Context, flagID string, input flaggio.NewVariant) (string, error) {
+func (r *mutationResolver) CreateVariant(ctx context.Context, flagID string, input flaggio.NewVariant) (*flaggio.Variant, error) {
 	return r.VariantRepo.Create(ctx, flagID, input)
 }
 
-func (r *mutationResolver) UpdateVariant(ctx context.Context, flagID, id string, input flaggio.UpdateVariant) (bool, error) {
-	err := r.VariantRepo.Update(ctx, flagID, id, input)
-	return err == nil, err
+func (r *mutationResolver) UpdateVariant(ctx context.Context, flagID, id string, input flaggio.UpdateVariant) (*flaggio.Variant, error) {
+	return r.VariantRepo.Update(ctx, flagID, id, input)
 }
 
 func (r *mutationResolver) DeleteVariant(ctx context.Context, flagID, id string) (string, error) {

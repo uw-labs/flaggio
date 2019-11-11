@@ -130,8 +130,8 @@ type MutationResolver interface {
 	CreateFlag(ctx context.Context, input flaggio.NewFlag) (*flaggio.Flag, error)
 	UpdateFlag(ctx context.Context, id string, input flaggio.UpdateFlag) (*flaggio.Flag, error)
 	DeleteFlag(ctx context.Context, id string) (string, error)
-	CreateVariant(ctx context.Context, flagID string, input flaggio.NewVariant) (string, error)
-	UpdateVariant(ctx context.Context, flagID string, id string, input flaggio.UpdateVariant) (bool, error)
+	CreateVariant(ctx context.Context, flagID string, input flaggio.NewVariant) (*flaggio.Variant, error)
+	UpdateVariant(ctx context.Context, flagID string, id string, input flaggio.UpdateVariant) (*flaggio.Variant, error)
 	DeleteVariant(ctx context.Context, flagID string, id string) (string, error)
 	CreateFlagRule(ctx context.Context, flagID string, input flaggio.NewFlagRule) (string, error)
 	UpdateFlagRule(ctx context.Context, flagID string, id string, input flaggio.UpdateFlagRule) (bool, error)
@@ -763,8 +763,8 @@ extend type Mutation {
     updateFlag(id: ID!, input: UpdateFlag!): Flag!
     deleteFlag(id: ID!): ID!
 
-    createVariant(flagId: ID!, input: NewVariant!): ID!
-    updateVariant(flagId: ID!, id: ID!, input: UpdateVariant!): Boolean!
+    createVariant(flagId: ID!, input: NewVariant!): Variant!
+    updateVariant(flagId: ID!, id: ID!, input: UpdateVariant!): Variant!
     deleteVariant(flagId: ID!, id: ID!): ID!
 
     createFlagRule(flagId: ID!, input: NewFlagRule!): ID!
@@ -2246,10 +2246,10 @@ func (ec *executionContext) _Mutation_createVariant(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*flaggio.Variant)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNVariant2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_updateVariant(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2290,10 +2290,10 @@ func (ec *executionContext) _Mutation_updateVariant(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(*flaggio.Variant)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalNVariant2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_deleteVariant(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {

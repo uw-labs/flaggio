@@ -9,6 +9,8 @@ import (
 	"github.com/victorkt/flaggio/internal/repository"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var _ repository.Variant = VariantRepository{}
@@ -18,8 +20,35 @@ type VariantRepository struct {
 	flagRepo *FlagRepository
 }
 
+// FindByID returns a variant that has a given ID.
+func (r VariantRepository) FindByID(ctx context.Context, flagIDHex, idHex string) (*flaggio.Variant, error) {
+	flagID, err := primitive.ObjectIDFromHex(flagIDHex)
+	if err != nil {
+		return nil, err
+	}
+	variantID, err := primitive.ObjectIDFromHex(idHex)
+	if err != nil {
+		return nil, err
+	}
+	filter := bson.M{"_id": flagID, "variants._id": variantID}
+	projection := bson.M{"variants.$": 1}
+	opts := options.FindOne().SetProjection(projection)
+
+	var f flagModel
+	if err := r.flagRepo.col.FindOne(ctx, filter, opts).Decode(&f); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, errors.NotFound("variant")
+		}
+		return nil, err
+	}
+	if len(f.Variants) != 1 {
+		return nil, errors.NotFound("variant")
+	}
+	return f.Variants[0].asVariant(), nil
+}
+
 // Create creates a new variant under a flag.
-func (r VariantRepository) Create(ctx context.Context, flagIDHex string, v flaggio.NewVariant) (string, error) {
+func (r VariantRepository) Create(ctx context.Context, flagIDHex string, v flaggio.NewVariant) (*flaggio.Variant, error) {
 	vrntModel := &variantModel{
 		ID:          primitive.NewObjectID(),
 		Description: v.Description,
@@ -27,7 +56,7 @@ func (r VariantRepository) Create(ctx context.Context, flagIDHex string, v flagg
 	}
 	flagID, err := primitive.ObjectIDFromHex(flagIDHex)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	filter := bson.M{"_id": flagID}
 	res, err := r.flagRepo.col.UpdateOne(ctx, filter, bson.M{
@@ -36,23 +65,23 @@ func (r VariantRepository) Create(ctx context.Context, flagIDHex string, v flagg
 		"$inc":  bson.M{"version": 1},
 	})
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	if res.ModifiedCount == 0 {
-		return "", errors.NotFound("flag")
+		return nil, errors.NotFound("flag")
 	}
-	return vrntModel.ID.Hex(), nil
+	return vrntModel.asVariant(), nil
 }
 
 // Update updates a variant under a flag.
-func (r VariantRepository) Update(ctx context.Context, flagIDHex, idHex string, v flaggio.UpdateVariant) error {
+func (r VariantRepository) Update(ctx context.Context, flagIDHex, idHex string, v flaggio.UpdateVariant) (*flaggio.Variant, error) {
 	flagID, err := primitive.ObjectIDFromHex(flagIDHex)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	id, err := primitive.ObjectIDFromHex(idHex)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	mods := bson.M{
 		"updatedAt": time.Now(),
@@ -69,12 +98,12 @@ func (r VariantRepository) Update(ctx context.Context, flagIDHex, idHex string, 
 		bson.M{"$set": mods, "$inc": bson.M{"version": 1}},
 	)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if res.ModifiedCount == 0 {
-		return errors.NotFound("variant")
+		return nil, errors.NotFound("variant")
 	}
-	return nil
+	return r.FindByID(ctx, flagIDHex, idHex)
 }
 
 // Delete deletes a variant under a flag.

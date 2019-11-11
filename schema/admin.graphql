@@ -74,8 +74,8 @@ extend type Mutation {
     updateFlag(id: ID!, input: UpdateFlag!): Flag!
     deleteFlag(id: ID!): ID!
 
-    createVariant(flagId: ID!, input: NewVariant!): ID!
-    updateVariant(flagId: ID!, id: ID!, input: UpdateVariant!): Boolean!
+    createVariant(flagId: ID!, input: NewVariant!): Variant!
+    updateVariant(flagId: ID!, id: ID!, input: UpdateVariant!): Variant!
     deleteVariant(flagId: ID!, id: ID!): ID!
 
     createFlagRule(flagId: ID!, input: NewFlagRule!): ID!

@@ -86,13 +86,21 @@ export const DELETE_FLAG_QUERY = gql`
 
 export const CREATE_VARIANT_QUERY = gql`
     mutation createVariant($flagId: ID!, $input: NewVariant!) {
-        createVariant(flagId: $flagId, input: $input)
+        createVariant(flagId: $flagId, input: $input) {
+            id
+            description
+            value
+        }
     }
 `;
 
 export const UPDATE_VARIANT_QUERY = gql`
     mutation updateVariant($id: ID!, $flagId: ID!, $input: UpdateVariant!) {
-        updateVariant(id: $id, flagId: $flagId, input: $input)
+        updateVariant(id: $id, flagId: $flagId, input: $input) {
+            id
+            description
+            value
+        }
     }
 `;
 
