@@ -48,7 +48,7 @@ func (r VariantRepository) FindByID(ctx context.Context, flagIDHex, idHex string
 }
 
 // Create creates a new variant under a flag.
-func (r VariantRepository) Create(ctx context.Context, flagIDHex string, v flaggio.NewVariant) (*flaggio.Variant, error) {
+func (r VariantRepository) Create(ctx context.Context, flagIDHex string, v flaggio.NewVariant) (string, error) {
 	vrntModel := &variantModel{
 		ID:          primitive.NewObjectID(),
 		Description: v.Description,
@@ -56,7 +56,7 @@ func (r VariantRepository) Create(ctx context.Context, flagIDHex string, v flagg
 	}
 	flagID, err := primitive.ObjectIDFromHex(flagIDHex)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	filter := bson.M{"_id": flagID}
 	res, err := r.flagRepo.col.UpdateOne(ctx, filter, bson.M{
@@ -65,23 +65,23 @@ func (r VariantRepository) Create(ctx context.Context, flagIDHex string, v flagg
 		"$inc":  bson.M{"version": 1},
 	})
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	if res.ModifiedCount == 0 {
-		return nil, errors.NotFound("flag")
+		return "", errors.NotFound("flag")
 	}
-	return vrntModel.asVariant(), nil
+	return vrntModel.ID.Hex(), nil
 }
 
 // Update updates a variant under a flag.
-func (r VariantRepository) Update(ctx context.Context, flagIDHex, idHex string, v flaggio.UpdateVariant) (*flaggio.Variant, error) {
+func (r VariantRepository) Update(ctx context.Context, flagIDHex, idHex string, v flaggio.UpdateVariant) error {
 	flagID, err := primitive.ObjectIDFromHex(flagIDHex)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	id, err := primitive.ObjectIDFromHex(idHex)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	mods := bson.M{
 		"updatedAt": time.Now(),
@@ -98,12 +98,12 @@ func (r VariantRepository) Update(ctx context.Context, flagIDHex, idHex string, 
 		bson.M{"$set": mods, "$inc": bson.M{"version": 1}},
 	)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if res.ModifiedCount == 0 {
-		return nil, errors.NotFound("variant")
+		return errors.NotFound("variant")
 	}
-	return r.FindByID(ctx, flagIDHex, idHex)
+	return nil
 }
 
 // Delete deletes a variant under a flag.

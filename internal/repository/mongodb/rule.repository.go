@@ -51,7 +51,7 @@ func (r RuleRepository) FindFlagRuleByID(ctx context.Context, flagIDHex, idHex s
 }
 
 // CreateFlagRule creates a new rule under a flag.
-func (r RuleRepository) CreateFlagRule(ctx context.Context, flagIDHex string, fr flaggio.NewFlagRule) (*flaggio.FlagRule, error) {
+func (r RuleRepository) CreateFlagRule(ctx context.Context, flagIDHex string, fr flaggio.NewFlagRule) (string, error) {
 	constraints := make([]constraintModel, len(fr.Constraints))
 	distributions := make([]distributionModel, len(fr.Distributions))
 	for idx, c := range fr.Constraints {
@@ -65,7 +65,7 @@ func (r RuleRepository) CreateFlagRule(ctx context.Context, flagIDHex string, fr
 	for idx, d := range fr.Distributions {
 		variantID, err := primitive.ObjectIDFromHex(d.VariantID)
 		if err != nil {
-			return nil, errors.BadRequest(fmt.Sprintf("invalid variant ID for distribution[%d]", idx))
+			return "", errors.BadRequest(fmt.Sprintf("invalid variant ID for distribution[%d]", idx))
 		}
 		distributions[idx] = distributionModel{
 			ID:         primitive.NewObjectID(),
@@ -80,7 +80,7 @@ func (r RuleRepository) CreateFlagRule(ctx context.Context, flagIDHex string, fr
 	}
 	flagID, err := primitive.ObjectIDFromHex(flagIDHex)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	filter := bson.M{"_id": flagID}
 	res, err := r.flagRepo.col.UpdateOne(ctx, filter, bson.M{
@@ -89,23 +89,23 @@ func (r RuleRepository) CreateFlagRule(ctx context.Context, flagIDHex string, fr
 		"$inc":  bson.M{"version": 1},
 	})
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	if res.ModifiedCount == 0 {
-		return nil, errors.NotFound("flag")
+		return "", errors.NotFound("flag")
 	}
-	return r.FindFlagRuleByID(ctx, flagIDHex, flgRuleModel.ID.Hex())
+	return flgRuleModel.ID.Hex(), nil
 }
 
 // UpdateFlagRule updates a rule under a flag.
-func (r RuleRepository) UpdateFlagRule(ctx context.Context, flagIDHex, idHex string, fr flaggio.UpdateFlagRule) (*flaggio.FlagRule, error) {
+func (r RuleRepository) UpdateFlagRule(ctx context.Context, flagIDHex, idHex string, fr flaggio.UpdateFlagRule) error {
 	flagID, err := primitive.ObjectIDFromHex(flagIDHex)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	id, err := primitive.ObjectIDFromHex(idHex)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	constraints := make([]constraintModel, len(fr.Constraints))
 	distributions := make([]distributionModel, len(fr.Distributions))
@@ -120,7 +120,7 @@ func (r RuleRepository) UpdateFlagRule(ctx context.Context, flagIDHex, idHex str
 	for idx, d := range fr.Distributions {
 		variantID, err := primitive.ObjectIDFromHex(d.VariantID)
 		if err != nil {
-			return nil, errors.BadRequest(fmt.Sprintf("invalid variant ID for distribution[%d]", idx))
+			return errors.BadRequest(fmt.Sprintf("invalid variant ID for distribution[%d]", idx))
 		}
 		distributions[idx] = distributionModel{
 			ID:         primitive.NewObjectID(),
@@ -139,12 +139,12 @@ func (r RuleRepository) UpdateFlagRule(ctx context.Context, flagIDHex, idHex str
 		bson.M{"$set": mods, "$inc": bson.M{"version": 1}},
 	)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if res.ModifiedCount == 0 {
-		return nil, errors.NotFound("flag rule")
+		return errors.NotFound("flag rule")
 	}
-	return r.FindFlagRuleByID(ctx, flagIDHex, idHex)
+	return nil
 }
 
 // DeleteFlagRule deletes a rule under a flag.
@@ -199,7 +199,7 @@ func (r RuleRepository) FindSegmentRuleByID(ctx context.Context, segmentIDHex, i
 }
 
 // CreateSegmentRule creates a new rule under a segment.
-func (r RuleRepository) CreateSegmentRule(ctx context.Context, segmentIDHex string, fr flaggio.NewSegmentRule) (*flaggio.SegmentRule, error) {
+func (r RuleRepository) CreateSegmentRule(ctx context.Context, segmentIDHex string, fr flaggio.NewSegmentRule) (string, error) {
 	constraints := make([]constraintModel, len(fr.Constraints))
 	for idx, c := range fr.Constraints {
 		constraints[idx] = constraintModel{
@@ -215,7 +215,7 @@ func (r RuleRepository) CreateSegmentRule(ctx context.Context, segmentIDHex stri
 	}
 	segmentID, err := primitive.ObjectIDFromHex(segmentIDHex)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	filter := bson.M{"_id": segmentID}
 	res, err := r.segmentRepo.col.UpdateOne(ctx, filter, bson.M{
@@ -223,23 +223,23 @@ func (r RuleRepository) CreateSegmentRule(ctx context.Context, segmentIDHex stri
 		"$set":  bson.M{"updatedAt": time.Now()},
 	})
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	if res.ModifiedCount == 0 {
-		return nil, errors.NotFound("segment")
+		return "", errors.NotFound("segment")
 	}
-	return sgmntRuleModel.asRule(), nil
+	return sgmntRuleModel.ID.Hex(), nil
 }
 
 // UpdateSegmentRule updates a rule under a segment.
-func (r RuleRepository) UpdateSegmentRule(ctx context.Context, segmentIDHex, idHex string, fr flaggio.UpdateSegmentRule) (*flaggio.SegmentRule, error) {
+func (r RuleRepository) UpdateSegmentRule(ctx context.Context, segmentIDHex, idHex string, fr flaggio.UpdateSegmentRule) error {
 	segmentID, err := primitive.ObjectIDFromHex(segmentIDHex)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	id, err := primitive.ObjectIDFromHex(idHex)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	constraints := make([]constraintModel, len(fr.Constraints))
 	for idx, c := range fr.Constraints {
@@ -260,12 +260,12 @@ func (r RuleRepository) UpdateSegmentRule(ctx context.Context, segmentIDHex, idH
 		bson.M{"$set": mods},
 	)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if res.ModifiedCount == 0 {
-		return nil, errors.NotFound("segment rule")
+		return errors.NotFound("segment rule")
 	}
-	return r.FindSegmentRuleByID(ctx, segmentIDHex, idHex)
+	return nil
 }
 
 // DeleteSegmentRule deletes a rule under a segment.

@@ -35,11 +35,18 @@ func (r *mutationResolver) DeleteFlag(ctx context.Context, id string) (string, e
 }
 
 func (r *mutationResolver) CreateVariant(ctx context.Context, flagID string, input flaggio.NewVariant) (*flaggio.Variant, error) {
-	return r.VariantRepo.Create(ctx, flagID, input)
+	id, err := r.VariantRepo.Create(ctx, flagID, input)
+	if err != nil {
+		return nil, err
+	}
+	return r.VariantRepo.FindByID(ctx, flagID, id)
 }
 
 func (r *mutationResolver) UpdateVariant(ctx context.Context, flagID, id string, input flaggio.UpdateVariant) (*flaggio.Variant, error) {
-	return r.VariantRepo.Update(ctx, flagID, id, input)
+	if err := r.VariantRepo.Update(ctx, flagID, id, input); err != nil {
+		return nil, err
+	}
+	return r.VariantRepo.FindByID(ctx, flagID, id)
 }
 
 func (r *mutationResolver) DeleteVariant(ctx context.Context, flagID, id string) (string, error) {
@@ -48,11 +55,18 @@ func (r *mutationResolver) DeleteVariant(ctx context.Context, flagID, id string)
 }
 
 func (r *mutationResolver) CreateFlagRule(ctx context.Context, flagID string, input flaggio.NewFlagRule) (*flaggio.FlagRule, error) {
-	return r.RuleRepo.CreateFlagRule(ctx, flagID, input)
+	id, err := r.RuleRepo.CreateFlagRule(ctx, flagID, input)
+	if err != nil {
+		return nil, err
+	}
+	return r.RuleRepo.FindFlagRuleByID(ctx, flagID, id)
 }
 
 func (r *mutationResolver) UpdateFlagRule(ctx context.Context, flagID, id string, input flaggio.UpdateFlagRule) (*flaggio.FlagRule, error) {
-	return r.RuleRepo.UpdateFlagRule(ctx, flagID, id, input)
+	if err := r.RuleRepo.UpdateFlagRule(ctx, flagID, id, input); err != nil {
+		return nil, err
+	}
+	return r.RuleRepo.FindFlagRuleByID(ctx, flagID, id)
 }
 
 func (r *mutationResolver) DeleteFlagRule(ctx context.Context, flagID, id string) (string, error) {
@@ -61,11 +75,18 @@ func (r *mutationResolver) DeleteFlagRule(ctx context.Context, flagID, id string
 }
 
 func (r *mutationResolver) CreateSegmentRule(ctx context.Context, segmentID string, input flaggio.NewSegmentRule) (*flaggio.SegmentRule, error) {
-	return r.RuleRepo.CreateSegmentRule(ctx, segmentID, input)
+	id, err := r.RuleRepo.CreateSegmentRule(ctx, segmentID, input)
+	if err != nil {
+		return nil, err
+	}
+	return r.RuleRepo.FindSegmentRuleByID(ctx, segmentID, id)
 }
 
 func (r *mutationResolver) UpdateSegmentRule(ctx context.Context, segmentID, id string, input flaggio.UpdateSegmentRule) (*flaggio.SegmentRule, error) {
-	return r.RuleRepo.UpdateSegmentRule(ctx, segmentID, id, input)
+	if err := r.RuleRepo.UpdateSegmentRule(ctx, segmentID, id, input); err != nil {
+		return nil, err
+	}
+	return r.RuleRepo.FindSegmentRuleByID(ctx, segmentID, id)
 }
 
 func (r *mutationResolver) DeleteSegmentRule(ctx context.Context, segmentID, id string) (string, error) {
@@ -74,11 +95,18 @@ func (r *mutationResolver) DeleteSegmentRule(ctx context.Context, segmentID, id 
 }
 
 func (r *mutationResolver) CreateSegment(ctx context.Context, input flaggio.NewSegment) (*flaggio.Segment, error) {
-	return r.SegmentRepo.Create(ctx, input)
+	id, err := r.SegmentRepo.Create(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	return r.SegmentRepo.FindByID(ctx, id)
 }
 
 func (r *mutationResolver) UpdateSegment(ctx context.Context, id string, input flaggio.UpdateSegment) (*flaggio.Segment, error) {
-	return r.SegmentRepo.Update(ctx, id, input)
+	if err := r.SegmentRepo.Update(ctx, id, input); err != nil {
+		return nil, err
+	}
+	return r.SegmentRepo.FindByID(ctx, id)
 }
 
 func (r *mutationResolver) DeleteSegment(ctx context.Context, id string) (string, error) {
