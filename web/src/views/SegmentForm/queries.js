@@ -51,13 +51,29 @@ export const DELETE_SEGMENT_QUERY = gql`
 
 export const CREATE_SEGMENT_RULE_QUERY = gql`
     mutation createSegmentRule($segmentId: ID!, $input: NewSegmentRule!) {
-        createSegmentRule(segmentId: $segmentId, input: $input)
+        createSegmentRule(segmentId: $segmentId, input: $input) {
+            id
+            constraints {
+                id
+                operation
+                property
+                values
+            }
+        }
     }
 `;
 
 export const UPDATE_SEGMENT_RULE_QUERY = gql`
     mutation updateSegmentRule($id: ID!, $segmentId: ID!, $input: UpdateSegmentRule!) {
-        updateSegmentRule(id: $id, segmentId: $segmentId, input: $input)
+        updateSegmentRule(id: $id, segmentId: $segmentId, input: $input) {
+            id
+            constraints {
+                id
+                operation
+                property
+                values
+            }
+        }
     }
 `;
 

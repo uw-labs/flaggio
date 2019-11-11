@@ -112,13 +112,41 @@ export const DELETE_VARIANT_QUERY = gql`
 
 export const CREATE_FLAG_RULE_QUERY = gql`
     mutation createFlagRule($flagId: ID!, $input: NewFlagRule!) {
-        createFlagRule(flagId: $flagId, input: $input)
+        createFlagRule(flagId: $flagId, input: $input) {
+            id
+            constraints {
+                id
+                operation
+                property
+                values
+            }
+            distributions {
+                percentage
+                variant {
+                    id
+                }
+            }
+        }
     }
 `;
 
 export const UPDATE_FLAG_RULE_QUERY = gql`
     mutation updateFlagRule($id: ID!, $flagId: ID!, $input: UpdateFlagRule!) {
-        updateFlagRule(id: $id, flagId: $flagId, input: $input)
+        updateFlagRule(id: $id, flagId: $flagId, input: $input){
+            id
+            constraints {
+                id
+                operation
+                property
+                values
+            }
+            distributions {
+                percentage
+                variant {
+                    id
+                }
+            }
+        }
     }
 `;
 

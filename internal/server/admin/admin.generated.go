@@ -133,11 +133,11 @@ type MutationResolver interface {
 	CreateVariant(ctx context.Context, flagID string, input flaggio.NewVariant) (*flaggio.Variant, error)
 	UpdateVariant(ctx context.Context, flagID string, id string, input flaggio.UpdateVariant) (*flaggio.Variant, error)
 	DeleteVariant(ctx context.Context, flagID string, id string) (string, error)
-	CreateFlagRule(ctx context.Context, flagID string, input flaggio.NewFlagRule) (string, error)
-	UpdateFlagRule(ctx context.Context, flagID string, id string, input flaggio.UpdateFlagRule) (bool, error)
+	CreateFlagRule(ctx context.Context, flagID string, input flaggio.NewFlagRule) (*flaggio.FlagRule, error)
+	UpdateFlagRule(ctx context.Context, flagID string, id string, input flaggio.UpdateFlagRule) (*flaggio.FlagRule, error)
 	DeleteFlagRule(ctx context.Context, flagID string, id string) (string, error)
-	CreateSegmentRule(ctx context.Context, segmentID string, input flaggio.NewSegmentRule) (string, error)
-	UpdateSegmentRule(ctx context.Context, segmentID string, id string, input flaggio.UpdateSegmentRule) (bool, error)
+	CreateSegmentRule(ctx context.Context, segmentID string, input flaggio.NewSegmentRule) (*flaggio.SegmentRule, error)
+	UpdateSegmentRule(ctx context.Context, segmentID string, id string, input flaggio.UpdateSegmentRule) (*flaggio.SegmentRule, error)
 	DeleteSegmentRule(ctx context.Context, segmentID string, id string) (string, error)
 	CreateSegment(ctx context.Context, input flaggio.NewSegment) (*flaggio.Segment, error)
 	UpdateSegment(ctx context.Context, id string, input flaggio.UpdateSegment) (bool, error)
@@ -767,11 +767,11 @@ extend type Mutation {
     updateVariant(flagId: ID!, id: ID!, input: UpdateVariant!): Variant!
     deleteVariant(flagId: ID!, id: ID!): ID!
 
-    createFlagRule(flagId: ID!, input: NewFlagRule!): ID!
-    updateFlagRule(flagId: ID!, id: ID!, input: UpdateFlagRule!): Boolean!
+    createFlagRule(flagId: ID!, input: NewFlagRule!): FlagRule!
+    updateFlagRule(flagId: ID!, id: ID!, input: UpdateFlagRule!): FlagRule!
     deleteFlagRule(flagId: ID!, id: ID!): ID!
-    createSegmentRule(segmentId: ID!, input: NewSegmentRule!): ID!
-    updateSegmentRule(segmentId: ID!, id: ID!, input: UpdateSegmentRule!): Boolean!
+    createSegmentRule(segmentId: ID!, input: NewSegmentRule!): SegmentRule!
+    updateSegmentRule(segmentId: ID!, id: ID!, input: UpdateSegmentRule!): SegmentRule!
     deleteSegmentRule(segmentId: ID!, id: ID!): ID!
 
     createSegment(input: NewSegment!): Segment!
@@ -2378,10 +2378,10 @@ func (ec *executionContext) _Mutation_createFlagRule(ctx context.Context, field 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*flaggio.FlagRule)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNFlagRule2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlagRule(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_updateFlagRule(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2422,10 +2422,10 @@ func (ec *executionContext) _Mutation_updateFlagRule(ctx context.Context, field 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(*flaggio.FlagRule)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalNFlagRule2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlagRule(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_deleteFlagRule(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2510,10 +2510,10 @@ func (ec *executionContext) _Mutation_createSegmentRule(ctx context.Context, fie
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*flaggio.SegmentRule)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNSegmentRule2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐSegmentRule(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_updateSegmentRule(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2554,10 +2554,10 @@ func (ec *executionContext) _Mutation_updateSegmentRule(ctx context.Context, fie
 		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(*flaggio.SegmentRule)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalNSegmentRule2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐSegmentRule(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_deleteSegmentRule(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {

@@ -78,11 +78,11 @@ extend type Mutation {
     updateVariant(flagId: ID!, id: ID!, input: UpdateVariant!): Variant!
     deleteVariant(flagId: ID!, id: ID!): ID!
 
-    createFlagRule(flagId: ID!, input: NewFlagRule!): ID!
-    updateFlagRule(flagId: ID!, id: ID!, input: UpdateFlagRule!): Boolean!
+    createFlagRule(flagId: ID!, input: NewFlagRule!): FlagRule!
+    updateFlagRule(flagId: ID!, id: ID!, input: UpdateFlagRule!): FlagRule!
     deleteFlagRule(flagId: ID!, id: ID!): ID!
-    createSegmentRule(segmentId: ID!, input: NewSegmentRule!): ID!
-    updateSegmentRule(segmentId: ID!, id: ID!, input: UpdateSegmentRule!): Boolean!
+    createSegmentRule(segmentId: ID!, input: NewSegmentRule!): SegmentRule!
+    updateSegmentRule(segmentId: ID!, id: ID!, input: UpdateSegmentRule!): SegmentRule!
     deleteSegmentRule(segmentId: ID!, id: ID!): ID!
 
     createSegment(input: NewSegment!): Segment!
