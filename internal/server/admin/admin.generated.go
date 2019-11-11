@@ -140,7 +140,7 @@ type MutationResolver interface {
 	UpdateSegmentRule(ctx context.Context, segmentID string, id string, input flaggio.UpdateSegmentRule) (*flaggio.SegmentRule, error)
 	DeleteSegmentRule(ctx context.Context, segmentID string, id string) (string, error)
 	CreateSegment(ctx context.Context, input flaggio.NewSegment) (*flaggio.Segment, error)
-	UpdateSegment(ctx context.Context, id string, input flaggio.UpdateSegment) (bool, error)
+	UpdateSegment(ctx context.Context, id string, input flaggio.UpdateSegment) (*flaggio.Segment, error)
 	DeleteSegment(ctx context.Context, id string) (string, error)
 }
 type QueryResolver interface {
@@ -775,7 +775,7 @@ extend type Mutation {
     deleteSegmentRule(segmentId: ID!, id: ID!): ID!
 
     createSegment(input: NewSegment!): Segment!
-    updateSegment(id: ID!, input: UpdateSegment!): Boolean!
+    updateSegment(id: ID!, input: UpdateSegment!): Segment!
     deleteSegment(id: ID!): ID!
 }`},
 	&ast.Source{Name: "flaggio.graphql", Input: `scalar Time
@@ -2686,10 +2686,10 @@ func (ec *executionContext) _Mutation_updateSegment(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(*flaggio.Segment)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalNSegment2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐSegment(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_deleteSegment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {

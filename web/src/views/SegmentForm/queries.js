@@ -33,13 +33,39 @@ export const CREATE_SEGMENT_QUERY = gql`
     mutation createSegment($input: NewSegment!) {
         createSegment(input: $input) {
             id
+            name
+            description
+            rules {
+                id
+                constraints {
+                    id
+                    operation
+                    property
+                    values
+                }
+            }
+            createdAt
         }
     }
 `;
 
 export const UPDATE_SEGMENT_QUERY = gql`
     mutation updateSegment($id: ID!, $input: UpdateSegment!){
-        updateSegment(id: $id, input: $input)
+        updateSegment(id: $id, input: $input) {
+            id
+            name
+            description
+            rules {
+                id
+                constraints {
+                    id
+                    operation
+                    property
+                    values
+                }
+            }
+            createdAt
+        }
     }
 `;
 

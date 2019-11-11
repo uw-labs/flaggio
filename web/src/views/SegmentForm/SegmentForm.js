@@ -49,8 +49,13 @@ const SegmentForm = () => {
       const { name, description } = segment;
       await createSegment({
         variables: { input: { name, description } },
-        update(cache, { data: { createSegment: { id } } }) {
-          segment.id = id;
+        update(cache, { data: { createSegment: createdSegment } }) {
+          segment.id = createdSegment.id;
+          const { segments } = cache.readQuery({ query: SEGMENTS_QUERY });
+          cache.writeQuery({
+            query: SEGMENTS_QUERY,
+            data: { segments: [...segments, createdSegment] },
+          });
         },
       });
     }

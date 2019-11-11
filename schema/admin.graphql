@@ -86,6 +86,6 @@ extend type Mutation {
     deleteSegmentRule(segmentId: ID!, id: ID!): ID!
 
     createSegment(input: NewSegment!): Segment!
-    updateSegment(id: ID!, input: UpdateSegment!): Boolean!
+    updateSegment(id: ID!, input: UpdateSegment!): Segment!
     deleteSegment(id: ID!): ID!
 }

@@ -77,9 +77,8 @@ func (r *mutationResolver) CreateSegment(ctx context.Context, input flaggio.NewS
 	return r.SegmentRepo.Create(ctx, input)
 }
 
-func (r *mutationResolver) UpdateSegment(ctx context.Context, id string, input flaggio.UpdateSegment) (bool, error) {
-	err := r.SegmentRepo.Update(ctx, id, input)
-	return err == nil, err
+func (r *mutationResolver) UpdateSegment(ctx context.Context, id string, input flaggio.UpdateSegment) (*flaggio.Segment, error) {
+	return r.SegmentRepo.Update(ctx, id, input)
 }
 
 func (r *mutationResolver) DeleteSegment(ctx context.Context, id string) (string, error) {

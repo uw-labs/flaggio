@@ -84,10 +84,10 @@ func (r SegmentRepository) Create(ctx context.Context, f flaggio.NewSegment) (*f
 }
 
 // Update updates a segment.
-func (r SegmentRepository) Update(ctx context.Context, idHex string, f flaggio.UpdateSegment) error {
+func (r SegmentRepository) Update(ctx context.Context, idHex string, f flaggio.UpdateSegment) (*flaggio.Segment, error) {
 	id, err := primitive.ObjectIDFromHex(idHex)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	mods := bson.M{
 		"updatedAt": time.Now(),
@@ -99,18 +99,18 @@ func (r SegmentRepository) Update(ctx context.Context, idHex string, f flaggio.U
 		mods["description"] = *f.Description
 	}
 	if len(mods) == 0 {
-		return errors.BadRequest("nothing to update")
+		return nil, errors.BadRequest("nothing to update")
 	}
 	filter := bson.M{"_id": id}
 	update := bson.M{"$set": mods}
 	res, err := r.col.UpdateOne(ctx, filter, update)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if res.ModifiedCount == 0 {
-		return errors.NotFound("segment")
+		return nil, errors.NotFound("segment")
 	}
-	return nil
+	return r.FindByID(ctx, idHex)
 }
 
 // Delete deletes a segment.

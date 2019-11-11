@@ -15,7 +15,7 @@ type Segment interface {
 	// Create creates a new segment.
 	Create(ctx context.Context, input flaggio.NewSegment) (*flaggio.Segment, error)
 	// Update updates a segment.
-	Update(ctx context.Context, id string, input flaggio.UpdateSegment) error
+	Update(ctx context.Context, id string, input flaggio.UpdateSegment) (*flaggio.Segment, error)
 	// Delete deletes a segment.
 	Delete(ctx context.Context, id string) error
 }
