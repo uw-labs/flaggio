@@ -5,6 +5,7 @@ export const SEGMENTS_QUERY = gql`
         segments {
             id
             name
+            description
             createdAt
         }
     }

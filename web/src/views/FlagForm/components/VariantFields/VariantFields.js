@@ -1,6 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip } from '@material-ui/core';
+import {
+  Button,
+  FormControl,
+  Grid,
+  Hidden,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Tooltip,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import RemoveIcon from '@material-ui/icons/RemoveCircleOutline';
 import AddIcon from '@material-ui/icons/AddCircleOutline';
@@ -21,8 +31,8 @@ const useStyles = makeStyles(theme => ({
 const VariantFields = ({ variant, isLast, onAddVariant, onUpdateVariant, onDeleteVariant }) => {
   const classes = useStyles();
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={3}>
+    <Grid container spacing={1}>
+      <Grid item sm={3} xs={5}>
         <FormControl
           className={classes.formControl}
           margin="dense"
@@ -42,7 +52,7 @@ const VariantFields = ({ variant, isLast, onAddVariant, onUpdateVariant, onDelet
           </Select>
         </FormControl>
       </Grid>
-      <Grid item xs={4}>
+      <Grid item sm={4} xs={5}>
         {
           variant.type === VariantTypes.BOOLEAN ?
             (
@@ -80,18 +90,20 @@ const VariantFields = ({ variant, isLast, onAddVariant, onUpdateVariant, onDelet
             )
         }
       </Grid>
-      <Grid item xs={4}>
-        <TextField
-          label="Description"
-          margin="dense"
-          name="description"
-          value={variant.description}
-          onChange={onUpdateVariant}
-          fullWidth
-          variant="outlined"
-        />
-      </Grid>
-      <Grid item xs={1} style={{ display: 'flex' }}>
+      <Hidden xsDown>
+        <Grid item xs={4}>
+          <TextField
+            label="Description"
+            margin="dense"
+            name="description"
+            value={variant.description}
+            onChange={onUpdateVariant}
+            fullWidth
+            variant="outlined"
+          />
+        </Grid>
+      </Hidden>
+      <Grid item sm={1} xs={2} style={{ display: 'flex' }}>
         <Tooltip title="Delete variant" placement="top">
           <Button
             size="small"

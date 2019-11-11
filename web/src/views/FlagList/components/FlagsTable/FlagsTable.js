@@ -9,6 +9,7 @@ import {
   CardActions,
   CardContent,
   Chip,
+  Hidden,
   Switch,
   Table,
   TableBody,
@@ -24,9 +25,6 @@ const useStyles = makeStyles(theme => ({
   content: {
     padding: 0,
   },
-  inner: {
-    minWidth: 1050,
-  },
   nameContainer: {
     display: 'flex',
     alignItems: 'center',
@@ -40,7 +38,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const FlagsTable = props => {
-  const {className, flags, toggleFlag, ...rest} = props;
+  const { className, flags, toggleFlag, ...rest } = props;
 
   const classes = useStyles();
 
@@ -62,8 +60,15 @@ const FlagsTable = props => {
     >
       <CardContent className={classes.content}>
         <PerfectScrollbar>
-          <div className={classes.inner}>
+          <div>
             <Table>
+              <colgroup>
+                <col style={{ width: '3%' }}/>
+                <col style={{ width: '20%' }}/>
+                <col style={{ width: '20%' }}/>
+                <col style={{ width: '37%' }}/>
+                <col style={{ width: '20%' }}/>
+              </colgroup>
               <TableHead>
                 <TableRow>
                   <TableCell padding="checkbox">
@@ -71,7 +76,12 @@ const FlagsTable = props => {
                   </TableCell>
                   <TableCell>Name</TableCell>
                   <TableCell>Key</TableCell>
-                  <TableCell>Created</TableCell>
+                  <Hidden xsDown>
+                    <TableCell>Description</TableCell>
+                  </Hidden>
+                  <Hidden smDown>
+                    <TableCell>Created</TableCell>
+                  </Hidden>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -84,9 +94,9 @@ const FlagsTable = props => {
                     <TableCell padding="checkbox">
                       <Switch
                         checked={flag.enabled}
-                        onChange={e => toggleFlag({variables: {id: flag.id, input: {enabled: e.target.checked}}})}
+                        onChange={e => toggleFlag({ variables: { id: flag.id, input: { enabled: e.target.checked } } })}
                         color="primary"
-                        inputProps={{'aria-label': 'primary checkbox'}}
+                        inputProps={{ 'aria-label': 'primary checkbox' }}
                       />
                     </TableCell>
                     <TableCell>
@@ -95,9 +105,16 @@ const FlagsTable = props => {
                     <TableCell>
                       <Chip size="small" variant="outlined" label={flag.key}/>
                     </TableCell>
-                    <TableCell>
-                      {moment(flag.createdAt).fromNow()}
-                    </TableCell>
+                    <Hidden xsDown>
+                      <TableCell>
+                        {flag.description}
+                      </TableCell>
+                    </Hidden>
+                    <Hidden smDown>
+                      <TableCell>
+                        {moment(flag.createdAt).fromNow()}
+                      </TableCell>
+                    </Hidden>
                   </TableRow>
                 ))}
               </TableBody>

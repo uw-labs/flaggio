@@ -6,6 +6,7 @@ export const FLAGS_QUERY = gql`
             id
             key
             name
+            description
             enabled
             createdAt
         }

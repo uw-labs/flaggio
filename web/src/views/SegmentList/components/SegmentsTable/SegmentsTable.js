@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/styles';
 import {
   Card,
   CardActions,
-  CardContent,
+  CardContent, Hidden,
   Table,
   TableBody,
   TableCell,
@@ -21,9 +21,6 @@ const useStyles = makeStyles(theme => ({
   root: {},
   content: {
     padding: 0,
-  },
-  inner: {
-    minWidth: 1050,
   },
   nameContainer: {
     display: 'flex',
@@ -60,12 +57,22 @@ const SegmentsTable = props => {
     >
       <CardContent className={classes.content}>
         <PerfectScrollbar>
-          <div className={classes.inner}>
+          <div>
             <Table>
+              <colgroup>
+                <col style={{ width: '30%' }}/>
+                <col style={{ width: '40%' }}/>
+                <col style={{ width: '30%' }}/>
+              </colgroup>
               <TableHead>
                 <TableRow>
                   <TableCell>Name</TableCell>
-                  <TableCell>Created</TableCell>
+                  <Hidden xsDown>
+                    <TableCell>Description</TableCell>
+                  </Hidden>
+                  <Hidden smDown>
+                    <TableCell>Created</TableCell>
+                  </Hidden>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -78,9 +85,16 @@ const SegmentsTable = props => {
                     <TableCell>
                       <Link to={`/segments/${segment.id}`}>{segment.name}</Link>
                     </TableCell>
-                    <TableCell>
-                      {moment(segment.createdAt).fromNow()}
-                    </TableCell>
+                    <Hidden xsDown>
+                      <TableCell>
+                        {segment.description}
+                      </TableCell>
+                    </Hidden>
+                    <Hidden smDown>
+                      <TableCell>
+                        {moment(segment.createdAt).fromNow()}
+                      </TableCell>
+                    </Hidden>
                   </TableRow>
                 ))}
               </TableBody>
