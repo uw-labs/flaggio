@@ -15,10 +15,6 @@ func (r *queryResolver) Ping(ctx context.Context) (bool, error) {
 }
 
 func (r *queryResolver) Flags(ctx context.Context, offset, limit *int) ([]*flaggio.Flag, error) {
-	if limit == nil {
-		v := 50
-		limit = &v
-	}
 	var ofst, lmt *int64
 	if offset != nil {
 		v := int64(*offset)
@@ -36,10 +32,6 @@ func (r *queryResolver) Flag(ctx context.Context, id string) (*flaggio.Flag, err
 }
 
 func (r *queryResolver) Segments(ctx context.Context, offset, limit *int) ([]*flaggio.Segment, error) {
-	if limit == nil {
-		v := 50
-		limit = &v
-	}
 	var ofst, lmt *int64
 	if offset != nil {
 		v := int64(*offset)
