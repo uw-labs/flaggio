@@ -81,8 +81,8 @@ const FlagForm = () => {
         if (variant.__new) {
           return createVariant({
             variables,
-            update(cache, { data: { createVariant: id } }) {
-              variantsRef[variant.id] = id;
+            update(cache, { data: { createVariant: createdVariant } }) {
+              variantsRef[variant.id] = createdVariant.id;
             },
           });
         }
