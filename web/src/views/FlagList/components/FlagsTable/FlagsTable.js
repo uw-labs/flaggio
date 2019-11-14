@@ -74,8 +74,8 @@ const FlagsTable = props => {
                   <TableCell padding="checkbox">
                     &nbsp;
                   </TableCell>
-                  <TableCell>Name</TableCell>
                   <TableCell>Key</TableCell>
+                  <TableCell>Name</TableCell>
                   <Hidden xsDown>
                     <TableCell>Description</TableCell>
                   </Hidden>
@@ -100,10 +100,12 @@ const FlagsTable = props => {
                       />
                     </TableCell>
                     <TableCell>
-                      <Link to={`/flags/${flag.id}`}>{flag.name}</Link>
+                      <Link to={`/flags/${flag.id}`}>
+                        <Chip size="small" variant="outlined" label={flag.key} clickable/>
+                      </Link>
                     </TableCell>
                     <TableCell>
-                      <Chip size="small" variant="outlined" label={flag.key}/>
+                      <Link to={`/flags/${flag.id}`}>{flag.name}</Link>
                     </TableCell>
                     <Hidden xsDown>
                       <TableCell>

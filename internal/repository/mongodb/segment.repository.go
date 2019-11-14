@@ -24,9 +24,10 @@ type SegmentRepository struct {
 // FindAll returns a list of segments, based on an optional offset and limit.
 func (r SegmentRepository) FindAll(ctx context.Context, offset, limit *int64) ([]*flaggio.Segment, error) {
 	cursor, err := r.col.Find(ctx, bson.M{}, &options.FindOptions{
-		Skip:  offset,
-		Limit: limit,
-		Sort:  bson.M{"_id": 1},
+		Skip:      offset,
+		Limit:     limit,
+		Sort:      bson.M{"name": 1},
+		Collation: &options.Collation{Locale: "en"},
 	})
 	if err != nil {
 		return nil, err

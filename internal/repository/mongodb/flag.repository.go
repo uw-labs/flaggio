@@ -26,7 +26,7 @@ func (r FlagRepository) FindAll(ctx context.Context, offset, limit *int64) ([]*f
 	cursor, err := r.col.Find(ctx, bson.M{}, &options.FindOptions{
 		Skip:  offset,
 		Limit: limit,
-		Sort:  bson.M{"_id": 1},
+		Sort:  bson.M{"key": 1},
 	})
 	if err != nil {
 		return nil, err
