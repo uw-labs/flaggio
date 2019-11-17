@@ -1,11 +1,11 @@
 export const cast = (value, type) => {
   switch (type) {
-    case 'string':
-      return String(value);
     case 'boolean':
       return Boolean(value);
     case 'number':
       return Number(value);
+    case 'string':
+      return String(value);
     default:
       return value;
   }
@@ -13,10 +13,14 @@ export const cast = (value, type) => {
 
 export const inferCast = value => {
   switch (true) {
+    case typeof value !== 'string':
+      return value;
+    case value === 'true':
+      return true;
+    case value === 'false':
+      return false;
     case !isNaN(Number(value)):
       return Number(value);
-    case value === 'true' || value === 'false':
-      return Boolean(value);
     default:
       return value;
   }

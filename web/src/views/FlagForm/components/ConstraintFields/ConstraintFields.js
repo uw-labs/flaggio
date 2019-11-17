@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { includes } from 'lodash';
-import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip } from '@material-ui/core';
+import { Button, Chip, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip } from '@material-ui/core';
+import { blue } from '@material-ui/core/colors'
 import RemoveIcon from '@material-ui/icons/RemoveCircleOutline';
 import AddIcon from '@material-ui/icons/AddCircleOutline';
-import { Operations } from '../../copy';
+import { BooleanType, Operations } from '../../copy';
 import { makeStyles } from '@material-ui/styles';
+import ChipInput from 'material-ui-chip-input'
 import { OperationTypes } from '../../models';
 
 const useStyles = makeStyles(theme => ({
@@ -21,7 +23,26 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'flex-end',
   },
+  valuesLabel: {
+    background: 'white',
+    padding: theme.spacing(0, 1, 0, 1),
+  },
 }));
+
+const chipRenderer = ({ value, text, isFocused, isDisabled, isReadOnly, handleClick, handleDelete, className }, key) => (
+  <Chip
+    key={key}
+    className={className}
+    style={{
+      pointerEvents: isDisabled || isReadOnly ? 'none' : undefined,
+      backgroundColor: isFocused ? blue[400] : undefined,
+    }}
+    size="small"
+    onClick={handleClick}
+    onDelete={handleDelete}
+    label={typeof text === 'boolean' ? BooleanType[text] : text}
+  />
+);
 
 const ConstraintFields = props => {
   const {
@@ -33,27 +54,36 @@ const ConstraintFields = props => {
     onDeleteConstraint,
     onUpdateConstraint,
   } = props;
+  const {
+    IS_IN_SEGMENT,
+    ISNT_IN_SEGMENT,
+    EXISTS,
+    DOESNT_EXIST,
+    GREATER,
+    GREATER_OR_EQUAL,
+    LOWER,
+    LOWER_OR_EQUAL,
+  } = OperationTypes;
   const classes = useStyles();
+
   return (
-    <Grid container spacing={1}>
-      <Grid item xs={4}>
+    <Grid container spacing={2}>
+      <Grid item xs={3}>
         <TextField
           label="Property"
           value={constraint.property}
-          margin="dense"
           name="property"
           onChange={onUpdateConstraint}
           fullWidth
-          disabled={includes([OperationTypes.IS_IN_SEGMENT, OperationTypes.ISNT_IN_SEGMENT], constraint.operation)}
-          required={!includes([OperationTypes.IS_IN_SEGMENT, OperationTypes.ISNT_IN_SEGMENT], constraint.operation)}
+          disabled={includes([IS_IN_SEGMENT, ISNT_IN_SEGMENT], constraint.operation)}
+          required={!includes([IS_IN_SEGMENT, ISNT_IN_SEGMENT], constraint.operation)}
           variant="outlined"
           InputProps={{ labelWidth: 65 }}
         />
       </Grid>
-      <Grid item xs={4}>
+      <Grid item xs={2}>
         <FormControl
           className={classes.formControl}
-          margin="dense"
           variant="outlined"
           required
         >
@@ -61,7 +91,10 @@ const ConstraintFields = props => {
           <Select
             value={constraint.operation}
             name="operation"
-            onChange={onUpdateConstraint}
+            onChange={e => {
+              onUpdateConstraint(e);
+              onUpdateConstraint({ target: { name: 'values', value: [] } });
+            }}
             labelWidth={70}
           >
             {operations.filter(op => !!Operations[op]).map(operation => (
@@ -70,8 +103,8 @@ const ConstraintFields = props => {
           </Select>
         </FormControl>
       </Grid>
-      <Grid item xs={3}>
-        {includes([OperationTypes.IS_IN_SEGMENT, OperationTypes.ISNT_IN_SEGMENT], constraint.operation) ? (
+      <Grid item xs={6}>
+        {includes([IS_IN_SEGMENT, ISNT_IN_SEGMENT], constraint.operation) ? (
           <FormControl
             className={classes.formControl}
             margin="dense"
@@ -90,18 +123,33 @@ const ConstraintFields = props => {
               ))}
             </Select>
           </FormControl>
-        ) : (
+        ) : includes([GREATER, GREATER_OR_EQUAL, LOWER, LOWER_OR_EQUAL], constraint.operation) ? (
           <TextField
             label="Value"
             value={constraint.values[0]}
-            margin="dense"
             name="values[0]"
+            type="number"
             onChange={onUpdateConstraint}
             fullWidth
-            disabled={includes([OperationTypes.EXISTS, OperationTypes.DOESNT_EXIST], constraint.operation)}
-            required={!includes([OperationTypes.EXISTS, OperationTypes.DOESNT_EXIST], constraint.operation)}
+            required={!includes([EXISTS, DOESNT_EXIST], constraint.operation)}
             variant="outlined"
             InputProps={{ labelWidth: 45 }}
+          />
+        ) : includes([EXISTS, DOESNT_EXIST], constraint.operation) ? (
+          <div/>
+        ) : (
+          <ChipInput
+            chipRenderer={chipRenderer}
+            label="Values"
+            name="values"
+            blurBehavior="add"
+            defaultValue={constraint.values}
+            disabled={includes([EXISTS, DOESNT_EXIST], constraint.operation)}
+            required={!includes([EXISTS, DOESNT_EXIST], constraint.operation)}
+            fullWidth
+            variant="outlined"
+            InputLabelProps={{ className: classes.valuesLabel }}
+            onChange={value => onUpdateConstraint({ target: { name: 'values', value } })}
           />
         )}
       </Grid>

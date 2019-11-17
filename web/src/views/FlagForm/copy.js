@@ -1,6 +1,6 @@
 export const Operations = {
-  ONE_OF: "Equals",
-  NOT_ONE_OF: "Not equals",
+  ONE_OF: "Equals any",
+  NOT_ONE_OF: "Not equals any",
   GREATER: "Greater",
   GREATER_OR_EQUAL: "Greater or equal",
   LOWER: "Lower",

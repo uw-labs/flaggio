@@ -43,7 +43,10 @@ const VariantFields = ({ variant, isLast, onAddVariant, onUpdateVariant, onDelet
             value={variant.type}
             name="type"
             required
-            onChange={onUpdateVariant}
+            onChange={e => {
+              onUpdateVariant(e);
+              onUpdateVariant({ target: { name: 'value', value: '' } });
+            }}
             labelWidth={30}
           >
             {Object.keys(VariantTypes).map(type => (

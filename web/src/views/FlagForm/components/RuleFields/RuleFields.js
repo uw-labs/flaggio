@@ -44,7 +44,7 @@ const RuleFields = props => {
   const classes = useStyles();
   return (
     <Paper className={classes.paper}>
-      <Grid container>
+      <Grid container spacing={1}>
         <Grid item xs={12}>
           {rule.constraints.map((constraint, idx) => (
             <ConstraintFields
@@ -59,7 +59,7 @@ const RuleFields = props => {
             />
           ))}
         </Grid>
-        <Grid item xs={8}>
+        <Grid item xs={11}>
           <FormControl
             className={classes.formControl}
             margin="dense"
@@ -81,8 +81,7 @@ const RuleFields = props => {
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={2}/>
-        <Grid item xs={2} className={classes.deleteRule}>
+        <Grid item xs={1} className={classes.deleteRule}>
           <Tooltip title="Delete rule" placement="top">
             <Button
               size="small"

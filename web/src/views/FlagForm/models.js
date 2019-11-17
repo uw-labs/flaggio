@@ -29,7 +29,7 @@ export const newVariant = (variant = {}) => ({
   description: variant.description || '',
   value: variant.value !== undefined ? variant.value : '',
   type: variant.type !== undefined ? variant.type :
-    variant.value !== undefined ? typeof variant.value : VariantTypes.STRING,
+    variant.value !== undefined ? typeof variant.value : VariantTypes.BOOLEAN,
 });
 
 export const newRule = (rule = {}) => ({
@@ -48,7 +48,7 @@ export const newConstraint = (constraint = {}) => ({
   id: constraint.id || uuid(),
   property: constraint.property || '',
   operation: constraint.operation || OperationTypes.ONE_OF,
-  values: constraint.values || [''],
+  values: constraint.values || [],
 });
 
 export const newDistribution = (distribution = {}) => ({

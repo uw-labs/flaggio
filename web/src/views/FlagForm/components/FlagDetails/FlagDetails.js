@@ -53,7 +53,9 @@ const FlagDetails = props => {
   const handleAddVariant = () => setFlag({ ...flag, variants: [...flag.variants, newVariant()] });
   const handleDelVariant = variant => () => {
     setDeletedItems([...deletedItems, { type: 'variant', id: variant.id, flagId: flag.id }]);
-    setFlag({ ...flag, variants: reject(flag.variants, v => v === variant) });
+    const newVariants = reject(flag.variants, v => v === variant);
+    if (newVariants.length === 0) newVariants.push(newVariant());
+    setFlag({ ...flag, variants: newVariants });
   };
   const handleAddRule = () => setFlag({ ...flag, rules: [...flag.rules, newRule()] });
   const handleDelRule = rule => () => {
@@ -71,7 +73,9 @@ const FlagDetails = props => {
   const handleDelConstraint = rule => constraint => () => {
     setFlag({
       ...flag, rules: flag.rules.map(r => {
-        if (r === rule) r = { ...r, constraints: reject(r.constraints, c => c === constraint) };
+        const newConstraints = reject(r.constraints, c => c === constraint);
+        if (newConstraints.length === 0) newConstraints.push(newConstraint());
+        if (r === rule) r = { ...r, constraints: newConstraints };
         return r;
       }),
     });
