@@ -5,10 +5,8 @@ import { Button, Chip, FormControl, Grid, InputLabel, MenuItem, Select, TextFiel
 import { blue } from '@material-ui/core/colors'
 import RemoveIcon from '@material-ui/icons/RemoveCircleOutline';
 import AddIcon from '@material-ui/icons/AddCircleOutline';
-import { BooleanType, Operations } from '../../copy';
 import { makeStyles } from '@material-ui/styles';
 import ChipInput from 'material-ui-chip-input'
-import { OperationTypes } from '../../models';
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -29,27 +27,15 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const chipRenderer = ({ value, text, isFocused, isDisabled, isReadOnly, handleClick, handleDelete, className }, key) => (
-  <Chip
-    key={key}
-    className={className}
-    style={{
-      pointerEvents: isDisabled || isReadOnly ? 'none' : undefined,
-      backgroundColor: isFocused ? blue[400] : undefined,
-    }}
-    size="small"
-    onClick={handleClick}
-    onDelete={handleDelete}
-    label={typeof text === 'boolean' ? BooleanType[text] : text}
-  />
-);
-
 const ConstraintFields = props => {
+  const classes = useStyles();
   const {
     constraint,
     isLast,
     operations,
     segments,
+    copy: { BooleanType, Operations },
+    operationTypes,
     onAddConstraint,
     onDeleteConstraint,
     onUpdateConstraint,
@@ -63,8 +49,21 @@ const ConstraintFields = props => {
     GREATER_OR_EQUAL,
     LOWER,
     LOWER_OR_EQUAL,
-  } = OperationTypes;
-  const classes = useStyles();
+  } = operationTypes;
+  const chipRenderer = ({ value, text, isFocused, isDisabled, isReadOnly, handleClick, handleDelete, className }, key) => (
+    <Chip
+      key={key}
+      className={className}
+      style={{
+        pointerEvents: isDisabled || isReadOnly ? 'none' : undefined,
+        backgroundColor: isFocused ? blue[400] : undefined,
+      }}
+      size="small"
+      onClick={handleClick}
+      onDelete={handleDelete}
+      label={typeof text === 'boolean' ? BooleanType[text] : text}
+    />
+  );
 
   return (
     <Grid container spacing={2}>
@@ -194,8 +193,13 @@ const ConstraintFields = props => {
 
 ConstraintFields.propTypes = {
   constraint: PropTypes.object.isRequired,
-  segments: PropTypes.arrayOf(PropTypes.object).isRequired,
+  segments: PropTypes.arrayOf(PropTypes.object),
   isLast: PropTypes.bool.isRequired,
+  copy: PropTypes.shape({
+    BooleanType: PropTypes.object.isRequired,
+    Operations: PropTypes.object.isRequired,
+  }).isRequired,
+  operationTypes:PropTypes.object.isRequired,
   onAddConstraint: PropTypes.func.isRequired,
   onUpdateConstraint: PropTypes.func.isRequired,
   onDeleteConstraint: PropTypes.func.isRequired,

@@ -1,6 +1,6 @@
 export const Operations = {
-  ONE_OF: "Equals",
-  NOT_ONE_OF: "Not equals",
+  ONE_OF: "Equals any",
+  NOT_ONE_OF: "Not equals any",
   GREATER: "Greater",
   GREATER_OR_EQUAL: "Greater or equal",
   LOWER: "Lower",
@@ -15,4 +15,9 @@ export const Operations = {
   DOESNT_END_WITH: "Doesn't end with",
   MATCHES_REGEX: "Matches regex",
   DOESNT_MATCH_REGEX: "Doesn't match regex",
+};
+
+export const BooleanType = {
+  [true]: "True",
+  [false]: "False",
 };

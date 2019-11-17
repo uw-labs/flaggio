@@ -27,7 +27,7 @@ export const newConstraint = (constraint = {}) => ({
   id: constraint.id || uuid(),
   property: constraint.property || '',
   operation: constraint.operation || OperationTypes.ONE_OF,
-  values: constraint.values || [''],
+  values: constraint.values || [],
 });
 
 export const formatSegment = segment => ({

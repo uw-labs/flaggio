@@ -1,11 +1,12 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Button, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Tooltip } from '@material-ui/core';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
-import ConstraintFields from '../ConstraintFields';
-import { BooleanType } from '../../copy';
-import { VariantTypes } from '../../models';
 import { makeStyles } from '@material-ui/styles';
-import PropTypes from 'prop-types';
+import ConstraintFields from '../../../../components/ConstraintFields';
+import * as copy from '../../copy';
+import { BooleanType } from '../../copy';
+import { OperationTypes, VariantTypes } from '../../models';
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -53,6 +54,8 @@ const RuleFields = props => {
               segments={segments}
               isLast={idx === rule.constraints.length - 1}
               operations={operations}
+              copy={copy}
+              operationTypes={OperationTypes}
               onAddConstraint={onAddConstraint}
               onUpdateConstraint={onUpdateConstraint(`constraints[${idx}].`)}
               onDeleteConstraint={onDeleteConstraint(constraint)}
