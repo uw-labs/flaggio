@@ -16,9 +16,8 @@ import {
 import DeleteIcon from '@material-ui/icons/Delete';
 import { Link } from 'react-router-dom';
 import { reject, set } from 'lodash';
-import DeleteSegmentDialog from '../DeleteSegmentDialog';
+import { DeleteSegmentDialog, RuleFields } from '../';
 import { newConstraint, newRule } from '../../models';
-import RuleFields from '../RuleFields';
 
 const useStyles = makeStyles(theme => ({
   root: {},

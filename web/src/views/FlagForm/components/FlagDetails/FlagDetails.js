@@ -23,12 +23,10 @@ import {
 import DeleteIcon from '@material-ui/icons/Delete';
 import { Link } from 'react-router-dom';
 import { reject, set } from 'lodash';
-import DeleteFlagDialog from '../DeleteFlagDialog';
-import { newConstraint, newRule, newVariant, VariantTypes } from '../../models';
-import VariantFields from '../VariantFields';
-import RuleFields from '../RuleFields';
-import { BooleanType } from '../../copy';
 import slugify from '@sindresorhus/slugify';
+import { DeleteFlagDialog, RuleFields, VariantFields } from '../';
+import { newConstraint, newRule, newVariant, VariantTypes } from '../../models';
+import { BooleanType } from '../../copy';
 
 const useStyles = makeStyles(theme => ({
   root: {},
