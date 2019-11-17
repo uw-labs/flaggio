@@ -49,7 +49,7 @@ func startAdmin(ctx context.Context, c *cli.Context, logger *logrus.Entry) error
 		middleware.RequestID,
 		middleware.RequestLogger(&middleware.DefaultLogFormatter{
 			Logger:  logger,
-			NoColor: c.String("LOG_FORMATTER") != "text",
+			NoColor: c.String("log-formatter") != "text",
 		}),
 		cors.New(cors.Options{
 			AllowedOrigins:   c.StringSlice("cors-allowed-origins"),
