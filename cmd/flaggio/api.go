@@ -35,21 +35,24 @@ func startAPI(ctx context.Context, c *cli.Context, logger *logrus.Entry) error {
 	}
 
 	router := chi.NewRouter()
-	router.Use(middleware.RequestID)
-	router.Use(middleware.RequestLogger(&middleware.DefaultLogFormatter{Logger: logger}))
-	router.Use(middleware.Recoverer)
+	router.Use(
+		middleware.Recoverer,
+		middleware.RequestID,
+		middleware.RequestLogger(&middleware.DefaultLogFormatter{
+			Logger:  logger,
+			NoColor: c.String("LOG_FORMATTER") != "text",
+		}),
+		cors.New(cors.Options{
+			AllowedOrigins:   c.StringSlice("cors-allowed-origins"),
+			AllowedHeaders:   c.StringSlice("cors-allowed-headers"),
+			AllowedMethods:   []string{http.MethodGet, http.MethodPost, http.MethodOptions},
+			AllowCredentials: true,
+			Debug:            c.Bool("cors-debug"),
+		}).Handler,
+	)
 
-	// Add CORS middleware around every request
-	// See https://github.com/rs/cors for full option listing
-	router.Use(cors.New(cors.Options{
-		AllowedOrigins:   c.StringSlice("cors-allowed-origins"),
-		AllowCredentials: true,
-		Debug:            c.Bool("cors-debug"),
-	}).Handler)
-
-	port := "8080"
 	srv := &http.Server{
-		Addr: ":" + port,
+		Addr: c.String("api-addr"),
 		Handler: api.NewServer(
 			router,
 			service.NewFlagService(flgRepo, sgmntRepo),
@@ -68,6 +71,6 @@ func startAPI(ctx context.Context, c *cli.Context, logger *logrus.Entry) error {
 			logrus.Fatalf("api server shutdown failed: %+v", err)
 		}
 	}()
-	logger.Infof("api server started. listening on port %s", port)
+	logger.Infof("api server started. listening on %s", c.String("api-addr"))
 	return srv.ListenAndServe()
 }

@@ -9,6 +9,7 @@ import (
 
 	"github.com/99designs/gqlgen/handler"
 	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
@@ -43,14 +44,21 @@ func startAdmin(ctx context.Context, c *cli.Context, logger *logrus.Entry) error
 	}
 
 	router := chi.NewRouter()
-
-	// Add CORS middleware around every request
-	// See https://github.com/rs/cors for full option listing
-	router.Use(cors.New(cors.Options{
-		AllowedOrigins:   c.StringSlice("cors-allowed-origins"),
-		AllowCredentials: true,
-		Debug:            c.Bool("cors-debug"),
-	}).Handler)
+	router.Use(
+		middleware.Recoverer,
+		middleware.RequestID,
+		middleware.RequestLogger(&middleware.DefaultLogFormatter{
+			Logger:  logger,
+			NoColor: c.String("LOG_FORMATTER") != "text",
+		}),
+		cors.New(cors.Options{
+			AllowedOrigins:   c.StringSlice("cors-allowed-origins"),
+			AllowedHeaders:   c.StringSlice("cors-allowed-headers"),
+			AllowedMethods:   []string{http.MethodGet, http.MethodPost, http.MethodOptions},
+			AllowCredentials: true,
+			Debug:            c.Bool("cors-debug"),
+		}).Handler,
+	)
 
 	router.Post("/query", handler.GraphQL(
 		admin.NewExecutableSchema(admin.Config{Resolvers: resolver}),
@@ -76,9 +84,8 @@ func startAdmin(ctx context.Context, c *cli.Context, logger *logrus.Entry) error
 		})
 	}
 
-	port := "8081"
 	srv := &http.Server{
-		Addr:         ":" + port,
+		Addr:         c.String("admin-addr"),
 		Handler:      router,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
@@ -94,9 +101,9 @@ func startAdmin(ctx context.Context, c *cli.Context, logger *logrus.Entry) error
 			logrus.Fatalf("admin server shutdown failed: %+v", err)
 		}
 	}()
-	logger.Infof("admin server started. listening on port %s", port)
+	logger.Infof("admin server started. listening on %s", c.String("admin-addr"))
 	if isDev {
-		logger.Infof("GraphQL playground enabled: http://localhost:%s", port)
+		logger.Infof("GraphQL playground enabled")
 	}
 	return srv.ListenAndServe()
 }

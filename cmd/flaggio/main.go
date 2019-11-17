@@ -47,6 +47,11 @@ func main() {
 				Usage:  "CORS allowed origins separated by comma",
 				EnvVar: "CORS_ALLOWED_ORIGINS",
 			},
+			cli.StringSliceFlag{
+				Name:   "cors-allowed-headers",
+				Usage:  "CORS allowed headers",
+				EnvVar: "CORS_ALLOWED_HEADERS",
+			},
 			cli.BoolFlag{
 				Name:   "cors-debug",
 				Usage:  "CORS debug logging",
@@ -73,6 +78,18 @@ func main() {
 				Usage:  "Environment this application is running on. Valid values are: dev, production",
 				EnvVar: "APP_ENV",
 				Value:  "production",
+			},
+			cli.StringFlag{
+				Name:   "api-addr",
+				Usage:  "Sets the bind address for the API",
+				EnvVar: "API_ADDR",
+				Value:  ":8080",
+			},
+			cli.StringFlag{
+				Name:   "admin-addr",
+				Usage:  "Sets the bind address for the admin",
+				EnvVar: "ADMIN_ADDR",
+				Value:  ":8081",
 			},
 			cli.StringFlag{
 				Name:   "log-formatter",
@@ -106,7 +123,8 @@ func main() {
 				return fmt.Errorf("invalid formatter: %s", c.String("log-formatter"))
 			}
 
-			logger.WithFields(logrus.Fields{"version": ApplicationVersion, "build": build()}).
+			logger.
+				WithFields(logrus.Fields{"version": ApplicationVersion, "build": build()}).
 				Infof("starting %s application", ApplicationName)
 
 			done := make(chan os.Signal, 1)
