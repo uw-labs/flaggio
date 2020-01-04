@@ -7,6 +7,7 @@ require (
 	github.com/go-chi/chi v4.0.2+incompatible
 	github.com/go-chi/render v1.0.1
 	github.com/go-stack/stack v1.8.0 // indirect
+	github.com/golang/mock v1.3.1
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/google/go-cmp v0.3.1 // indirect
 	github.com/rs/cors v1.6.0

@@ -1,5 +1,7 @@
 package flaggio
 
+//go:generate mockgen -destination=./mocks/evaluator_mock.go -package=flaggio_mock github.com/victorkt/flaggio/internal/flaggio Evaluator,Identifier
+
 import (
 	"fmt"
 	"strings"
@@ -59,9 +61,9 @@ func Evaluate(usrContext map[string]interface{}, root Evaluator) (EvalResult, er
 // evaluators are left in the chain, whichever happens first.
 func evaluate(usrContext map[string]interface{}, evaluators []Evaluator) (EvalResult, error) {
 	// the last evaluation result that had an answer
-	var lastResult EvalResult
-	// used to keep track of the evaluator chain
-	var last *EvalResult
+	var lastWithResult EvalResult
+	// used to keep track of the evaluator chain and generate a stack trace
+	var lastInChain *EvalResult
 
 	// go through the evaluators in the list
 	for len(evaluators) > 0 {
@@ -76,8 +78,8 @@ func evaluate(usrContext map[string]interface{}, evaluators []Evaluator) (EvalRe
 
 		// attach additional data so that we can generate a stack trace
 		res.evaluator = evltr
-		res.previous = last
-		last = &res
+		res.previous = lastInChain
+		lastInChain = &res
 
 		if res.Answer != nil {
 			if len(res.Next) == 0 {
@@ -87,7 +89,7 @@ func evaluate(usrContext map[string]interface{}, evaluators []Evaluator) (EvalRe
 			}
 			// save the result. in case no new answers are returned this will
 			// be used as final answer
-			lastResult = res
+			lastWithResult = res
 		}
 
 		if len(res.Next) > 0 {
@@ -101,5 +103,5 @@ func evaluate(usrContext map[string]interface{}, evaluators []Evaluator) (EvalRe
 	}
 
 	// return the final answer, if any
-	return lastResult, nil
+	return lastWithResult, nil
 }
