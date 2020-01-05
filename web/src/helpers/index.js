@@ -1,1 +1,1 @@
-export { cast, inferCast } from './cast';
+export { cast } from './cast';

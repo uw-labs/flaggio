@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { includes } from 'lodash';
-import { Button, Chip, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip } from '@material-ui/core';
-import { blue } from '@material-ui/core/colors'
+import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip } from '@material-ui/core';
 import RemoveIcon from '@material-ui/icons/RemoveCircleOutline';
 import AddIcon from '@material-ui/icons/AddCircleOutline';
 import { makeStyles } from '@material-ui/styles';
 import ChipInput from 'material-ui-chip-input'
+import { VariantTypes } from '../../views/FlagForm/models';
+import { VariantType } from '../../views/FlagForm/copy';
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -41,6 +42,8 @@ const ConstraintFields = props => {
     onUpdateConstraint,
   } = props;
   const {
+    ONE_OF,
+    NOT_ONE_OF,
     IS_IN_SEGMENT,
     ISNT_IN_SEGMENT,
     EXISTS,
@@ -50,20 +53,12 @@ const ConstraintFields = props => {
     LOWER,
     LOWER_OR_EQUAL,
   } = operationTypes;
-  const chipRenderer = ({ value, text, isFocused, isDisabled, isReadOnly, handleClick, handleDelete, className }, key) => (
-    <Chip
-      key={key}
-      className={className}
-      style={{
-        pointerEvents: isDisabled || isReadOnly ? 'none' : undefined,
-        backgroundColor: isFocused ? blue[400] : undefined,
-      }}
-      size="small"
-      onClick={handleClick}
-      onDelete={handleDelete}
-      label={typeof text === 'boolean' ? BooleanType[text] : text}
-    />
-  );
+  const disabledPropertyField = includes([IS_IN_SEGMENT, ISNT_IN_SEGMENT], constraint.operation);
+  const showTypeField = includes([ONE_OF, NOT_ONE_OF], constraint.operation);
+  const showSegmentInput = includes([IS_IN_SEGMENT, ISNT_IN_SEGMENT], constraint.operation);
+  const showNumberInput = constraint.type === VariantTypes.NUMBER;
+  const showBooleanInput = constraint.type === VariantTypes.BOOLEAN;
+  const showNoInput = includes([EXISTS, DOESNT_EXIST], constraint.operation);
 
   return (
     <Grid container spacing={2}>
@@ -74,8 +69,8 @@ const ConstraintFields = props => {
           name="property"
           onChange={onUpdateConstraint}
           fullWidth
-          disabled={includes([IS_IN_SEGMENT, ISNT_IN_SEGMENT], constraint.operation)}
-          required={!includes([IS_IN_SEGMENT, ISNT_IN_SEGMENT], constraint.operation)}
+          disabled={disabledPropertyField}
+          required={!disabledPropertyField}
           variant="outlined"
           InputProps={{ labelWidth: 65 }}
         />
@@ -93,6 +88,14 @@ const ConstraintFields = props => {
             onChange={e => {
               onUpdateConstraint(e);
               onUpdateConstraint({ target: { name: 'values', value: [] } });
+              if (includes([IS_IN_SEGMENT, ISNT_IN_SEGMENT], e.target.value)) {
+                onUpdateConstraint({ target: { name: 'property', value: '' } });
+              }
+              if (includes([GREATER, GREATER_OR_EQUAL, LOWER, LOWER_OR_EQUAL], e.target.value)) {
+                onUpdateConstraint({ target: { name: 'type', value: VariantTypes.NUMBER } });
+              } else {
+                onUpdateConstraint({ target: { name: 'type', value: VariantTypes.STRING } });
+              }
             }}
             labelWidth={70}
           >
@@ -102,11 +105,40 @@ const ConstraintFields = props => {
           </Select>
         </FormControl>
       </Grid>
-      <Grid item xs={6}>
-        {includes([IS_IN_SEGMENT, ISNT_IN_SEGMENT], constraint.operation) ? (
+      {showTypeField && (
+        <Grid item xs={1}>
           <FormControl
             className={classes.formControl}
-            margin="dense"
+            variant="outlined"
+            required
+          >
+            <InputLabel>Type</InputLabel>
+            <Select
+              value={constraint.type}
+              name="type"
+              required
+              onChange={e => {
+                onUpdateConstraint(e);
+                switch (e.target.value) {
+                  case VariantTypes.BOOLEAN:
+                    return onUpdateConstraint({ target: { name: 'values', value: [false] } });
+                  default:
+                    return onUpdateConstraint({ target: { name: 'values', value: [] } });
+                }
+              }}
+              labelWidth={30}
+            >
+              {Object.keys(VariantTypes).map(type => (
+                <MenuItem key={type} value={VariantTypes[type]}>{VariantType[type]}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+      )}
+      <Grid item xs={showTypeField ? 5 : 6}>
+        {showSegmentInput ? (
+          <FormControl
+            className={classes.formControl}
             variant="outlined"
           >
             <InputLabel>Segment</InputLabel>
@@ -122,33 +154,54 @@ const ConstraintFields = props => {
               ))}
             </Select>
           </FormControl>
-        ) : includes([GREATER, GREATER_OR_EQUAL, LOWER, LOWER_OR_EQUAL], constraint.operation) ? (
+        ) : showNumberInput ? (
           <TextField
             label="Value"
-            value={constraint.values[0]}
+            value={constraint.values[0] || ''}
             name="values[0]"
             type="number"
             onChange={onUpdateConstraint}
             fullWidth
-            required={!includes([EXISTS, DOESNT_EXIST], constraint.operation)}
+            required={true}
             variant="outlined"
             InputProps={{ labelWidth: 45 }}
           />
-        ) : includes([EXISTS, DOESNT_EXIST], constraint.operation) ? (
+        ) : showBooleanInput ? (
+          <FormControl
+            className={classes.formControl}
+            variant="outlined"
+          >
+            <InputLabel>Value</InputLabel>
+            <Select
+              value={constraint.values[0] || false}
+              name="values[0]"
+              onChange={onUpdateConstraint}
+              labelWidth={45}
+            >
+              {[true, false].map(val => (
+                <MenuItem key={val} value={val}>{BooleanType[val]}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        ) : showNoInput ? (
           <div/>
         ) : (
           <ChipInput
-            chipRenderer={chipRenderer}
             label="Values"
             name="values"
             blurBehavior="add"
-            defaultValue={constraint.values}
-            disabled={includes([EXISTS, DOESNT_EXIST], constraint.operation)}
-            required={!includes([EXISTS, DOESNT_EXIST], constraint.operation)}
+            value={constraint.values}
+            required={true}
             fullWidth
             variant="outlined"
             InputLabelProps={{ className: classes.valuesLabel }}
-            onChange={value => onUpdateConstraint({ target: { name: 'values', value } })}
+            onAdd={chip => onUpdateConstraint({ target: { name: 'values', value: [...constraint.values, chip] } })}
+            onDelete={(chip, index) => onUpdateConstraint({
+              target: {
+                name: 'values',
+                value: constraint.values.filter((v, idx) => idx !== index),
+              },
+            })}
           />
         )}
       </Grid>
@@ -199,7 +252,7 @@ ConstraintFields.propTypes = {
     BooleanType: PropTypes.object.isRequired,
     Operations: PropTypes.object.isRequired,
   }).isRequired,
-  operationTypes:PropTypes.object.isRequired,
+  operationTypes: PropTypes.object.isRequired,
   onAddConstraint: PropTypes.func.isRequired,
   onUpdateConstraint: PropTypes.func.isRequired,
   onDeleteConstraint: PropTypes.func.isRequired,

@@ -10,18 +10,3 @@ export const cast = (value, type) => {
       return value;
   }
 };
-
-export const inferCast = value => {
-  switch (true) {
-    case typeof value !== 'string':
-      return value;
-    case value === 'true':
-      return true;
-    case value === 'false':
-      return false;
-    case !isNaN(Number(value)):
-      return Number(value);
-    default:
-      return value;
-  }
-};

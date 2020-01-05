@@ -1,7 +1,8 @@
 import uuid from 'uuid/v1';
 import { isArray } from 'lodash';
 import { Operations } from './copy';
-import { inferCast } from '../../helpers';
+import { VariantTypes } from '../FlagForm/models';
+import { cast } from '../../helpers';
 
 export const OperationTypes = Object.keys(Operations)
   .reduce((ops, op) => ({ ...ops, [op]: op }), {});
@@ -28,6 +29,8 @@ export const newConstraint = (constraint = {}) => ({
   property: constraint.property || '',
   operation: constraint.operation || OperationTypes.ONE_OF,
   values: constraint.values || [],
+  type: constraint.type !== undefined ? constraint.type :
+    constraint.value !== undefined ? typeof constraint.value : VariantTypes.STRING,
 });
 
 export const formatSegment = segment => ({
@@ -44,5 +47,5 @@ export const formatConstraint = constraint => ({
   property: constraint.property,
   operation: constraint.operation,
   values: isArray(constraint.values) && constraint.values.length > 0 ?
-    constraint.values.map(v => inferCast(v)) : [],
+    constraint.values.map(v => cast(v, constraint.type)) : [],
 });
