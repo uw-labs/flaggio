@@ -10,8 +10,8 @@ import (
 )
 
 func TestConstraint_Validate(t *testing.T) {
-	tt := []struct {
-		desc             string
+	tests := []struct {
+		name             string
 		cnstrnt          Constraint
 		usrContext       map[string]interface{}
 		operatorCalls    int
@@ -21,14 +21,14 @@ func TestConstraint_Validate(t *testing.T) {
 		expectedError    error
 	}{
 		{
-			desc:           "returns error on unknown operators",
+			name:           "returns error on unknown operators",
 			cnstrnt:        Constraint{Property: "key", Operation: "INVALID", Values: []interface{}{}},
 			operatorCalls:  0,
 			expectedResult: false,
 			expectedError:  errors.New("invalid flag: unknown operation: INVALID"),
 		},
 		{
-			desc:             "returns true when operator returns true",
+			name:             "returns true when operator returns true",
 			cnstrnt:          Constraint{Property: "key", Operation: OperationOneOf, Values: []interface{}{1}},
 			usrContext:       map[string]interface{}{"key": 1},
 			operatorCalls:    1,
@@ -37,7 +37,7 @@ func TestConstraint_Validate(t *testing.T) {
 			expectedResult:   true,
 		},
 		{
-			desc:             "returns false when operator returns false",
+			name:             "returns false when operator returns false",
 			cnstrnt:          Constraint{Property: "key", Operation: OperationOneOf, Values: []interface{}{1}},
 			usrContext:       map[string]interface{}{"key": 1},
 			operatorCalls:    1,
@@ -46,7 +46,7 @@ func TestConstraint_Validate(t *testing.T) {
 			expectedResult:   false,
 		},
 		{
-			desc:             "passes the user context as argument for IsInSegment operations",
+			name:             "passes the user context as argument for IsInSegment operations",
 			cnstrnt:          Constraint{Property: "key", Operation: OperationIsInSegment, Values: []interface{}{1}},
 			usrContext:       map[string]interface{}{"key": 1},
 			operatorCalls:    1,
@@ -56,46 +56,47 @@ func TestConstraint_Validate(t *testing.T) {
 		},
 	}
 
-	for _, test := range tt {
-		t.Run(test.desc, func(t *testing.T) {
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
 			var mockCalls int
 			mockOp := func(usrValue interface{}, validValues []interface{}) (bool, error) {
 				mockCalls++
-				if !reflect.DeepEqual(usrValue, test.expectedUsrValue) {
-					return false, fmt.Errorf("expected user value to be: %+v, got: %+v", test.expectedUsrValue, usrValue)
+				if !reflect.DeepEqual(usrValue, tt.expectedUsrValue) {
+					return false, fmt.Errorf("expected user value to be: %+v, got: %+v", tt.expectedUsrValue, usrValue)
 				}
-				return test.operatorResult, nil
+				return tt.operatorResult, nil
 			}
-			oldOperator, ok := operatorMap[test.cnstrnt.Operation]
+			oldOperator, ok := operatorMap[tt.cnstrnt.Operation]
 			if ok {
-				operatorMap[test.cnstrnt.Operation] = mockOp
+				operatorMap[tt.cnstrnt.Operation] = mockOp
 				defer func() {
-					operatorMap[test.cnstrnt.Operation] = oldOperator
+					operatorMap[tt.cnstrnt.Operation] = oldOperator
 				}()
 			}
 
-			res, err := test.cnstrnt.Validate(test.usrContext)
-			if test.expectedError != nil {
-				assert.EqualError(t, err, test.expectedError.Error())
+			res, err := tt.cnstrnt.Validate(tt.usrContext)
+			if tt.expectedError != nil {
+				assert.EqualError(t, err, tt.expectedError.Error())
 			} else {
 				assert.NoError(t, err)
 			}
-			assert.Equal(t, test.operatorCalls, mockCalls)
-			assert.Equal(t, test.expectedResult, res)
+			assert.Equal(t, tt.operatorCalls, mockCalls)
+			assert.Equal(t, tt.expectedResult, res)
 		})
 	}
 }
 
 func TestConstraintList_Validate(t *testing.T) {
-	tt := []struct {
-		desc           string
+	tests := []struct {
+		name           string
 		cnstrnts       ConstraintList
 		usrContext     map[string]interface{}
 		operatorResult bool
 		expectedResult bool
 	}{
 		{
-			desc: "returns false when any constraint is false",
+			name: "returns false when any constraint is false",
 			cnstrnts: ConstraintList{
 				&Constraint{Property: "key", Operation: OperationOneOf, Values: []interface{}{1}},
 				&Constraint{Property: "key", Operation: OperationOneOf, Values: []interface{}{2}},
@@ -104,7 +105,7 @@ func TestConstraintList_Validate(t *testing.T) {
 			expectedResult: false,
 		},
 		{
-			desc: "returns true when all constraints returns true",
+			name: "returns true when all constraints returns true",
 			cnstrnts: ConstraintList{
 				&Constraint{Property: "key", Operation: OperationOneOf, Values: []interface{}{1}},
 				&Constraint{Property: "key2", Operation: OperationOneOf, Values: []interface{}{2}},
@@ -115,11 +116,12 @@ func TestConstraintList_Validate(t *testing.T) {
 		},
 	}
 
-	for _, test := range tt {
-		t.Run(test.desc, func(t *testing.T) {
-			res, err := test.cnstrnts.Validate(test.usrContext)
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			res, err := tt.cnstrnts.Validate(tt.usrContext)
 			assert.NoError(t, err)
-			assert.Equal(t, test.expectedResult, res)
+			assert.Equal(t, tt.expectedResult, res)
 		})
 	}
 }

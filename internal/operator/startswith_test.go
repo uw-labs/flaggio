@@ -8,29 +8,29 @@ import (
 )
 
 func TestStartsWith_Operate(t *testing.T) {
-	tt := []struct {
-		desc           string
+	tests := []struct {
+		name           string
 		usrContext     map[string]interface{}
 		property       string
 		values         []interface{}
 		expectedResult bool
 	}{
 		{
-			desc:           "starts with string",
+			name:           "starts with string",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{"ab"},
 			expectedResult: true,
 		},
 		{
-			desc:           "starts with any strings from the list",
+			name:           "starts with any strings from the list",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{"other", "strings", "abc"},
 			expectedResult: true,
 		},
 		{
-			desc:           "doesnt start with string",
+			name:           "doesnt start with string",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{"cde"},
@@ -38,7 +38,7 @@ func TestStartsWith_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "unknown type",
+			name:           "unknown type",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{struct{}{}},
@@ -46,39 +46,40 @@ func TestStartsWith_Operate(t *testing.T) {
 		},
 	}
 
-	for _, test := range tt {
-		t.Run(test.desc, func(t *testing.T) {
-			res, err := operator.StartsWith(test.usrContext[test.property], test.values)
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			res, err := operator.StartsWith(tt.usrContext[tt.property], tt.values)
 			assert.NoError(t, err)
-			assert.Equal(t, test.expectedResult, res)
+			assert.Equal(t, tt.expectedResult, res)
 		})
 	}
 }
 
 func TestDoesntStartWith_Operate(t *testing.T) {
-	tt := []struct {
-		desc           string
+	tests := []struct {
+		name           string
 		usrContext     map[string]interface{}
 		property       string
 		values         []interface{}
 		expectedResult bool
 	}{
 		{
-			desc:           "doesnt start with string",
+			name:           "doesnt start with string",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{"cd"},
 			expectedResult: true,
 		},
 		{
-			desc:           "doesnt start with any strings from list",
+			name:           "doesnt start with any strings from list",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{"other", "strings", "cde"},
 			expectedResult: true,
 		},
 		{
-			desc:           "starts with string",
+			name:           "starts with string",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{"abc", "cde"},
@@ -86,7 +87,7 @@ func TestDoesntStartWith_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "unknown type",
+			name:           "unknown type",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{struct{}{}},
@@ -94,11 +95,12 @@ func TestDoesntStartWith_Operate(t *testing.T) {
 		},
 	}
 
-	for _, test := range tt {
-		t.Run(test.desc, func(t *testing.T) {
-			res, err := operator.DoesntStartWith(test.usrContext[test.property], test.values)
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			res, err := operator.DoesntStartWith(tt.usrContext[tt.property], tt.values)
 			assert.NoError(t, err)
-			assert.Equal(t, test.expectedResult, res)
+			assert.Equal(t, tt.expectedResult, res)
 		})
 	}
 }

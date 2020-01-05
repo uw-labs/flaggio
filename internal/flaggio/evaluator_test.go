@@ -10,7 +10,8 @@ import (
 )
 
 func TestEvaluate(t *testing.T) {
-	tt := []struct {
+	t.Parallel()
+	tests := []struct {
 		name string
 		run  func(t *testing.T, mockCtrl *gomock.Controller)
 	}{
@@ -178,11 +179,13 @@ func TestEvaluate(t *testing.T) {
 		},
 	}
 
-	for _, test := range tt {
-		t.Run(test.name, func(t *testing.T) {
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			mockCtrl := gomock.NewController(t)
 			defer mockCtrl.Finish()
-			test.run(t, mockCtrl)
+			tt.run(t, mockCtrl)
 		})
 	}
 }

@@ -8,29 +8,29 @@ import (
 )
 
 func TestMatchesRegex_Operate(t *testing.T) {
-	tt := []struct {
-		desc           string
+	tests := []struct {
+		name           string
 		usrContext     map[string]interface{}
 		property       string
 		values         []interface{}
 		expectedResult bool
 	}{
 		{
-			desc:           "matches string",
+			name:           "matches string",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{"[a-z]+"},
 			expectedResult: true,
 		},
 		{
-			desc:           "matches any strings from the list",
+			name:           "matches any strings from the list",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{"[a-z]+", "[0-9]+"},
 			expectedResult: true,
 		},
 		{
-			desc:           "doesnt match string",
+			name:           "doesnt match string",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{"[0-9]+"},
@@ -38,7 +38,7 @@ func TestMatchesRegex_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "unknown type",
+			name:           "unknown type",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{struct{}{}},
@@ -46,39 +46,40 @@ func TestMatchesRegex_Operate(t *testing.T) {
 		},
 	}
 
-	for _, test := range tt {
-		t.Run(test.desc, func(t *testing.T) {
-			res, err := operator.MatchesRegex(test.usrContext[test.property], test.values)
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			res, err := operator.MatchesRegex(tt.usrContext[tt.property], tt.values)
 			assert.NoError(t, err)
-			assert.Equal(t, test.expectedResult, res)
+			assert.Equal(t, tt.expectedResult, res)
 		})
 	}
 }
 
 func TestDoesntMatchRegex_Operate(t *testing.T) {
-	tt := []struct {
-		desc           string
+	tests := []struct {
+		name           string
 		usrContext     map[string]interface{}
 		property       string
 		values         []interface{}
 		expectedResult bool
 	}{
 		{
-			desc:           "doesnt match string",
+			name:           "doesnt match string",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{"[0-9]+"},
 			expectedResult: true,
 		},
 		{
-			desc:           "doesnt match any strings from list",
+			name:           "doesnt match any strings from list",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{"[0-9]+", "[x-z]+"},
 			expectedResult: true,
 		},
 		{
-			desc:           "matches string",
+			name:           "matches string",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{"[a-z]+"},
@@ -86,7 +87,7 @@ func TestDoesntMatchRegex_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "unknown type",
+			name:           "unknown type",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{struct{}{}},
@@ -94,11 +95,12 @@ func TestDoesntMatchRegex_Operate(t *testing.T) {
 		},
 	}
 
-	for _, test := range tt {
-		t.Run(test.desc, func(t *testing.T) {
-			res, err := operator.DoesntMatchRegex(test.usrContext[test.property], test.values)
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			res, err := operator.DoesntMatchRegex(tt.usrContext[tt.property], tt.values)
 			assert.NoError(t, err)
-			assert.Equal(t, test.expectedResult, res)
+			assert.Equal(t, tt.expectedResult, res)
 		})
 	}
 }

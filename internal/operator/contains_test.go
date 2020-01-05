@@ -8,29 +8,30 @@ import (
 )
 
 func TestContains_Operate(t *testing.T) {
-	tt := []struct {
-		desc           string
+	t.Parallel()
+	tests := []struct {
+		name           string
 		usrContext     map[string]interface{}
 		property       string
 		values         []interface{}
 		expectedResult bool
 	}{
 		{
-			desc:           "contains string",
+			name:           "contains string",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{"cde"},
 			expectedResult: true,
 		},
 		{
-			desc:           "contains any strings from the list",
+			name:           "contains any strings from the list",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{"other", "strings", "cde"},
 			expectedResult: true,
 		},
 		{
-			desc:           "doesnt contain string",
+			name:           "doesnt contain string",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{"xyz"},
@@ -38,7 +39,7 @@ func TestContains_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "unknown type",
+			name:           "unknown type",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{struct{}{}},
@@ -46,39 +47,42 @@ func TestContains_Operate(t *testing.T) {
 		},
 	}
 
-	for _, test := range tt {
-		t.Run(test.desc, func(t *testing.T) {
-			res, err := operator.Contains(test.usrContext[test.property], test.values)
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			res, err := operator.Contains(tt.usrContext[tt.property], tt.values)
 			assert.NoError(t, err)
-			assert.Equal(t, test.expectedResult, res)
+			assert.Equal(t, tt.expectedResult, res)
 		})
 	}
 }
 
 func TestDoesntContain_Operate(t *testing.T) {
-	tt := []struct {
-		desc           string
+	t.Parallel()
+	tests := []struct {
+		name           string
 		usrContext     map[string]interface{}
 		property       string
 		values         []interface{}
 		expectedResult bool
 	}{
 		{
-			desc:           "doesnt contain string",
+			name:           "doesnt contain string",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{"xyz"},
 			expectedResult: true,
 		},
 		{
-			desc:           "doesnt contain any strings from list",
+			name:           "doesnt contain any strings from list",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{"other", "strings", "xyz"},
 			expectedResult: true,
 		},
 		{
-			desc:           "contains string",
+			name:           "contains string",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{"abc", "cde"},
@@ -86,7 +90,7 @@ func TestDoesntContain_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "unknown type",
+			name:           "unknown type",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{struct{}{}},
@@ -94,11 +98,13 @@ func TestDoesntContain_Operate(t *testing.T) {
 		},
 	}
 
-	for _, test := range tt {
-		t.Run(test.desc, func(t *testing.T) {
-			res, err := operator.DoesntContain(test.usrContext[test.property], test.values)
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			res, err := operator.DoesntContain(tt.usrContext[tt.property], tt.values)
 			assert.NoError(t, err)
-			assert.Equal(t, test.expectedResult, res)
+			assert.Equal(t, tt.expectedResult, res)
 		})
 	}
 }

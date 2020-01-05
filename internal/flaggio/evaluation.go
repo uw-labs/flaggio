@@ -6,7 +6,7 @@ import (
 
 // Evaluation is the final result of a flag evaluation. It holds the
 // returned value associated with the key for the given user.
-// If an error ocurred, value will be nil and the error property will
+// If an error occurred, value will be nil and the error property will
 // contain the error message.
 // Optionally, a stack trace of the evaluation process can be attached
 // to the object.

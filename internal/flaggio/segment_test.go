@@ -8,11 +8,13 @@ import (
 )
 
 func TestSegment_GetID(t *testing.T) {
+	t.Parallel()
 	sgmnt := flaggio.Segment{ID: "123456"}
 	assert.Equal(t, "123456", sgmnt.GetID())
 }
 
 func TestSegment_Validate(t *testing.T) {
+	t.Parallel()
 	rl1 := flaggio.Rule{
 		Constraints: []*flaggio.Constraint{{
 			Property:  "name",
@@ -28,7 +30,7 @@ func TestSegment_Validate(t *testing.T) {
 		}},
 	}
 
-	tt := []struct {
+	tests := []struct {
 		name           string
 		usrContext     map[string]interface{}
 		segment        flaggio.Segment
@@ -49,11 +51,13 @@ func TestSegment_Validate(t *testing.T) {
 		},
 	}
 
-	for _, test := range tt {
-		t.Run(test.name, func(t *testing.T) {
-			result, err := test.segment.Validate(test.usrContext)
-			assert.Equal(t, test.expectedError, err)
-			assert.Equal(t, test.expectedResult, result)
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			result, err := tt.segment.Validate(tt.usrContext)
+			assert.Equal(t, tt.expectedError, err)
+			assert.Equal(t, tt.expectedResult, result)
 		})
 	}
 }

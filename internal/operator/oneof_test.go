@@ -8,29 +8,30 @@ import (
 )
 
 func TestOneOf_Operate(t *testing.T) {
-	tt := []struct {
-		desc           string
+	t.Parallel()
+	tests := []struct {
+		name           string
 		usrContext     map[string]interface{}
 		property       string
 		values         []interface{}
 		expectedResult bool
 	}{
 		{
-			desc:           "equals string",
+			name:           "equals string",
 			usrContext:     map[string]interface{}{"prop": "abc"},
 			property:       "prop",
 			values:         []interface{}{"abc"},
 			expectedResult: true,
 		},
 		{
-			desc:           "equals string from list",
+			name:           "equals string from list",
 			usrContext:     map[string]interface{}{"prop": "abc"},
 			property:       "prop",
 			values:         []interface{}{"other", "strings", "abc"},
 			expectedResult: true,
 		},
 		{
-			desc:           "not equals string",
+			name:           "not equals string",
 			usrContext:     map[string]interface{}{"prop": "abc"},
 			property:       "prop",
 			values:         []interface{}{"cde"},
@@ -38,21 +39,21 @@ func TestOneOf_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "equals []byte",
+			name:           "equals []byte",
 			usrContext:     map[string]interface{}{"prop": []byte("abc")},
 			property:       "prop",
 			values:         []interface{}{[]byte("abc")},
 			expectedResult: true,
 		},
 		{
-			desc:           "equals []byte from list",
+			name:           "equals []byte from list",
 			usrContext:     map[string]interface{}{"prop": []byte("abc")},
 			property:       "prop",
 			values:         []interface{}{[]byte("other"), []byte("abc")},
 			expectedResult: true,
 		},
 		{
-			desc:           "not equals []byte",
+			name:           "not equals []byte",
 			usrContext:     map[string]interface{}{"prop": []byte("abc")},
 			property:       "prop",
 			values:         []interface{}{[]byte("cde")},
@@ -60,21 +61,21 @@ func TestOneOf_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "equals bool",
+			name:           "equals bool",
 			usrContext:     map[string]interface{}{"prop": true},
 			property:       "prop",
 			values:         []interface{}{true},
 			expectedResult: true,
 		},
 		{
-			desc:           "equals bool from list",
+			name:           "equals bool from list",
 			usrContext:     map[string]interface{}{"prop": true},
 			property:       "prop",
 			values:         []interface{}{false, true},
 			expectedResult: true,
 		},
 		{
-			desc:           "not equals bool",
+			name:           "not equals bool",
 			usrContext:     map[string]interface{}{"prop": true},
 			property:       "prop",
 			values:         []interface{}{false},
@@ -82,49 +83,49 @@ func TestOneOf_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "int equals int",
+			name:           "int equals int",
 			usrContext:     map[string]interface{}{"prop": int(1)},
 			property:       "prop",
 			values:         []interface{}{int(1)},
 			expectedResult: true,
 		},
 		{
-			desc:           "int equals int from list",
+			name:           "int equals int from list",
 			usrContext:     map[string]interface{}{"prop": int(1)},
 			property:       "prop",
 			values:         []interface{}{int(0), int(1)},
 			expectedResult: true,
 		},
 		{
-			desc:           "int not equals int",
+			name:           "int not equals int",
 			usrContext:     map[string]interface{}{"prop": int(1)},
 			property:       "prop",
 			values:         []interface{}{int(2)},
 			expectedResult: false,
 		},
 		{
-			desc:           "int equals int32",
+			name:           "int equals int32",
 			usrContext:     map[string]interface{}{"prop": int(1)},
 			property:       "prop",
 			values:         []interface{}{int32(1)},
 			expectedResult: true,
 		},
 		{
-			desc:           "int not equals int32",
+			name:           "int not equals int32",
 			usrContext:     map[string]interface{}{"prop": int(1)},
 			property:       "prop",
 			values:         []interface{}{int32(2)},
 			expectedResult: false,
 		},
 		{
-			desc:           "int equals int64",
+			name:           "int equals int64",
 			usrContext:     map[string]interface{}{"prop": int(1)},
 			property:       "prop",
 			values:         []interface{}{int64(1)},
 			expectedResult: true,
 		},
 		{
-			desc:           "int not equals int64",
+			name:           "int not equals int64",
 			usrContext:     map[string]interface{}{"prop": int(1)},
 			property:       "prop",
 			values:         []interface{}{int64(2)},
@@ -132,49 +133,49 @@ func TestOneOf_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "int32 equals int32",
+			name:           "int32 equals int32",
 			usrContext:     map[string]interface{}{"prop": int32(2)},
 			property:       "prop",
 			values:         []interface{}{int32(2)},
 			expectedResult: true,
 		},
 		{
-			desc:           "int32 equals int32 from list",
+			name:           "int32 equals int32 from list",
 			usrContext:     map[string]interface{}{"prop": int32(2)},
 			property:       "prop",
 			values:         []interface{}{int32(0), int32(2)},
 			expectedResult: true,
 		},
 		{
-			desc:           "int32 not equals int32",
+			name:           "int32 not equals int32",
 			usrContext:     map[string]interface{}{"prop": int32(2)},
 			property:       "prop",
 			values:         []interface{}{int32(3)},
 			expectedResult: false,
 		},
 		{
-			desc:           "int32 equals int",
+			name:           "int32 equals int",
 			usrContext:     map[string]interface{}{"prop": int32(2)},
 			property:       "prop",
 			values:         []interface{}{int(2)},
 			expectedResult: true,
 		},
 		{
-			desc:           "int32 not equals int",
+			name:           "int32 not equals int",
 			usrContext:     map[string]interface{}{"prop": int32(2)},
 			property:       "prop",
 			values:         []interface{}{int(3)},
 			expectedResult: false,
 		},
 		{
-			desc:           "int32 equals int64",
+			name:           "int32 equals int64",
 			usrContext:     map[string]interface{}{"prop": int32(2)},
 			property:       "prop",
 			values:         []interface{}{int64(2)},
 			expectedResult: true,
 		},
 		{
-			desc:           "int32 not equals int64",
+			name:           "int32 not equals int64",
 			usrContext:     map[string]interface{}{"prop": int32(2)},
 			property:       "prop",
 			values:         []interface{}{int64(3)},
@@ -182,49 +183,49 @@ func TestOneOf_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "int64 equals int64",
+			name:           "int64 equals int64",
 			usrContext:     map[string]interface{}{"prop": int64(3)},
 			property:       "prop",
 			values:         []interface{}{int64(3)},
 			expectedResult: true,
 		},
 		{
-			desc:           "int64 equals int64 from list",
+			name:           "int64 equals int64 from list",
 			usrContext:     map[string]interface{}{"prop": int64(3)},
 			property:       "prop",
 			values:         []interface{}{int64(0), int64(3)},
 			expectedResult: true,
 		},
 		{
-			desc:           "int64 not equals int64",
+			name:           "int64 not equals int64",
 			usrContext:     map[string]interface{}{"prop": int64(3)},
 			property:       "prop",
 			values:         []interface{}{int64(4)},
 			expectedResult: false,
 		},
 		{
-			desc:           "int64 equals int",
+			name:           "int64 equals int",
 			usrContext:     map[string]interface{}{"prop": int64(1)},
 			property:       "prop",
 			values:         []interface{}{int(1)},
 			expectedResult: true,
 		},
 		{
-			desc:           "int64 not equals int",
+			name:           "int64 not equals int",
 			usrContext:     map[string]interface{}{"prop": int64(1)},
 			property:       "prop",
 			values:         []interface{}{int(2)},
 			expectedResult: false,
 		},
 		{
-			desc:           "int64 equals int32",
+			name:           "int64 equals int32",
 			usrContext:     map[string]interface{}{"prop": int64(1)},
 			property:       "prop",
 			values:         []interface{}{int32(1)},
 			expectedResult: true,
 		},
 		{
-			desc:           "int64 not equals int32",
+			name:           "int64 not equals int32",
 			usrContext:     map[string]interface{}{"prop": int64(1)},
 			property:       "prop",
 			values:         []interface{}{int32(2)},
@@ -232,49 +233,49 @@ func TestOneOf_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "uint equals uint",
+			name:           "uint equals uint",
 			usrContext:     map[string]interface{}{"prop": uint(4)},
 			property:       "prop",
 			values:         []interface{}{uint(4)},
 			expectedResult: true,
 		},
 		{
-			desc:           "uint equals uint from list",
+			name:           "uint equals uint from list",
 			usrContext:     map[string]interface{}{"prop": uint(4)},
 			property:       "prop",
 			values:         []interface{}{uint(0), uint(4)},
 			expectedResult: true,
 		},
 		{
-			desc:           "uint not equals uint",
+			name:           "uint not equals uint",
 			usrContext:     map[string]interface{}{"prop": uint(4)},
 			property:       "prop",
 			values:         []interface{}{uint(5)},
 			expectedResult: false,
 		},
 		{
-			desc:           "uint equals uint32",
+			name:           "uint equals uint32",
 			usrContext:     map[string]interface{}{"prop": uint(4)},
 			property:       "prop",
 			values:         []interface{}{uint32(4)},
 			expectedResult: true,
 		},
 		{
-			desc:           "uint not equals uint32",
+			name:           "uint not equals uint32",
 			usrContext:     map[string]interface{}{"prop": uint(4)},
 			property:       "prop",
 			values:         []interface{}{uint32(5)},
 			expectedResult: false,
 		},
 		{
-			desc:           "uint equals uint64",
+			name:           "uint equals uint64",
 			usrContext:     map[string]interface{}{"prop": uint(4)},
 			property:       "prop",
 			values:         []interface{}{uint64(4)},
 			expectedResult: true,
 		},
 		{
-			desc:           "uint not equals uint64",
+			name:           "uint not equals uint64",
 			usrContext:     map[string]interface{}{"prop": uint(4)},
 			property:       "prop",
 			values:         []interface{}{uint64(5)},
@@ -282,49 +283,49 @@ func TestOneOf_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "uint32 equals uint32",
+			name:           "uint32 equals uint32",
 			usrContext:     map[string]interface{}{"prop": uint32(5)},
 			property:       "prop",
 			values:         []interface{}{uint32(5)},
 			expectedResult: true,
 		},
 		{
-			desc:           "uint32 equals uint32 from list",
+			name:           "uint32 equals uint32 from list",
 			usrContext:     map[string]interface{}{"prop": uint32(5)},
 			property:       "prop",
 			values:         []interface{}{uint32(0), uint32(5)},
 			expectedResult: true,
 		},
 		{
-			desc:           "uint32 not equals uint32",
+			name:           "uint32 not equals uint32",
 			usrContext:     map[string]interface{}{"prop": uint32(5)},
 			property:       "prop",
 			values:         []interface{}{uint32(6)},
 			expectedResult: false,
 		},
 		{
-			desc:           "uint32 equals uint",
+			name:           "uint32 equals uint",
 			usrContext:     map[string]interface{}{"prop": uint32(5)},
 			property:       "prop",
 			values:         []interface{}{uint(5)},
 			expectedResult: true,
 		},
 		{
-			desc:           "uint32 not equals uint",
+			name:           "uint32 not equals uint",
 			usrContext:     map[string]interface{}{"prop": uint32(5)},
 			property:       "prop",
 			values:         []interface{}{uint(6)},
 			expectedResult: false,
 		},
 		{
-			desc:           "uint32 equals uint64",
+			name:           "uint32 equals uint64",
 			usrContext:     map[string]interface{}{"prop": uint32(5)},
 			property:       "prop",
 			values:         []interface{}{uint64(5)},
 			expectedResult: true,
 		},
 		{
-			desc:           "uint32 not equals uint64",
+			name:           "uint32 not equals uint64",
 			usrContext:     map[string]interface{}{"prop": uint32(5)},
 			property:       "prop",
 			values:         []interface{}{uint64(6)},
@@ -332,49 +333,49 @@ func TestOneOf_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "uint64 equals uint64",
+			name:           "uint64 equals uint64",
 			usrContext:     map[string]interface{}{"prop": uint64(6)},
 			property:       "prop",
 			values:         []interface{}{uint64(6)},
 			expectedResult: true,
 		},
 		{
-			desc:           "uint64 equals uint64 from list",
+			name:           "uint64 equals uint64 from list",
 			usrContext:     map[string]interface{}{"prop": uint64(6)},
 			property:       "prop",
 			values:         []interface{}{uint64(0), uint64(6)},
 			expectedResult: true,
 		},
 		{
-			desc:           "uint64 not equals uint64",
+			name:           "uint64 not equals uint64",
 			usrContext:     map[string]interface{}{"prop": uint64(6)},
 			property:       "prop",
 			values:         []interface{}{uint64(7)},
 			expectedResult: false,
 		},
 		{
-			desc:           "uint64 equals uint32",
+			name:           "uint64 equals uint32",
 			usrContext:     map[string]interface{}{"prop": uint64(6)},
 			property:       "prop",
 			values:         []interface{}{uint32(6)},
 			expectedResult: true,
 		},
 		{
-			desc:           "uint64 not equals uint32",
+			name:           "uint64 not equals uint32",
 			usrContext:     map[string]interface{}{"prop": uint64(6)},
 			property:       "prop",
 			values:         []interface{}{uint32(7)},
 			expectedResult: false,
 		},
 		{
-			desc:           "uint64 equals uint",
+			name:           "uint64 equals uint",
 			usrContext:     map[string]interface{}{"prop": uint64(6)},
 			property:       "prop",
 			values:         []interface{}{uint(6)},
 			expectedResult: true,
 		},
 		{
-			desc:           "uint64 not equals uint",
+			name:           "uint64 not equals uint",
 			usrContext:     map[string]interface{}{"prop": uint64(6)},
 			property:       "prop",
 			values:         []interface{}{uint(7)},
@@ -382,21 +383,21 @@ func TestOneOf_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "float64 equals float64",
+			name:           "float64 equals float64",
 			usrContext:     map[string]interface{}{"prop": float64(9.1)},
 			property:       "prop",
 			values:         []interface{}{float64(9.1)},
 			expectedResult: true,
 		},
 		{
-			desc:           "float64 equals float64 from list",
+			name:           "float64 equals float64 from list",
 			usrContext:     map[string]interface{}{"prop": float64(9.1)},
 			property:       "prop",
 			values:         []interface{}{float64(9.0), float64(9.1)},
 			expectedResult: true,
 		},
 		{
-			desc:           "float64 not equals float64",
+			name:           "float64 not equals float64",
 			usrContext:     map[string]interface{}{"prop": float64(9.1)},
 			property:       "prop",
 			values:         []interface{}{float64(9.2)},
@@ -404,7 +405,7 @@ func TestOneOf_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "unknown type",
+			name:           "unknown type",
 			usrContext:     map[string]interface{}{"prop": "abc"},
 			property:       "prop",
 			values:         []interface{}{struct{}{}},
@@ -412,46 +413,49 @@ func TestOneOf_Operate(t *testing.T) {
 		},
 	}
 
-	for _, test := range tt {
-		t.Run(test.desc, func(t *testing.T) {
-			res, err := operator.OneOf(test.usrContext[test.property], test.values)
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			res, err := operator.OneOf(tt.usrContext[tt.property], tt.values)
 			assert.NoError(t, err)
-			assert.Equal(t, test.expectedResult, res)
+			assert.Equal(t, tt.expectedResult, res)
 		})
 	}
 }
 
 func TestNotOneOf_Operate(t *testing.T) {
-	tt := []struct {
-		desc           string
+	t.Parallel()
+	tests := []struct {
+		name           string
 		usrContext     map[string]interface{}
 		property       string
 		values         []interface{}
 		expectedResult bool
 	}{
 		{
-			desc:           "not equals string",
+			name:           "not equals string",
 			usrContext:     map[string]interface{}{"prop": "abc"},
 			property:       "prop",
 			values:         []interface{}{"abc"},
 			expectedResult: false,
 		},
 		{
-			desc:           "not equals string from list",
+			name:           "not equals string from list",
 			usrContext:     map[string]interface{}{"prop": "abc"},
 			property:       "prop",
 			values:         []interface{}{"other", "strings", "abc"},
 			expectedResult: false,
 		},
 		{
-			desc:           "equals string",
+			name:           "equals string",
 			usrContext:     map[string]interface{}{"prop": "abc"},
 			property:       "prop",
 			values:         []interface{}{"cde"},
 			expectedResult: true,
 		},
 		{
-			desc:           "equals string from list",
+			name:           "equals string from list",
 			usrContext:     map[string]interface{}{"prop": "abc"},
 			property:       "prop",
 			values:         []interface{}{"cde", "fgh"},
@@ -459,21 +463,21 @@ func TestNotOneOf_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "not equals []byte",
+			name:           "not equals []byte",
 			usrContext:     map[string]interface{}{"prop": []byte("abc")},
 			property:       "prop",
 			values:         []interface{}{[]byte("abc")},
 			expectedResult: false,
 		},
 		{
-			desc:           "not equals []byte from list",
+			name:           "not equals []byte from list",
 			usrContext:     map[string]interface{}{"prop": []byte("abc")},
 			property:       "prop",
 			values:         []interface{}{[]byte("other"), []byte("abc")},
 			expectedResult: false,
 		},
 		{
-			desc:           "equals []byte",
+			name:           "equals []byte",
 			usrContext:     map[string]interface{}{"prop": []byte("abc")},
 			property:       "prop",
 			values:         []interface{}{[]byte("cde")},
@@ -481,21 +485,21 @@ func TestNotOneOf_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "not equals bool",
+			name:           "not equals bool",
 			usrContext:     map[string]interface{}{"prop": true},
 			property:       "prop",
 			values:         []interface{}{true},
 			expectedResult: false,
 		},
 		{
-			desc:           "not equals bool from list",
+			name:           "not equals bool from list",
 			usrContext:     map[string]interface{}{"prop": true},
 			property:       "prop",
 			values:         []interface{}{false, true},
 			expectedResult: false,
 		},
 		{
-			desc:           "equals bool",
+			name:           "equals bool",
 			usrContext:     map[string]interface{}{"prop": true},
 			property:       "prop",
 			values:         []interface{}{false},
@@ -503,49 +507,49 @@ func TestNotOneOf_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "int not equals int",
+			name:           "int not equals int",
 			usrContext:     map[string]interface{}{"prop": int(1)},
 			property:       "prop",
 			values:         []interface{}{int(1)},
 			expectedResult: false,
 		},
 		{
-			desc:           "int not equals int from list",
+			name:           "int not equals int from list",
 			usrContext:     map[string]interface{}{"prop": int(1)},
 			property:       "prop",
 			values:         []interface{}{int(0), int(1)},
 			expectedResult: false,
 		},
 		{
-			desc:           "int equals int",
+			name:           "int equals int",
 			usrContext:     map[string]interface{}{"prop": int(1)},
 			property:       "prop",
 			values:         []interface{}{int(2)},
 			expectedResult: true,
 		},
 		{
-			desc:           "int not equals int32",
+			name:           "int not equals int32",
 			usrContext:     map[string]interface{}{"prop": int(1)},
 			property:       "prop",
 			values:         []interface{}{int32(1)},
 			expectedResult: false,
 		},
 		{
-			desc:           "int equals int32",
+			name:           "int equals int32",
 			usrContext:     map[string]interface{}{"prop": int(1)},
 			property:       "prop",
 			values:         []interface{}{int32(2)},
 			expectedResult: true,
 		},
 		{
-			desc:           "int not equals int64",
+			name:           "int not equals int64",
 			usrContext:     map[string]interface{}{"prop": int(1)},
 			property:       "prop",
 			values:         []interface{}{int64(1)},
 			expectedResult: false,
 		},
 		{
-			desc:           "int equals int64",
+			name:           "int equals int64",
 			usrContext:     map[string]interface{}{"prop": int(1)},
 			property:       "prop",
 			values:         []interface{}{int64(2)},
@@ -553,49 +557,49 @@ func TestNotOneOf_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "int32 not equals int32",
+			name:           "int32 not equals int32",
 			usrContext:     map[string]interface{}{"prop": int32(2)},
 			property:       "prop",
 			values:         []interface{}{int32(2)},
 			expectedResult: false,
 		},
 		{
-			desc:           "int32 not equals int32 from list",
+			name:           "int32 not equals int32 from list",
 			usrContext:     map[string]interface{}{"prop": int32(2)},
 			property:       "prop",
 			values:         []interface{}{int32(0), int32(2)},
 			expectedResult: false,
 		},
 		{
-			desc:           "int32 equals int32",
+			name:           "int32 equals int32",
 			usrContext:     map[string]interface{}{"prop": int32(2)},
 			property:       "prop",
 			values:         []interface{}{int32(3)},
 			expectedResult: true,
 		},
 		{
-			desc:           "int32 equals int",
+			name:           "int32 equals int",
 			usrContext:     map[string]interface{}{"prop": int32(2)},
 			property:       "prop",
 			values:         []interface{}{int(2)},
 			expectedResult: false,
 		},
 		{
-			desc:           "int32 equals int",
+			name:           "int32 equals int",
 			usrContext:     map[string]interface{}{"prop": int32(2)},
 			property:       "prop",
 			values:         []interface{}{int(3)},
 			expectedResult: true,
 		},
 		{
-			desc:           "int32 not equals int64",
+			name:           "int32 not equals int64",
 			usrContext:     map[string]interface{}{"prop": int32(2)},
 			property:       "prop",
 			values:         []interface{}{int64(2)},
 			expectedResult: false,
 		},
 		{
-			desc:           "int32 equals int64",
+			name:           "int32 equals int64",
 			usrContext:     map[string]interface{}{"prop": int32(2)},
 			property:       "prop",
 			values:         []interface{}{int64(3)},
@@ -603,49 +607,49 @@ func TestNotOneOf_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "int64 not equals int64",
+			name:           "int64 not equals int64",
 			usrContext:     map[string]interface{}{"prop": int64(3)},
 			property:       "prop",
 			values:         []interface{}{int64(3)},
 			expectedResult: false,
 		},
 		{
-			desc:           "int64 not equals int64 from list",
+			name:           "int64 not equals int64 from list",
 			usrContext:     map[string]interface{}{"prop": int64(3)},
 			property:       "prop",
 			values:         []interface{}{int64(0), int64(3)},
 			expectedResult: false,
 		},
 		{
-			desc:           "int64 equals int64",
+			name:           "int64 equals int64",
 			usrContext:     map[string]interface{}{"prop": int64(3)},
 			property:       "prop",
 			values:         []interface{}{int64(4)},
 			expectedResult: true,
 		},
 		{
-			desc:           "int64 not equals int",
+			name:           "int64 not equals int",
 			usrContext:     map[string]interface{}{"prop": int64(1)},
 			property:       "prop",
 			values:         []interface{}{int(1)},
 			expectedResult: false,
 		},
 		{
-			desc:           "int64 equals int",
+			name:           "int64 equals int",
 			usrContext:     map[string]interface{}{"prop": int64(1)},
 			property:       "prop",
 			values:         []interface{}{int(2)},
 			expectedResult: true,
 		},
 		{
-			desc:           "int64 not equals int32",
+			name:           "int64 not equals int32",
 			usrContext:     map[string]interface{}{"prop": int64(1)},
 			property:       "prop",
 			values:         []interface{}{int32(1)},
 			expectedResult: false,
 		},
 		{
-			desc:           "int64 equals int32",
+			name:           "int64 equals int32",
 			usrContext:     map[string]interface{}{"prop": int64(1)},
 			property:       "prop",
 			values:         []interface{}{int32(2)},
@@ -653,49 +657,49 @@ func TestNotOneOf_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "uint not equals uint",
+			name:           "uint not equals uint",
 			usrContext:     map[string]interface{}{"prop": uint(4)},
 			property:       "prop",
 			values:         []interface{}{uint(4)},
 			expectedResult: false,
 		},
 		{
-			desc:           "uint not equals uint from list",
+			name:           "uint not equals uint from list",
 			usrContext:     map[string]interface{}{"prop": uint(4)},
 			property:       "prop",
 			values:         []interface{}{uint(0), uint(4)},
 			expectedResult: false,
 		},
 		{
-			desc:           "uint equals uint",
+			name:           "uint equals uint",
 			usrContext:     map[string]interface{}{"prop": uint(4)},
 			property:       "prop",
 			values:         []interface{}{uint(5)},
 			expectedResult: true,
 		},
 		{
-			desc:           "uint not equals uint32",
+			name:           "uint not equals uint32",
 			usrContext:     map[string]interface{}{"prop": uint(4)},
 			property:       "prop",
 			values:         []interface{}{uint32(4)},
 			expectedResult: false,
 		},
 		{
-			desc:           "uint equals uint32",
+			name:           "uint equals uint32",
 			usrContext:     map[string]interface{}{"prop": uint(4)},
 			property:       "prop",
 			values:         []interface{}{uint32(5)},
 			expectedResult: true,
 		},
 		{
-			desc:           "uint not equals uint64",
+			name:           "uint not equals uint64",
 			usrContext:     map[string]interface{}{"prop": uint(4)},
 			property:       "prop",
 			values:         []interface{}{uint64(4)},
 			expectedResult: false,
 		},
 		{
-			desc:           "uint equals uint64",
+			name:           "uint equals uint64",
 			usrContext:     map[string]interface{}{"prop": uint(4)},
 			property:       "prop",
 			values:         []interface{}{uint64(5)},
@@ -703,49 +707,49 @@ func TestNotOneOf_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "uint32 not equals uint32",
+			name:           "uint32 not equals uint32",
 			usrContext:     map[string]interface{}{"prop": uint32(5)},
 			property:       "prop",
 			values:         []interface{}{uint32(5)},
 			expectedResult: false,
 		},
 		{
-			desc:           "uint32 not equals uint32 from list",
+			name:           "uint32 not equals uint32 from list",
 			usrContext:     map[string]interface{}{"prop": uint32(5)},
 			property:       "prop",
 			values:         []interface{}{uint32(0), uint32(5)},
 			expectedResult: false,
 		},
 		{
-			desc:           "uint32 equals uint32",
+			name:           "uint32 equals uint32",
 			usrContext:     map[string]interface{}{"prop": uint32(5)},
 			property:       "prop",
 			values:         []interface{}{uint32(6)},
 			expectedResult: true,
 		},
 		{
-			desc:           "uint32 not equals uint",
+			name:           "uint32 not equals uint",
 			usrContext:     map[string]interface{}{"prop": uint32(5)},
 			property:       "prop",
 			values:         []interface{}{uint(5)},
 			expectedResult: false,
 		},
 		{
-			desc:           "uint32 equals uint",
+			name:           "uint32 equals uint",
 			usrContext:     map[string]interface{}{"prop": uint32(5)},
 			property:       "prop",
 			values:         []interface{}{uint(6)},
 			expectedResult: true,
 		},
 		{
-			desc:           "uint32 not equals uint64",
+			name:           "uint32 not equals uint64",
 			usrContext:     map[string]interface{}{"prop": uint32(5)},
 			property:       "prop",
 			values:         []interface{}{uint64(5)},
 			expectedResult: false,
 		},
 		{
-			desc:           "uint32 equals uint64",
+			name:           "uint32 equals uint64",
 			usrContext:     map[string]interface{}{"prop": uint32(5)},
 			property:       "prop",
 			values:         []interface{}{uint64(6)},
@@ -753,49 +757,49 @@ func TestNotOneOf_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "uint64 not equals uint64",
+			name:           "uint64 not equals uint64",
 			usrContext:     map[string]interface{}{"prop": uint64(6)},
 			property:       "prop",
 			values:         []interface{}{uint64(6)},
 			expectedResult: false,
 		},
 		{
-			desc:           "uint64 not equals uint64 from list",
+			name:           "uint64 not equals uint64 from list",
 			usrContext:     map[string]interface{}{"prop": uint64(6)},
 			property:       "prop",
 			values:         []interface{}{uint64(0), uint64(6)},
 			expectedResult: false,
 		},
 		{
-			desc:           "uint64 equals uint64",
+			name:           "uint64 equals uint64",
 			usrContext:     map[string]interface{}{"prop": uint64(6)},
 			property:       "prop",
 			values:         []interface{}{uint64(7)},
 			expectedResult: true,
 		},
 		{
-			desc:           "uint64 not equals uint32",
+			name:           "uint64 not equals uint32",
 			usrContext:     map[string]interface{}{"prop": uint64(6)},
 			property:       "prop",
 			values:         []interface{}{uint32(6)},
 			expectedResult: false,
 		},
 		{
-			desc:           "uint64 equals uint32",
+			name:           "uint64 equals uint32",
 			usrContext:     map[string]interface{}{"prop": uint64(6)},
 			property:       "prop",
 			values:         []interface{}{uint32(7)},
 			expectedResult: true,
 		},
 		{
-			desc:           "uint64 not equals uint",
+			name:           "uint64 not equals uint",
 			usrContext:     map[string]interface{}{"prop": uint64(6)},
 			property:       "prop",
 			values:         []interface{}{uint(6)},
 			expectedResult: false,
 		},
 		{
-			desc:           "uint64 equals uint",
+			name:           "uint64 equals uint",
 			usrContext:     map[string]interface{}{"prop": uint64(6)},
 			property:       "prop",
 			values:         []interface{}{uint(7)},
@@ -803,21 +807,21 @@ func TestNotOneOf_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "float64 not equals float64",
+			name:           "float64 not equals float64",
 			usrContext:     map[string]interface{}{"prop": float64(9.1)},
 			property:       "prop",
 			values:         []interface{}{float64(9.1)},
 			expectedResult: false,
 		},
 		{
-			desc:           "float64 not equals float64 from list",
+			name:           "float64 not equals float64 from list",
 			usrContext:     map[string]interface{}{"prop": float64(9.1)},
 			property:       "prop",
 			values:         []interface{}{float64(9.0), float64(9.1)},
 			expectedResult: false,
 		},
 		{
-			desc:           "float64 not equals float64",
+			name:           "float64 not equals float64",
 			usrContext:     map[string]interface{}{"prop": float64(9.1)},
 			property:       "prop",
 			values:         []interface{}{float64(9.2)},
@@ -825,7 +829,7 @@ func TestNotOneOf_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "unknown type",
+			name:           "unknown type",
 			usrContext:     map[string]interface{}{"prop": "abc"},
 			property:       "prop",
 			values:         []interface{}{struct{}{}},
@@ -833,11 +837,13 @@ func TestNotOneOf_Operate(t *testing.T) {
 		},
 	}
 
-	for _, test := range tt {
-		t.Run(test.desc, func(t *testing.T) {
-			res, err := operator.NotOneOf(test.usrContext[test.property], test.values)
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			res, err := operator.NotOneOf(tt.usrContext[tt.property], tt.values)
 			assert.NoError(t, err)
-			assert.Equal(t, test.expectedResult, res)
+			assert.Equal(t, tt.expectedResult, res)
 		})
 	}
 }

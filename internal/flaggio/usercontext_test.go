@@ -9,7 +9,8 @@ import (
 )
 
 func TestUserContext_UnmarshalJSON(t *testing.T) {
-	ucJson := []byte(`
+	t.Parallel()
+	ucJSON := []byte(`
 	{
 		"string": "value",
 		"int": 1,
@@ -20,7 +21,7 @@ func TestUserContext_UnmarshalJSON(t *testing.T) {
 		"array": []
 	}`)
 	uc := make(flaggio.UserContext, 0)
-	err := json.Unmarshal(ucJson, &uc)
+	err := json.Unmarshal(ucJSON, &uc)
 	assert.NoError(t, err)
 	assert.Equal(t, "value", uc["string"])
 	assert.Equal(t, int64(1), uc["int"])

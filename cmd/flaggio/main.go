@@ -20,6 +20,11 @@ var (
 	BuildStamp             = ""
 )
 
+const (
+	logFormatterText = "text"
+	logFormatterJSON = "json"
+)
+
 func build() string {
 	return fmt.Sprintf("%s[%s] (%s)", GitBranch, GitSummary, BuildStamp)
 }
@@ -95,7 +100,7 @@ func main() {
 				Name:   "log-formatter",
 				Usage:  "Sets the log formatter for the application. Valid values are: text, json",
 				EnvVar: "LOG_FORMATTER",
-				Value:  "json",
+				Value:  logFormatterJSON,
 			},
 			cli.StringFlag{
 				Name:   "log-level",
@@ -115,9 +120,9 @@ func main() {
 			}
 			logger.SetLevel(logLevel)
 			switch c.String("log-formatter") {
-			case "text":
+			case logFormatterText:
 				logger.SetFormatter(new(logrus.TextFormatter))
-			case "json":
+			case logFormatterJSON:
 				logger.SetFormatter(new(logrus.JSONFormatter))
 			default:
 				return fmt.Errorf("invalid formatter: %s", c.String("log-formatter"))

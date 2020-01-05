@@ -8,29 +8,30 @@ import (
 )
 
 func TestEndsWith_Operate(t *testing.T) {
-	tt := []struct {
-		desc           string
+	t.Parallel()
+	tests := []struct {
+		name           string
 		usrContext     map[string]interface{}
 		property       string
 		values         []interface{}
 		expectedResult bool
 	}{
 		{
-			desc:           "ends with string",
+			name:           "ends with string",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{"ef"},
 			expectedResult: true,
 		},
 		{
-			desc:           "ends with any strings from the list",
+			name:           "ends with any strings from the list",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{"other", "strings", "def"},
 			expectedResult: true,
 		},
 		{
-			desc:           "doesnt end with string",
+			name:           "doesnt end with string",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{"abc"},
@@ -38,7 +39,7 @@ func TestEndsWith_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "unknown type",
+			name:           "unknown type",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{struct{}{}},
@@ -46,39 +47,42 @@ func TestEndsWith_Operate(t *testing.T) {
 		},
 	}
 
-	for _, test := range tt {
-		t.Run(test.desc, func(t *testing.T) {
-			res, err := operator.EndsWith(test.usrContext[test.property], test.values)
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			res, err := operator.EndsWith(tt.usrContext[tt.property], tt.values)
 			assert.NoError(t, err)
-			assert.Equal(t, test.expectedResult, res)
+			assert.Equal(t, tt.expectedResult, res)
 		})
 	}
 }
 
 func TestDoesntEndWith_Operate(t *testing.T) {
-	tt := []struct {
-		desc           string
+	t.Parallel()
+	tests := []struct {
+		name           string
 		usrContext     map[string]interface{}
 		property       string
 		values         []interface{}
 		expectedResult bool
 	}{
 		{
-			desc:           "doesnt end with string",
+			name:           "doesnt end with string",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{"ab"},
 			expectedResult: true,
 		},
 		{
-			desc:           "doesnt end with any strings from list",
+			name:           "doesnt end with any strings from list",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{"other", "strings", "abc"},
 			expectedResult: true,
 		},
 		{
-			desc:           "ends with string",
+			name:           "ends with string",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{"abc", "def"},
@@ -86,7 +90,7 @@ func TestDoesntEndWith_Operate(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			desc:           "unknown type",
+			name:           "unknown type",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{struct{}{}},
@@ -94,11 +98,13 @@ func TestDoesntEndWith_Operate(t *testing.T) {
 		},
 	}
 
-	for _, test := range tt {
-		t.Run(test.desc, func(t *testing.T) {
-			res, err := operator.DoesntEndWith(test.usrContext[test.property], test.values)
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			res, err := operator.DoesntEndWith(tt.usrContext[tt.property], tt.values)
 			assert.NoError(t, err)
-			assert.Equal(t, test.expectedResult, res)
+			assert.Equal(t, tt.expectedResult, res)
 		})
 	}
 }

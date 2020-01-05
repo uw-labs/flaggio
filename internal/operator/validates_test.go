@@ -20,8 +20,8 @@ func (m mockValidator) Validate(usrContext map[string]interface{}) (bool, error)
 }
 
 func TestValidates_Operate(t *testing.T) {
-	tt := []struct {
-		desc           string
+	tests := []struct {
+		name           string
 		usrContext     map[string]interface{}
 		property       string
 		values         []interface{}
@@ -29,56 +29,57 @@ func TestValidates_Operate(t *testing.T) {
 		expectedError  error
 	}{
 		{
-			desc:           "validates",
+			name:           "validates",
 			usrContext:     map[string]interface{}{"prop": "abc"},
 			values:         []interface{}{mockValidator{true, nil}},
 			expectedResult: true,
 		},
 		{
-			desc:           "validates all",
+			name:           "validates all",
 			usrContext:     map[string]interface{}{"prop": "abc"},
 			values:         []interface{}{mockValidator{true, nil}, mockValidator{true, nil}},
 			expectedResult: true,
 		},
 		{
-			desc:           "doesnt validate",
+			name:           "doesnt validate",
 			usrContext:     map[string]interface{}{"prop": "abc"},
 			values:         []interface{}{mockValidator{false, nil}},
 			expectedResult: false,
 		},
 		{
-			desc:           "doesnt validate all",
+			name:           "doesnt validate all",
 			usrContext:     map[string]interface{}{"prop": "abc"},
 			values:         []interface{}{mockValidator{true, nil}, mockValidator{false, nil}},
 			expectedResult: false,
 		},
 		{
-			desc:           "returns error",
+			name:           "returns error",
 			usrContext:     map[string]interface{}{"prop": "abc"},
 			values:         []interface{}{mockValidator{false, errors.New("test")}},
 			expectedResult: false,
 			expectedError:  errors.New("test"),
 		},
 		{
-			desc:           "doesnt validate when not a validator",
+			name:           "doesnt validate when not a validator",
 			usrContext:     map[string]interface{}{"prop": "abc"},
 			values:         []interface{}{struct{}{}},
 			expectedResult: false,
 		},
 	}
 
-	for _, test := range tt {
-		t.Run(test.desc, func(t *testing.T) {
-			res, err := operator.Validates(test.usrContext, test.values)
-			assert.Equal(t, test.expectedError, err)
-			assert.Equal(t, test.expectedResult, res)
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			res, err := operator.Validates(tt.usrContext, tt.values)
+			assert.Equal(t, tt.expectedError, err)
+			assert.Equal(t, tt.expectedResult, res)
 		})
 	}
 }
 
 func TestDoesntValidate_Operate(t *testing.T) {
-	tt := []struct {
-		desc           string
+	tests := []struct {
+		name           string
 		usrContext     map[string]interface{}
 		property       string
 		values         []interface{}
@@ -86,49 +87,50 @@ func TestDoesntValidate_Operate(t *testing.T) {
 		expectedError  error
 	}{
 		{
-			desc:           "validates",
+			name:           "validates",
 			usrContext:     map[string]interface{}{"prop": "abc"},
 			values:         []interface{}{mockValidator{false, nil}},
 			expectedResult: true,
 		},
 		{
-			desc:           "validates all",
+			name:           "validates all",
 			usrContext:     map[string]interface{}{"prop": "abc"},
 			values:         []interface{}{mockValidator{false, nil}, mockValidator{false, nil}},
 			expectedResult: true,
 		},
 		{
-			desc:           "doesnt validate",
+			name:           "doesnt validate",
 			usrContext:     map[string]interface{}{"prop": "abc"},
 			values:         []interface{}{mockValidator{true, nil}},
 			expectedResult: false,
 		},
 		{
-			desc:           "doesnt validate all",
+			name:           "doesnt validate all",
 			usrContext:     map[string]interface{}{"prop": "abc"},
 			values:         []interface{}{mockValidator{false, nil}, mockValidator{true, nil}},
 			expectedResult: false,
 		},
 		{
-			desc:           "returns error",
+			name:           "returns error",
 			usrContext:     map[string]interface{}{"prop": "abc"},
 			values:         []interface{}{mockValidator{false, errors.New("test")}},
 			expectedResult: false,
 			expectedError:  errors.New("test"),
 		},
 		{
-			desc:           "doesnt validate when not a validator",
+			name:           "doesnt validate when not a validator",
 			usrContext:     map[string]interface{}{"prop": "abc"},
 			values:         []interface{}{struct{}{}},
 			expectedResult: false,
 		},
 	}
 
-	for _, test := range tt {
-		t.Run(test.desc, func(t *testing.T) {
-			res, err := operator.DoesntValidate(test.usrContext, test.values)
-			assert.Equal(t, test.expectedError, err)
-			assert.Equal(t, test.expectedResult, res)
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			res, err := operator.DoesntValidate(tt.usrContext, tt.values)
+			assert.Equal(t, tt.expectedError, err)
+			assert.Equal(t, tt.expectedResult, res)
 		})
 	}
 }

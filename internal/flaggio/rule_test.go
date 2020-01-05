@@ -8,11 +8,13 @@ import (
 )
 
 func TestRule_GetID(t *testing.T) {
+	t.Parallel()
 	rl := flaggio.Rule{ID: "123456"}
 	assert.Equal(t, "123456", rl.GetID())
 }
 
 func TestFlagRule_Evaluate(t *testing.T) {
+	t.Parallel()
 	vrnt1 := &flaggio.Variant{ID: "1", Value: 1}
 	dstrbtn := &flaggio.Distribution{
 		ID:         "1",
@@ -34,7 +36,7 @@ func TestFlagRule_Evaluate(t *testing.T) {
 		}},
 	}
 
-	tt := []struct {
+	tests := []struct {
 		name           string
 		usrContext     map[string]interface{}
 		rule           flaggio.FlagRule
@@ -64,11 +66,13 @@ func TestFlagRule_Evaluate(t *testing.T) {
 		},
 	}
 
-	for _, test := range tt {
-		t.Run(test.name, func(t *testing.T) {
-			eval, err := test.rule.Evaluate(test.usrContext)
-			assert.Equal(t, test.expectedError, err)
-			assert.Equal(t, test.expectedResult, eval)
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			eval, err := tt.rule.Evaluate(tt.usrContext)
+			assert.Equal(t, tt.expectedError, err)
+			assert.Equal(t, tt.expectedResult, eval)
 		})
 	}
 }

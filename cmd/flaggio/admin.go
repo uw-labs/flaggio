@@ -49,7 +49,7 @@ func startAdmin(ctx context.Context, c *cli.Context, logger *logrus.Entry) error
 		middleware.RequestID,
 		middleware.RequestLogger(&middleware.DefaultLogFormatter{
 			Logger:  logger,
-			NoColor: c.String("log-formatter") != "text",
+			NoColor: c.String("log-formatter") != logFormatterText,
 		}),
 		cors.New(cors.Options{
 			AllowedOrigins:   c.StringSlice("cors-allowed-origins"),
@@ -82,6 +82,7 @@ func startAdmin(ctx context.Context, c *cli.Context, logger *logrus.Entry) error
 		router.Get("/*", func(w http.ResponseWriter, r *http.Request) {
 			http.ServeFile(w, r, buildPath+"/index.html")
 		})
+		logger.Infof("admin UI enabled")
 	}
 
 	srv := &http.Server{
@@ -101,10 +102,10 @@ func startAdmin(ctx context.Context, c *cli.Context, logger *logrus.Entry) error
 			logrus.Fatalf("admin server shutdown failed: %+v", err)
 		}
 	}()
-	logger.Infof("admin server started. listening on %s", c.String("admin-addr"))
 	if isDev {
 		logger.Infof("GraphQL playground enabled")
 	}
+	logger.Infof("admin server started. listening on %s", c.String("admin-addr"))
 	return srv.ListenAndServe()
 }
 

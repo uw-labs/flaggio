@@ -9,16 +9,18 @@ import (
 )
 
 func TestFlag_GetID(t *testing.T) {
+	t.Parallel()
 	flg := flaggio.Flag{ID: "123456"}
 	assert.Equal(t, "123456", flg.GetID())
 }
 
 func TestFlag_Evaluate(t *testing.T) {
+	t.Parallel()
 	vrnt1 := &flaggio.Variant{ID: "1", Value: 1}
 	vrnt2 := &flaggio.Variant{ID: "2", Value: 2}
 	rl1 := &flaggio.FlagRule{}
 
-	tt := []struct {
+	tests := []struct {
 		name           string
 		flag           flaggio.Flag
 		expectedResult flaggio.EvalResult
@@ -63,12 +65,14 @@ func TestFlag_Evaluate(t *testing.T) {
 		},
 	}
 
-	for _, test := range tt {
-		t.Run(test.name, func(t *testing.T) {
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			usrContext := map[string]interface{}{"name": "John"}
-			eval, err := test.flag.Evaluate(usrContext)
-			assert.Equal(t, test.expectedError, err)
-			assert.Equal(t, test.expectedResult, eval)
+			eval, err := tt.flag.Evaluate(usrContext)
+			assert.Equal(t, tt.expectedError, err)
+			assert.Equal(t, tt.expectedResult, eval)
 		})
 	}
 }
