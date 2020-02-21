@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
+	"github.com/victorkt/clientip"
 	"github.com/victorkt/flaggio/internal/flaggio"
 	"github.com/victorkt/flaggio/internal/repository"
 )
@@ -111,15 +112,10 @@ type EvaluationRequest struct {
 // Bind adds additional data to the EvaluationRequest.
 // Some special fields are added to the user context:
 // * $userId is the user ID provided in the request
-// * $ip is the network address that sent the request. if the
-//     x-forwarded-for header is defined, it will override the
-//     value received from RemoteAddr in the request object
+// * $ip is the network address that originated the request
 func (er EvaluationRequest) Bind(r *http.Request) error {
 	// enrich user context
 	er.UserContext["$userId"] = er.UserID
-	er.UserContext["$ip"] = r.RemoteAddr
-	if ip := r.Header.Get("x-forwarded-for"); ip != "" {
-		er.UserContext["$ip"] = ip
-	}
+	er.UserContext["$ip"] = clientip.FromContext(r.Context()).String()
 	return nil
 }
