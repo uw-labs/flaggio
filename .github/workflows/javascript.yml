@@ -21,5 +21,4 @@ jobs:
         run: |
           cd web
           npm install
-      - name: Lint
-        run: npx eslint src/**/*.js
+          npx eslint --no-color src/**/*.js
