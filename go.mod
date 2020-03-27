@@ -8,7 +8,7 @@ require (
 	github.com/go-chi/render v1.0.1
 	github.com/golang/mock v1.4.3
 	github.com/google/go-cmp v0.3.1 // indirect
-	github.com/rs/cors v1.6.0
+	github.com/rs/cors v1.7.0
 	github.com/sirupsen/logrus v1.5.0
 	github.com/stretchr/testify v1.5.1
 	github.com/urfave/cli/v2 v2.2.0
