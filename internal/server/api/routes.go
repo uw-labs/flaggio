@@ -17,7 +17,7 @@ import (
 func (s *Server) handleEvaluate(w http.ResponseWriter, r *http.Request) {
 	flagKey := chi.URLParam(r, "key")
 	er := &service.EvaluationRequest{
-		UserContext: make(flaggio.UserContext, 0),
+		UserContext: make(flaggio.UserContext),
 	}
 	defer r.Body.Close()
 
@@ -47,7 +47,7 @@ func (s *Server) handleEvaluate(w http.ResponseWriter, r *http.Request) {
 // Evaluates all flags for the user
 func (s *Server) handleEvaluateAll(w http.ResponseWriter, r *http.Request) {
 	er := &service.EvaluationRequest{
-		UserContext: make(flaggio.UserContext, 0),
+		UserContext: make(flaggio.UserContext),
 	}
 	defer r.Body.Close()
 

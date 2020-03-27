@@ -20,7 +20,7 @@ func TestUserContext_UnmarshalJSON(t *testing.T) {
 		"object": {},
 		"array": []
 	}`)
-	uc := make(flaggio.UserContext, 0)
+	uc := make(flaggio.UserContext)
 	err := json.Unmarshal(ucJSON, &uc)
 	assert.NoError(t, err)
 	assert.Equal(t, "value", uc["string"])

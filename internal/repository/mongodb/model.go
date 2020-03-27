@@ -22,7 +22,7 @@ type flagModel struct {
 	UpdatedAt             *time.Time         `bson:"updatedAt"`
 }
 
-func (f flagModel) asFlag() *flaggio.Flag {
+func (f *flagModel) asFlag() *flaggio.Flag {
 	variants := make([]*flaggio.Variant, len(f.Variants))
 	variantsMap := make(map[string]*flaggio.Variant, len(f.Variants))
 	for idx, vrntModel := range f.Variants {
@@ -113,7 +113,7 @@ type distributionModel struct {
 func (d distributionModel) asDistribution(vrnts map[string]*flaggio.Variant) *flaggio.Distribution {
 	return &flaggio.Distribution{
 		Variant:    vrnts[d.VariantID.Hex()],
-		Percentage: int(d.Percentage),
+		Percentage: d.Percentage,
 	}
 }
 
@@ -144,7 +144,7 @@ type segmentModel struct {
 	UpdatedAt   *time.Time         `bson:"updatedAt"`
 }
 
-func (f segmentModel) asSegment() *flaggio.Segment {
+func (f *segmentModel) asSegment() *flaggio.Segment {
 	rules := make([]*flaggio.SegmentRule, len(f.Rules))
 	for idx, rl := range f.Rules {
 		rules[idx] = rl.asRule()

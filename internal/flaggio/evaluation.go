@@ -17,13 +17,6 @@ type Evaluation struct {
 	StackTrace []*StackTrace `json:"stackTrace,omitempty"`
 }
 
-// Render can enrich the Evaluation object before being returned to the
-// user. Currently it does nothing, but is needed to satisfy the
-// chi.Renderer interface.
-func (e *Evaluation) Render(w http.ResponseWriter, r *http.Request) error {
-	return nil
-}
-
 // StackTrace contains detailed information about the evaluation process.
 // Type is the type of the model object that evaluated the user context
 // ID holds the ID of the same object, if any. Answer is the evaluation

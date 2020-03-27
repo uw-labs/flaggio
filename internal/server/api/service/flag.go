@@ -4,7 +4,6 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/go-chi/chi"
 	"github.com/victorkt/clientip"
 	"github.com/victorkt/flaggio/internal/flaggio"
 	"github.com/victorkt/flaggio/internal/repository"
@@ -12,8 +11,8 @@ import (
 
 // FlagService holds the logic for evaluating flags
 type FlagService interface {
-	Evaluate(ctx context.Context, flagKey string, req *EvaluationRequest) (*flaggio.Evaluation, error)
-	EvaluateAll(ctx context.Context, req *EvaluationRequest) (flaggio.EvaluationList, error)
+	Evaluate(ctx context.Context, flagKey string, req *EvaluationRequest) (*EvaluationResponse, error)
+	EvaluateAll(ctx context.Context, req *EvaluationRequest) (*EvaluationsResponse, error)
 }
 
 // NewFlagService returns a new FlagService
@@ -30,11 +29,10 @@ func NewFlagService(
 type flagService struct {
 	flagsRepo    repository.Flag
 	segmentsRepo repository.Segment
-	router       chi.Router
 }
 
 // Evaluate evaluates a flag by key, returning a value based on the user context
-func (s *flagService) Evaluate(ctx context.Context, flagKey string, req *EvaluationRequest) (*flaggio.Evaluation, error) {
+func (s *flagService) Evaluate(ctx context.Context, flagKey string, req *EvaluationRequest) (*EvaluationResponse, error) {
 	flg, err := s.flagsRepo.FindByKey(ctx, flagKey)
 	if err != nil {
 		return nil, err
@@ -55,20 +53,23 @@ func (s *flagService) Evaluate(ctx context.Context, flagKey string, req *Evaluat
 		return nil, err
 	}
 
-	eval := &flaggio.Evaluation{
-		FlagKey: flagKey,
-		Value:   res.Answer,
+	evalRes := &EvaluationResponse{
+		Evaluation: &flaggio.Evaluation{
+			FlagKey: flagKey,
+			Value:   res.Answer,
+		},
 	}
 
 	if req.Debug != nil && *req.Debug {
-		eval.StackTrace = res.Stack()
+		evalRes.Evaluation.StackTrace = res.Stack()
+		evalRes.UserContext = &req.UserContext
 	}
 
-	return eval, nil
+	return evalRes, nil
 }
 
 // EvaluateAll evaluates all flags, returning a value or an error for each flag based on the user context
-func (s *flagService) EvaluateAll(ctx context.Context, req *EvaluationRequest) (flaggio.EvaluationList, error) {
+func (s *flagService) EvaluateAll(ctx context.Context, req *EvaluationRequest) (*EvaluationsResponse, error) {
 	flgs, err := s.flagsRepo.FindAll(ctx, nil, nil)
 	if err != nil {
 		return nil, err
@@ -99,7 +100,16 @@ func (s *flagService) EvaluateAll(ctx context.Context, req *EvaluationRequest) (
 
 		evals = append(evals, evltn)
 	}
-	return evals, nil
+
+	evalRes := &EvaluationsResponse{
+		Evaluations: evals,
+	}
+
+	if req.Debug != nil && *req.Debug {
+		evalRes.UserContext = &req.UserContext
+	}
+
+	return evalRes, nil
 }
 
 // EvaluationRequest is the evaluation request object
@@ -117,5 +127,31 @@ func (er EvaluationRequest) Bind(r *http.Request) error {
 	// enrich user context
 	er.UserContext["$userId"] = er.UserID
 	er.UserContext["$ip"] = clientip.FromContext(r.Context()).String()
+	return nil
+}
+
+// EvaluationResponse is the evaluation response object
+type EvaluationResponse struct {
+	Evaluation  *flaggio.Evaluation  `json:"evaluation"`
+	UserContext *flaggio.UserContext `json:"context,omitempty"`
+}
+
+// Render can enrich the EvaluationResponse object before being returned to the
+// user. Currently it does nothing, but is needed to satisfy the
+// chi.Renderer interface.
+func (e *EvaluationResponse) Render(w http.ResponseWriter, r *http.Request) error {
+	return nil
+}
+
+// EvaluationsResponse is the evaluation response object
+type EvaluationsResponse struct {
+	Evaluations flaggio.EvaluationList `json:"evaluations"`
+	UserContext *flaggio.UserContext   `json:"context,omitempty"`
+}
+
+// Render can enrich the EvaluationsResponse object before being returned to the
+// user. Currently it does nothing, but is needed to satisfy the
+// chi.Renderer interface.
+func (e *EvaluationsResponse) Render(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }

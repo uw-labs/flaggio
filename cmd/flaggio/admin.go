@@ -7,7 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/99designs/gqlgen/handler"
+	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/rs/cors"
@@ -60,11 +61,11 @@ func startAdmin(ctx context.Context, c *cli.Context, logger *logrus.Entry) error
 		}).Handler,
 	)
 
-	router.Post("/query", handler.GraphQL(
+	router.Method("POST", "/query", handler.New(
 		admin.NewExecutableSchema(admin.Config{Resolvers: resolver}),
 	))
 	if isDev {
-		router.Get("/playground", handler.Playground("GraphQL playground", "/query"))
+		router.Get("/playground", playground.Handler("GraphQL playground", "/query"))
 	}
 
 	if !c.Bool("no-admin-ui") {
@@ -117,7 +118,7 @@ func fileServer(r chi.Router, path string, root http.FileSystem) {
 	fs := http.StripPrefix(path, http.FileServer(root))
 
 	if path != "/" && path[len(path)-1] != '/' {
-		r.Get(path, http.RedirectHandler(path+"/", 301).ServeHTTP)
+		r.Get(path, http.RedirectHandler(path+"/", http.StatusMovedPermanently).ServeHTTP)
 		path += "/"
 	}
 	path += "*"

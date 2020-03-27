@@ -21,13 +21,13 @@ type Segment struct {
 }
 
 // GetID returns the segment ID.
-func (s Segment) GetID() string {
+func (s *Segment) GetID() string {
 	return s.ID
 }
 
 // Validate will check if any of the segment rules passes validation. If so,
 // the validation is successful, otherwise it returns false.
-func (s Segment) Validate(usrContext map[string]interface{}) (bool, error) {
+func (s *Segment) Validate(usrContext map[string]interface{}) (bool, error) {
 	for _, rl := range s.Rules {
 		ok, err := ConstraintList(rl.Constraints).Validate(usrContext)
 		if err != nil {

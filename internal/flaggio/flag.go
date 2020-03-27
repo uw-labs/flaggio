@@ -26,7 +26,7 @@ type Flag struct {
 }
 
 // GetID returns the flag ID.
-func (f Flag) GetID() string {
+func (f *Flag) GetID() string {
 	return f.ID
 }
 
@@ -34,7 +34,7 @@ func (f Flag) GetID() string {
 // If the flag is on, it will also return the list of rules to be evaluated.
 // If there is no default variant configured for the given flag enabled state, an error
 // is returned.
-func (f Flag) Evaluate(usrContext map[string]interface{}) (EvalResult, error) {
+func (f *Flag) Evaluate(usrContext map[string]interface{}) (EvalResult, error) {
 	var answer interface{}
 	var next []Evaluator
 	if f.Enabled {
