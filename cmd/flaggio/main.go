@@ -8,7 +8,7 @@ import (
 	"syscall"
 
 	"github.com/sirupsen/logrus"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 var (
@@ -35,78 +35,78 @@ func main() {
 		Description: ApplicationDescription,
 		Version:     ApplicationVersion,
 		Flags: []cli.Flag{
-			cli.StringFlag{
-				Name:   "database-uri",
-				Usage:  "Database URI",
-				EnvVar: "DATABASE_URI",
-				Value:  "mongodb://localhost:27017/flaggio",
+			&cli.StringFlag{
+				Name:    "database-uri",
+				Usage:   "Database URI",
+				EnvVars: []string{"DATABASE_URI"},
+				Value:   "mongodb://localhost:27017/flaggio",
 			},
-			cli.StringFlag{
-				Name:   "build-path",
-				Usage:  "UI build absolute path",
-				EnvVar: "BUILD_PATH",
-				Value:  "/",
+			&cli.StringFlag{
+				Name:    "build-path",
+				Usage:   "UI build absolute path",
+				EnvVars: []string{"BUILD_PATH"},
+				Value:   "/",
 			},
-			cli.StringSliceFlag{
-				Name:   "cors-allowed-origins",
-				Usage:  "CORS allowed origins separated by comma",
-				EnvVar: "CORS_ALLOWED_ORIGINS",
+			&cli.StringSliceFlag{
+				Name:    "cors-allowed-origins",
+				Usage:   "CORS allowed origins separated by comma",
+				EnvVars: []string{"CORS_ALLOWED_ORIGINS"},
 			},
-			cli.StringSliceFlag{
-				Name:   "cors-allowed-headers",
-				Usage:  "CORS allowed headers",
-				EnvVar: "CORS_ALLOWED_HEADERS",
+			&cli.StringSliceFlag{
+				Name:    "cors-allowed-headers",
+				Usage:   "CORS allowed headers",
+				EnvVars: []string{"CORS_ALLOWED_HEADERS"},
 			},
-			cli.BoolFlag{
-				Name:   "cors-debug",
-				Usage:  "CORS debug logging",
-				EnvVar: "CORS_DEBUG",
-				Hidden: true,
+			&cli.BoolFlag{
+				Name:    "cors-debug",
+				Usage:   "CORS debug logging",
+				EnvVars: []string{"CORS_DEBUG"},
+				Hidden:  true,
 			},
-			cli.BoolFlag{
-				Name:   "no-api",
-				Usage:  "Don't start the API server",
-				EnvVar: "NO_API",
+			&cli.BoolFlag{
+				Name:    "no-api",
+				Usage:   "Don't start the API server",
+				EnvVars: []string{"NO_API"},
 			},
-			cli.BoolFlag{
-				Name:   "no-admin",
-				Usage:  "Don't start the admin server",
-				EnvVar: "NO_ADMIN",
+			&cli.BoolFlag{
+				Name:    "no-admin",
+				Usage:   "Don't start the admin server",
+				EnvVars: []string{"NO_ADMIN"},
 			},
-			cli.BoolFlag{
-				Name:   "no-admin-ui",
-				Usage:  "Don't start the admin UI",
-				EnvVar: "NO_ADMIN_UI",
+			&cli.BoolFlag{
+				Name:    "no-admin-ui",
+				Usage:   "Don't start the admin UI",
+				EnvVars: []string{"NO_ADMIN_UI"},
 			},
-			cli.StringFlag{
-				Name:   "app-env",
-				Usage:  "Environment this application is running on. Valid values are: dev, production",
-				EnvVar: "APP_ENV",
-				Value:  "production",
+			&cli.StringFlag{
+				Name:    "app-env",
+				Usage:   "Environment this application is running on. Valid values are: dev, production",
+				EnvVars: []string{"APP_ENV"},
+				Value:   "production",
 			},
-			cli.StringFlag{
-				Name:   "api-addr",
-				Usage:  "Sets the bind address for the API",
-				EnvVar: "API_ADDR",
-				Value:  ":8080",
+			&cli.StringFlag{
+				Name:    "api-addr",
+				Usage:   "Sets the bind address for the API",
+				EnvVars: []string{"API_ADDR"},
+				Value:   ":8080",
 			},
-			cli.StringFlag{
-				Name:   "admin-addr",
-				Usage:  "Sets the bind address for the admin",
-				EnvVar: "ADMIN_ADDR",
-				Value:  ":8081",
+			&cli.StringFlag{
+				Name:    "admin-addr",
+				Usage:   "Sets the bind address for the admin",
+				EnvVars: []string{"ADMIN_ADDR"},
+				Value:   ":8081",
 			},
-			cli.StringFlag{
-				Name:   "log-formatter",
-				Usage:  "Sets the log formatter for the application. Valid values are: text, json",
-				EnvVar: "LOG_FORMATTER",
-				Value:  logFormatterJSON,
+			&cli.StringFlag{
+				Name:    "log-formatter",
+				Usage:   "Sets the log formatter for the application. Valid values are: text, json",
+				EnvVars: []string{"LOG_FORMATTER"},
+				Value:   logFormatterJSON,
 			},
-			cli.StringFlag{
-				Name:   "log-level",
-				Usage:  "Sets the log level for the application",
-				EnvVar: "LOG_LEVEL",
-				Value:  "info",
+			&cli.StringFlag{
+				Name:    "log-level",
+				Usage:   "Sets the log level for the application",
+				EnvVars: []string{"LOG_LEVEL"},
+				Value:   "info",
 			},
 		},
 		Action: func(c *cli.Context) error {

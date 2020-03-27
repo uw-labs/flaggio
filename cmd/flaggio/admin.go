@@ -12,7 +12,7 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	"github.com/victorkt/flaggio/internal/repository/mongodb"
 	"github.com/victorkt/flaggio/internal/server/admin"
 	"go.mongodb.org/mongo-driver/mongo"
