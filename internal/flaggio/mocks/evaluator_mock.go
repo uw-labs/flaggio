@@ -35,6 +35,7 @@ func (m *MockEvaluator) EXPECT() *MockEvaluatorMockRecorder {
 
 // Evaluate mocks base method
 func (m *MockEvaluator) Evaluate(arg0 map[string]interface{}) (flaggio.EvalResult, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Evaluate", arg0)
 	ret0, _ := ret[0].(flaggio.EvalResult)
 	ret1, _ := ret[1].(error)
@@ -43,6 +44,7 @@ func (m *MockEvaluator) Evaluate(arg0 map[string]interface{}) (flaggio.EvalResul
 
 // Evaluate indicates an expected call of Evaluate
 func (mr *MockEvaluatorMockRecorder) Evaluate(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Evaluate", reflect.TypeOf((*MockEvaluator)(nil).Evaluate), arg0)
 }
 
@@ -71,6 +73,7 @@ func (m *MockIdentifier) EXPECT() *MockIdentifierMockRecorder {
 
 // GetID mocks base method
 func (m *MockIdentifier) GetID() string {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetID")
 	ret0, _ := ret[0].(string)
 	return ret0
@@ -78,5 +81,6 @@ func (m *MockIdentifier) GetID() string {
 
 // GetID indicates an expected call of GetID
 func (mr *MockIdentifierMockRecorder) GetID() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetID", reflect.TypeOf((*MockIdentifier)(nil).GetID))
 }
