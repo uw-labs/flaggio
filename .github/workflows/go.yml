@@ -2,8 +2,16 @@ name: Go
 
 on:
   push:
+    paths:
+      - '**.go'
+      - 'go.mod'
+      - 'go.sum'
     branches: [ master ]
   pull_request:
+    paths:
+      - '**.go'
+      - 'go.mod'
+      - 'go.sum'
     branches: [ master ]
 
 jobs:

@@ -1,0 +1,25 @@
+name: Javascript
+
+on:
+  push:
+    paths:
+      - 'web/**'
+    branches: [ master ]
+  pull_request:
+    paths:
+      - 'web/**'
+    branches: [ master ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    container: "node:12"
+    steps:
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          cd web
+          npm install
+      - name: Lint
+        run: npx eslint src/**/*.js
