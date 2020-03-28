@@ -1,4 +1,4 @@
-import uuid from 'uuid/v1';
+import { v1 as uuid } from 'uuid';
 import { isArray } from 'lodash';
 import { Operations, VariantType } from './copy';
 import { cast } from '../../helpers';
