@@ -71,6 +71,6 @@ func startAPI(ctx context.Context, c *cli.Context, logger *logrus.Entry) error {
 			logrus.Fatalf("api server shutdown failed: %+v", err)
 		}
 	}()
-	logger.Infof("api server started. listening on %s", c.String("api-addr"))
+	logger.WithField("listening", c.String("api-addr")).Infof("api server started")
 	return srv.ListenAndServe()
 }

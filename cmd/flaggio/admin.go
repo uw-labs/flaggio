@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/handler/extension"
+	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -61,9 +63,13 @@ func startAdmin(ctx context.Context, c *cli.Context, logger *logrus.Entry) error
 		}).Handler,
 	)
 
-	router.Method("POST", "/query", handler.New(
+	gqlSrv := handler.New(
 		admin.NewExecutableSchema(admin.Config{Resolvers: resolver}),
-	))
+	)
+	gqlSrv.AddTransport(transport.POST{})
+	gqlSrv.Use(extension.Introspection{})
+
+	router.Method("POST", "/query", gqlSrv)
 	if isDev {
 		router.Get("/playground", playground.Handler("GraphQL playground", "/query"))
 	}
@@ -106,7 +112,7 @@ func startAdmin(ctx context.Context, c *cli.Context, logger *logrus.Entry) error
 	if isDev {
 		logger.Infof("GraphQL playground enabled")
 	}
-	logger.Infof("admin server started. listening on %s", c.String("admin-addr"))
+	logger.WithField("listening", c.String("admin-addr")).Infof("admin server started")
 	return srv.ListenAndServe()
 }
 
