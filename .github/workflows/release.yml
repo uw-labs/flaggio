@@ -2,11 +2,10 @@ name: Release
 
 on:
   push:
-    branches: [ master ]
     tags: [ 'v*' ]
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code into the Go module directory
