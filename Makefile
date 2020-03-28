@@ -1,12 +1,16 @@
 # -----------------------------------------------------------------------------------------
 # Variables
 # -----------------------------------------------------------------------------------------
+GIT_HASH := $(shell git rev-parse HEAD)
 GIT_SUMMARY := $(shell git describe --tags --dirty --always)
 GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
+GIT_TAG := $(shell git describe --abbrev=0 --tags || echo "v0.0.0")
 BUILD_STAMP := $(shell date -u '+%Y-%m-%dT%H:%M:%S%z')
+VERSION := $(shell echo $(GIT_TAG) | sed -e "s/^v//")
 LDFLAGS = -ldflags '-w -s \
 	-X "main.ApplicationName=$(1)" \
 	-X "main.ApplicationDescription=$(2)" \
+	-X "main.ApplicationVersion=$(VERSION)" \
 	-X "main.GitSummary=$(GIT_SUMMARY)" \
 	-X "main.GitBranch=$(GIT_BRANCH)" \
 	-X "main.BuildStamp=$(BUILD_STAMP)"'
@@ -15,11 +19,11 @@ LDFLAGS = -ldflags '-w -s \
 	@echo GIT_BRANCH: $(GIT_BRANCH)
 	@echo BUILD_STAMP: $(BUILD_STAMP)
 	@echo LDFLAGS: $(LDFLAGS)
+	@echo VERSION: $(VERSION)
 
 NAMESPACE=flaggio
-DOCKER_REGISTRY=docker.io
 DOCKER_CONTAINER_NAME=flaggio
-DOCKER_REPOSITORY=$(DOCKER_REGISTRY)/$(NAMESPACE)/$(DOCKER_CONTAINER_NAME)
+DOCKER_REPOSITORY=$(NAMESPACE)/$(DOCKER_CONTAINER_NAME)
 
 # -----------------------------------------------------------------------------------------
 # Application Tasks
@@ -42,3 +46,11 @@ build:
 
 gen:
 	go generate ./...
+
+docker-build:
+	docker build -t $(DOCKER_REPOSITORY):latest .
+
+release: docker-build
+	docker tag $(DOCKER_REPOSITORY):latest $(DOCKER_REPOSITORY):$(VERSION)
+	docker push $(DOCKER_REPOSITORY):latest
+	docker push $(DOCKER_REPOSITORY):$(VERSION)
