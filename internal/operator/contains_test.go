@@ -7,7 +7,7 @@ import (
 	"github.com/victorkt/flaggio/internal/operator"
 )
 
-func TestContains_Operate(t *testing.T) {
+func TestContains(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name           string
@@ -58,7 +58,7 @@ func TestContains_Operate(t *testing.T) {
 	}
 }
 
-func TestDoesntContain_Operate(t *testing.T) {
+func TestDoesntContain(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name           string

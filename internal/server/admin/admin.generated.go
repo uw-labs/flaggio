@@ -769,6 +769,7 @@ enum Operation {
     DOESNT_MATCH_REGEX
     IS_IN_SEGMENT
     ISNT_IN_SEGMENT
+    IS_IN_NETWORK
 }
 
 type Query {

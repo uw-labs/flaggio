@@ -7,7 +7,7 @@ import (
 	"github.com/victorkt/flaggio/internal/operator"
 )
 
-func TestOneOf_Operate(t *testing.T) {
+func TestOneOf(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name           string
@@ -424,7 +424,7 @@ func TestOneOf_Operate(t *testing.T) {
 	}
 }
 
-func TestNotOneOf_Operate(t *testing.T) {
+func TestNotOneOf(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name           string

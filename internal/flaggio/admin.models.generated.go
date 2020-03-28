@@ -97,6 +97,7 @@ const (
 	OperationDoesntMatchRegex Operation = "DOESNT_MATCH_REGEX"
 	OperationIsInSegment      Operation = "IS_IN_SEGMENT"
 	OperationIsntInSegment    Operation = "ISNT_IN_SEGMENT"
+	OperationIsInNetwork      Operation = "IS_IN_NETWORK"
 )
 
 var AllOperation = []Operation{
@@ -118,11 +119,12 @@ var AllOperation = []Operation{
 	OperationDoesntMatchRegex,
 	OperationIsInSegment,
 	OperationIsntInSegment,
+	OperationIsInNetwork,
 }
 
 func (e Operation) IsValid() bool {
 	switch e {
-	case OperationOneOf, OperationNotOneOf, OperationGreater, OperationGreaterOrEqual, OperationLower, OperationLowerOrEqual, OperationExists, OperationDoesntExist, OperationContains, OperationDoesntContain, OperationStartsWith, OperationDoesntStartWith, OperationEndsWith, OperationDoesntEndWith, OperationMatchesRegex, OperationDoesntMatchRegex, OperationIsInSegment, OperationIsntInSegment:
+	case OperationOneOf, OperationNotOneOf, OperationGreater, OperationGreaterOrEqual, OperationLower, OperationLowerOrEqual, OperationExists, OperationDoesntExist, OperationContains, OperationDoesntContain, OperationStartsWith, OperationDoesntStartWith, OperationEndsWith, OperationDoesntEndWith, OperationMatchesRegex, OperationDoesntMatchRegex, OperationIsInSegment, OperationIsntInSegment, OperationIsInNetwork:
 		return true
 	}
 	return false

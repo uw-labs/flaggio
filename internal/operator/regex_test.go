@@ -7,7 +7,7 @@ import (
 	"github.com/victorkt/flaggio/internal/operator"
 )
 
-func TestMatchesRegex_Operate(t *testing.T) {
+func TestMatchesRegex(t *testing.T) {
 	tests := []struct {
 		name           string
 		usrContext     map[string]interface{}
@@ -56,7 +56,7 @@ func TestMatchesRegex_Operate(t *testing.T) {
 	}
 }
 
-func TestDoesntMatchRegex_Operate(t *testing.T) {
+func TestDoesntMatchRegex(t *testing.T) {
 	tests := []struct {
 		name           string
 		usrContext     map[string]interface{}

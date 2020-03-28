@@ -7,7 +7,7 @@ import (
 	"github.com/victorkt/flaggio/internal/operator"
 )
 
-func TestEndsWith_Operate(t *testing.T) {
+func TestEndsWith(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name           string
@@ -58,7 +58,7 @@ func TestEndsWith_Operate(t *testing.T) {
 	}
 }
 
-func TestDoesntEndWith_Operate(t *testing.T) {
+func TestDoesntEndWith(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name           string

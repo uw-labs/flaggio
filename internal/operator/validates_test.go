@@ -19,7 +19,7 @@ func (m mockValidator) Validate(usrContext map[string]interface{}) (bool, error)
 	return m.r, m.e
 }
 
-func TestValidates_Operate(t *testing.T) {
+func TestValidates(t *testing.T) {
 	tests := []struct {
 		name           string
 		usrContext     map[string]interface{}
@@ -77,7 +77,7 @@ func TestValidates_Operate(t *testing.T) {
 	}
 }
 
-func TestDoesntValidate_Operate(t *testing.T) {
+func TestDoesntValidate(t *testing.T) {
 	tests := []struct {
 		name           string
 		usrContext     map[string]interface{}

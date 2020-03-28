@@ -7,7 +7,7 @@ import (
 	"github.com/victorkt/flaggio/internal/operator"
 )
 
-func TestStartsWith_Operate(t *testing.T) {
+func TestStartsWith(t *testing.T) {
 	tests := []struct {
 		name           string
 		usrContext     map[string]interface{}
@@ -56,7 +56,7 @@ func TestStartsWith_Operate(t *testing.T) {
 	}
 }
 
-func TestDoesntStartWith_Operate(t *testing.T) {
+func TestDoesntStartWith(t *testing.T) {
 	tests := []struct {
 		name           string
 		usrContext     map[string]interface{}

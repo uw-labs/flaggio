@@ -7,7 +7,7 @@ import (
 	"github.com/victorkt/flaggio/internal/operator"
 )
 
-func TestGreater_Operate(t *testing.T) {
+func TestGreater(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name           string
@@ -208,7 +208,7 @@ func TestGreater_Operate(t *testing.T) {
 	}
 }
 
-func TestGreaterOrEqual_Operate(t *testing.T) {
+func TestGreaterOrEqual(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name           string
@@ -409,7 +409,7 @@ func TestGreaterOrEqual_Operate(t *testing.T) {
 	}
 }
 
-func TestLower_Operate(t *testing.T) {
+func TestLower(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name           string
@@ -610,7 +610,7 @@ func TestLower_Operate(t *testing.T) {
 	}
 }
 
-func TestLowerOrEqual_Operate(t *testing.T) {
+func TestLowerOrEqual(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name           string

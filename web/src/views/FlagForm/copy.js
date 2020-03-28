@@ -17,6 +17,7 @@ export const Operations = {
   DOESNT_MATCH_REGEX: "Doesn't match regex",
   IS_IN_SEGMENT: "Is in segment",
   ISNT_IN_SEGMENT: "Isn't in segment",
+  IS_IN_NETWORK: "Is in network",
 };
 
 export const VariantType = {

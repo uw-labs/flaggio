@@ -7,7 +7,7 @@ import (
 	"github.com/victorkt/flaggio/internal/operator"
 )
 
-func TestExists_Operate(t *testing.T) {
+func TestExists(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name           string
@@ -41,7 +41,7 @@ func TestExists_Operate(t *testing.T) {
 	}
 }
 
-func TestDoesntExist_Operate(t *testing.T) {
+func TestDoesntExist(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name           string

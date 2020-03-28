@@ -15,6 +15,7 @@ export const Operations = {
   DOESNT_END_WITH: "Doesn't end with",
   MATCHES_REGEX: "Matches regex",
   DOESNT_MATCH_REGEX: "Doesn't match regex",
+  IS_IN_NETWORK: "Is in network",
 };
 
 export const BooleanType = {
