@@ -17,7 +17,7 @@ import {
   UPDATE_FLAG_RULE_QUERY,
   UPDATE_VARIANT_QUERY,
 } from './queries';
-import { formatFlag, formatRule, formatVariant, newFlag } from './models';
+import { formatFlag, formatRule, formatVariant, newFlag, VariantTypes } from './models';
 import { FLAGS_QUERY } from '../FlagList/queries';
 import { reject } from 'lodash';
 
@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const FlagForm = () => {
+const FlagForm = (props) => {
   const { id } = useParams();
   const [toFlagsPage, setToFlagsPage] = React.useState(false);
   const { loading, error, data = {}, refetch } = useQuery(FLAG_QUERY, { variables: { id }, skip: id === undefined });
@@ -130,6 +130,7 @@ const FlagForm = () => {
     deleteFlag({ variables: { id } })
       .then(() => setToFlagsPage(true));
   };
+  const { flagType = VariantTypes.BOOLEAN } = props.location;
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.key === 'Escape') setToFlagsPage(true);
@@ -147,7 +148,7 @@ const FlagForm = () => {
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <FlagDetails
-            flag={newFlag(data.flag)}
+            flag={newFlag(data.flag, flagType)}
             operations={dataOps.operations.enumValues.map(v => v.name)}
             segments={dataOps.segments}
             onSaveFlag={handleSaveFlag}

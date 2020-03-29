@@ -9,19 +9,23 @@ export const OperationTypes = Object.keys(Operations)
 export const VariantTypes = Object.keys(VariantType)
   .reduce((vts, vt) => ({ ...vts, [vt]: vt.toLowerCase() }), {});
 
-export const newFlag = (flag = {}) => ({
-  __new: !flag.id,
-  id: flag.id || uuid(),
-  name: flag.name || '',
-  key: flag.key || '',
-  description: flag.description || '',
-  variants: isArray(flag.variants) && flag.variants.length > 0 ?
+export const newFlag = (flag = {}, flagType) => {
+  const isNew = !flag.id;
+  const variants = isArray(flag.variants) && flag.variants.length > 0 ?
     flag.variants.map(v => newVariant(v)) :
-    [newVariant()],
-  rules: flag.rules ? flag.rules.map(r => newRule(r)) : [],
-  defaultVariantWhenOn: flag.defaultVariantWhenOn || { id: '' },
-  defaultVariantWhenOff: flag.defaultVariantWhenOff || { id: '' },
-});
+    createNewVariants(flagType);
+  return {
+    __new: isNew,
+    id: flag.id || uuid(),
+    name: flag.name || '',
+    key: flag.key || '',
+    description: flag.description || '',
+    variants,
+    rules: flag.rules ? flag.rules.map(r => newRule(r)) : [],
+    defaultVariantWhenOn: flag.defaultVariantWhenOn || ((isNew && variants[0]) || { id: '' }),
+    defaultVariantWhenOff: flag.defaultVariantWhenOff || ((isNew && variants[1]) || { id: '' }),
+  }
+};
 
 export const newVariant = (variant = {}) => ({
   __new: !variant.id,
@@ -89,3 +93,24 @@ export const formatDistribution = (distribution, variantsRef) => ({
   variantId: variantsRef[distribution.variant.id] || distribution.variant.id,
   percentage: distribution.percentage,
 });
+
+const createNewVariants = (type) => {
+  switch (type) {
+    case VariantTypes.NUMBER:
+      return [
+        newVariant({ value: 1, type: VariantTypes.NUMBER }),
+        newVariant({ value: 2, type: VariantTypes.NUMBER }),
+      ];
+    case VariantTypes.STRING:
+      return [
+        newVariant({ value: 'a', type: VariantTypes.STRING }),
+        newVariant({ value: 'b', type: VariantTypes.STRING }),
+      ];
+    case VariantTypes.BOOLEAN:
+    default:
+      return [
+        newVariant({ value: true, type: VariantTypes.BOOLEAN }),
+        newVariant({ value: false, type: VariantTypes.BOOLEAN }),
+      ];
+  }
+};

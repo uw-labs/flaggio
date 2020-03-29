@@ -2,8 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
-import { Button } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import AddFlagButton from './AddFlagButton';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -32,22 +31,13 @@ const FlagsToolbar = props => {
       className={clsx(classes.root, className)}
     >
       <div className={classes.row}>
+        {/*<SearchInput*/}
+        {/*  className={classes.searchInput}*/}
+        {/*  placeholder="Search flag"*/}
+        {/*/>*/}
         <span className={classes.spacer}/>
-        <Link to="/flags/new">
-          <Button
-            color="primary"
-            variant="contained"
-          >
-            Add flag
-          </Button>
-        </Link>
+        <AddFlagButton/>
       </div>
-      {/*<div className={classes.row}>*/}
-      {/*  <SearchInput*/}
-      {/*    className={classes.searchInput}*/}
-      {/*    placeholder="Search flag"*/}
-      {/*  />*/}
-      {/*</div>*/}
     </div>
   );
 };
