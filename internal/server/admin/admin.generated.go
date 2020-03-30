@@ -98,7 +98,7 @@ type ComplexityRoot struct {
 
 	Query struct {
 		Flag     func(childComplexity int, id string) int
-		Flags    func(childComplexity int, offset *int, limit *int) int
+		Flags    func(childComplexity int, search *string, offset *int, limit *int) int
 		Ping     func(childComplexity int) int
 		Segment  func(childComplexity int, id string) int
 		Segments func(childComplexity int, offset *int, limit *int) int
@@ -145,7 +145,7 @@ type MutationResolver interface {
 }
 type QueryResolver interface {
 	Ping(ctx context.Context) (bool, error)
-	Flags(ctx context.Context, offset *int, limit *int) ([]*flaggio.Flag, error)
+	Flags(ctx context.Context, search *string, offset *int, limit *int) ([]*flaggio.Flag, error)
 	Flag(ctx context.Context, id string) (*flaggio.Flag, error)
 	Segments(ctx context.Context, offset *int, limit *int) ([]*flaggio.Segment, error)
 	Segment(ctx context.Context, id string) (*flaggio.Segment, error)
@@ -515,7 +515,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Flags(childComplexity, args["offset"].(*int), args["limit"].(*int)), true
+		return e.complexity.Query.Flags(childComplexity, args["search"].(*string), args["offset"].(*int), args["limit"].(*int)), true
 
 	case "Query.ping":
 		if e.complexity.Query.Ping == nil {
@@ -844,7 +844,7 @@ input UpdateSegment {
 }
 
 extend type Query {
-    flags(offset: Int, limit: Int): [Flag!]!
+    flags(search: String, offset: Int, limit: Int): [Flag!]!
     flag(id: ID!): Flag
     segments(offset: Int, limit: Int): [Segment!]!
     segment(id: ID!): Segment
@@ -1230,22 +1230,30 @@ func (ec *executionContext) field_Query_flag_args(ctx context.Context, rawArgs m
 func (ec *executionContext) field_Query_flags_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *int
-	if tmp, ok := rawArgs["offset"]; ok {
-		arg0, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+	var arg0 *string
+	if tmp, ok := rawArgs["search"]; ok {
+		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["offset"] = arg0
+	args["search"] = arg0
 	var arg1 *int
-	if tmp, ok := rawArgs["limit"]; ok {
+	if tmp, ok := rawArgs["offset"]; ok {
 		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["limit"] = arg1
+	args["offset"] = arg1
+	var arg2 *int
+	if tmp, ok := rawArgs["limit"]; ok {
+		arg2, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["limit"] = arg2
 	return args, nil
 }
 
@@ -2690,7 +2698,7 @@ func (ec *executionContext) _Query_flags(ctx context.Context, field graphql.Coll
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Flags(rctx, args["offset"].(*int), args["limit"].(*int))
+		return ec.resolvers.Query().Flags(rctx, args["search"].(*string), args["offset"].(*int), args["limit"].(*int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

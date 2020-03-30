@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import { FlagsTable, FlagsToolbar } from './components';
@@ -27,7 +27,8 @@ function EmptyMessage({ message }) {
 
 const FlagList = () => {
   const classes = useStyles();
-  const { loading, error, data } = useQuery(FLAGS_QUERY);
+  const [search, setSearch] = useState();
+  const { loading, error, data } = useQuery(FLAGS_QUERY, { variables: { search } });
   const [toggleFlag] = useMutation(TOGGLE_FLAG_QUERY);
   let content;
   switch (true) {
@@ -46,7 +47,7 @@ const FlagList = () => {
 
   return (
     <div className={classes.root}>
-      <FlagsToolbar/>
+      <FlagsToolbar onSearch={setSearch}/>
       <div className={classes.content}>
         {content}
       </div>

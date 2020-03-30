@@ -70,7 +70,7 @@ func (s *flagService) Evaluate(ctx context.Context, flagKey string, req *Evaluat
 
 // EvaluateAll evaluates all flags, returning a value or an error for each flag based on the user context
 func (s *flagService) EvaluateAll(ctx context.Context, req *EvaluationRequest) (*EvaluationsResponse, error) {
-	flgs, err := s.flagsRepo.FindAll(ctx, nil, nil)
+	flgs, err := s.flagsRepo.FindAll(ctx, nil, nil, nil)
 	if err != nil {
 		return nil, err
 	}

@@ -9,7 +9,7 @@ import (
 // Flag represents a set of operations available to list and manage flags.
 type Flag interface {
 	// FindAll returns a list of flags, based on an optional offset and limit.
-	FindAll(ctx context.Context, offset, limit *int64) ([]*flaggio.Flag, error)
+	FindAll(ctx context.Context, search *string, offset, limit *int64) ([]*flaggio.Flag, error)
 	// FindByID returns a flag that has a given ID.
 	FindByID(ctx context.Context, id string) (*flaggio.Flag, error)
 	// FindByKey returns a flag that has a given key.

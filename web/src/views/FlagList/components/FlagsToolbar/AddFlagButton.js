@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
     zIndex: '9999',
   },
   mainButton: {
-    color: '#FFFFFF !important',
+    color: `${theme.palette.primary.contrastText} !important`,
   },
 }));
 

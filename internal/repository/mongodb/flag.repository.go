@@ -2,6 +2,7 @@ package mongodb
 
 import (
 	"context"
+	"regexp"
 	"time"
 
 	"github.com/victorkt/flaggio/internal/errors"
@@ -22,8 +23,15 @@ type FlagRepository struct {
 }
 
 // FindAll returns a list of flags, based on an optional offset and limit.
-func (r FlagRepository) FindAll(ctx context.Context, offset, limit *int64) ([]*flaggio.Flag, error) {
-	cursor, err := r.col.Find(ctx, bson.M{}, &options.FindOptions{
+func (r FlagRepository) FindAll(ctx context.Context, search *string, offset, limit *int64) ([]*flaggio.Flag, error) {
+	filter := bson.M{}
+	if search != nil {
+		filter["$or"] = []bson.M{
+			{"key": primitive.Regex{Pattern: regexp.QuoteMeta(*search), Options: "i"}},
+			{"$text": bson.M{"$search": *search}},
+		}
+	}
+	cursor, err := r.col.Find(ctx, filter, &options.FindOptions{
 		Skip:  offset,
 		Limit: limit,
 		Sort:  bson.M{"key": 1},
@@ -199,6 +207,10 @@ func NewMongoFlagRepository(ctx context.Context, db *mongo.Database) (*FlagRepos
 		{
 			Keys:    bson.M{"rules.constraints._id": 1},
 			Options: options.Index().SetUnique(true).SetSparse(true).SetBackground(false),
+		},
+		{
+			Keys:    bson.M{"name": "text"},
+			Options: options.Index().SetBackground(false),
 		},
 	})
 	if err != nil {
