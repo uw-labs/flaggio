@@ -18,8 +18,6 @@ import {
   UPDATE_VARIANT_QUERY,
 } from './queries';
 import { formatFlag, formatRule, formatVariant, newFlag, VariantTypes } from './models';
-import { FLAGS_QUERY } from '../FlagList/queries';
-import { reject } from 'lodash';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -36,17 +34,13 @@ const useStyles = makeStyles(theme => ({
 const FlagForm = (props) => {
   const { id } = useParams();
   const [toFlagsPage, setToFlagsPage] = React.useState(false);
-  const { loading, error, data = {}, refetch } = useQuery(FLAG_QUERY, { variables: { id }, skip: id === undefined });
-  const { loading: loadingOps, error: errorOps, data: dataOps } = useQuery(OPERATIONS_SEGMENTS_QUERY);
-  const [deleteFlag] = useMutation(DELETE_FLAG_QUERY, {
-    update(cache, { data: { deleteFlag: id } }) {
-      const { flags } = cache.readQuery({ query: FLAGS_QUERY });
-      cache.writeQuery({
-        query: FLAGS_QUERY,
-        data: { flags: reject(flags, { id }) },
-      });
-    },
+  const { loading, error, data = {} } = useQuery(FLAG_QUERY, {
+    variables: { id },
+    fetchPolicy: 'cache-and-network',
+    skip: id === undefined,
   });
+  const { loading: loadingOps, error: errorOps, data: dataOps } = useQuery(OPERATIONS_SEGMENTS_QUERY);
+  const [deleteFlag] = useMutation(DELETE_FLAG_QUERY);
   const [createFlag] = useMutation(CREATE_FLAG_QUERY);
   const [updateFlag] = useMutation(UPDATE_FLAG_QUERY);
   const [createVariant] = useMutation(CREATE_VARIANT_QUERY);
@@ -63,11 +57,6 @@ const FlagForm = (props) => {
         variables: { input: { key, name } },
         update(cache, { data: { createFlag: createdFlag } }) {
           flag.id = createdFlag.id;
-          const { flags } = cache.readQuery({ query: FLAGS_QUERY });
-          cache.writeQuery({
-            query: FLAGS_QUERY,
-            data: { flags: [...flags, createdFlag] },
-          });
         },
       });
     }
@@ -120,9 +109,6 @@ const FlagForm = (props) => {
     ]);
     if (flag.__changed) {
       await updateFlag({ variables: { id: flag.id, input: formatFlag(flag, variantsRef) } });
-    }
-    if (!flag.__new) {
-      await refetch();
     }
     setToFlagsPage(true);
   };

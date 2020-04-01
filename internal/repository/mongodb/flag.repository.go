@@ -23,7 +23,7 @@ type FlagRepository struct {
 }
 
 // FindAll returns a list of flags, based on an optional offset and limit.
-func (r FlagRepository) FindAll(ctx context.Context, search *string, offset, limit *int64) ([]*flaggio.Flag, error) {
+func (r FlagRepository) FindAll(ctx context.Context, search *string, offset, limit *int64) (*flaggio.FlagResults, error) {
 	filter := bson.M{}
 	if search != nil {
 		filter["$or"] = []bson.M{
@@ -54,7 +54,16 @@ func (r FlagRepository) FindAll(ctx context.Context, search *string, offset, lim
 	if err := cursor.Err(); err != nil {
 		return nil, err
 	}
-	return flags, nil
+
+	total, err := r.col.CountDocuments(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	return &flaggio.FlagResults{
+		Flags: flags,
+		Total: int(total),
+	}, nil
 }
 
 // FindByID returns a flag that has a given ID.

@@ -1,14 +1,17 @@
 import { gql } from 'apollo-boost';
 
 export const FLAGS_QUERY = gql`
-  query listFlags($search: String) {
-    flags(search: $search) {
-      id
-      key
-      name
-      description
-      enabled
-      createdAt
+  query listFlags($search: String, $offset: Int, $limit: Int) {
+    flags(search: $search, offset: $offset, limit: $limit) {
+      flags {
+        id
+        key
+        name
+        description
+        enabled
+        createdAt
+      }
+      total
     }
   }
 `;

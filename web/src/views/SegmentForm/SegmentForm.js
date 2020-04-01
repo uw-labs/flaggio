@@ -15,8 +15,6 @@ import {
   UPDATE_SEGMENT_RULE_QUERY,
 } from './queries';
 import { formatRule, formatSegment, newSegment } from './models';
-import { SEGMENTS_QUERY } from '../SegmentList/queries';
-import { reject } from 'lodash';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -33,17 +31,13 @@ const useStyles = makeStyles(theme => ({
 const SegmentForm = () => {
   const { id } = useParams();
   const [toSegmentsPage, setToSegmentsPage] = React.useState(false);
-  const { loading, error, data = {}, refetch } = useQuery(SEGMENT_QUERY, { variables: { id }, skip: id === undefined });
-  const { loading: loadingOps, error: errorOps, data: dataOps } = useQuery(OPERATIONS_QUERY);
-  const [deleteSegment] = useMutation(DELETE_SEGMENT_QUERY, {
-    update(cache, { data: { deleteSegment: id } }) {
-      const { segments } = cache.readQuery({ query: SEGMENTS_QUERY });
-      cache.writeQuery({
-        query: SEGMENTS_QUERY,
-        data: { segments: reject(segments, { id }) },
-      });
-    },
+  const { loading, error, data = {}, refetch } = useQuery(SEGMENT_QUERY, {
+    variables: { id },
+    fetchPolicy: 'cache-and-network',
+    skip: id === undefined,
   });
+  const { loading: loadingOps, error: errorOps, data: dataOps } = useQuery(OPERATIONS_QUERY);
+  const [deleteSegment] = useMutation(DELETE_SEGMENT_QUERY);
   const [createSegment] = useMutation(CREATE_SEGMENT_QUERY);
   const [updateSegment] = useMutation(UPDATE_SEGMENT_QUERY);
   const [createRule] = useMutation(CREATE_SEGMENT_RULE_QUERY);
@@ -57,11 +51,6 @@ const SegmentForm = () => {
         variables: { input: { name, description } },
         update(cache, { data: { createSegment: createdSegment } }) {
           segment.id = createdSegment.id;
-          const { segments } = cache.readQuery({ query: SEGMENTS_QUERY });
-          cache.writeQuery({
-            query: SEGMENTS_QUERY,
-            data: { segments: [...segments, createdSegment] },
-          });
         },
       });
     }

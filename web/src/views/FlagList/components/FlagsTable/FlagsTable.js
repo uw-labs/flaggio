@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import moment from 'moment';
@@ -38,27 +38,28 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const FlagsTable = props => {
-  const { className, flags, toggleFlag, ...rest } = props;
+  const {
+    className,
+    flags,
+    onToggleFlag,
+    page,
+    rowsPerPage,
+    rowsPerPageOptions,
+    onPageChange,
+    onRowsPerPageChange,
+    ...rest
+  } = props;
 
   const classes = useStyles();
-
-  // const [rowsPerPage, setRowsPerPage] = useState(10);
-  // const [page, setPage] = useState(0);
-  //
-  // const handlePageChange = (event, page) => {
-  //   setPage(page);
-  // };
-  //
-  // const handleRowsPerPageChange = event => {
-  //   setRowsPerPage(event.target.value);
-  // };
+  const handlePageChange = (event, page) => onPageChange(page);
+  const handleRowsPerPageChange = event => onRowsPerPageChange(event.target.value);
 
   return (
     <Card
       {...rest}
       className={clsx(classes.root, className)}
     >
-      {/*<CardContent className={classes.content}>*/}
+      <CardContent className={classes.content}>
         <PerfectScrollbar>
           <div>
             <Table>
@@ -85,7 +86,7 @@ const FlagsTable = props => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {flags.map(flag => (
+                {flags.flags.map(flag => (
                   <TableRow
                     className={classes.tableRow}
                     hover
@@ -94,7 +95,12 @@ const FlagsTable = props => {
                     <TableCell padding="checkbox">
                       <Switch
                         checked={flag.enabled}
-                        onChange={e => toggleFlag({ variables: { id: flag.id, input: { enabled: e.target.checked } } })}
+                        onChange={e => onToggleFlag({
+                          variables: {
+                            id: flag.id,
+                            input: { enabled: e.target.checked },
+                          },
+                        })}
                         color="primary"
                         inputProps={{ 'aria-label': 'primary checkbox' }}
                       />
@@ -123,26 +129,31 @@ const FlagsTable = props => {
             </Table>
           </div>
         </PerfectScrollbar>
-      {/*</CardContent>*/}
-      {/*<CardActions className={classes.actions}>*/}
-      {/*  <TablePagination*/}
-      {/*    component="div"*/}
-      {/*    count={flags.length}*/}
-      {/*    onChangePage={handlePageChange}*/}
-      {/*    onChangeRowsPerPage={handleRowsPerPageChange}*/}
-      {/*    page={page}*/}
-      {/*    rowsPerPage={rowsPerPage}*/}
-      {/*    rowsPerPageOptions={[5, 10, 25]}*/}
-      {/*  />*/}
-      {/*</CardActions>*/}
+      </CardContent>
+      <CardActions className={classes.actions}>
+        <TablePagination
+          component="div"
+          count={flags.total}
+          onChangePage={handlePageChange}
+          onChangeRowsPerPage={handleRowsPerPageChange}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          rowsPerPageOptions={rowsPerPageOptions}
+        />
+      </CardActions>
     </Card>
   );
 };
 
 FlagsTable.propTypes = {
   className: PropTypes.string,
-  flags: PropTypes.array.isRequired,
-  toggleFlag: PropTypes.func.isRequired,
+  flags: PropTypes.object.isRequired,
+  onToggleFlag: PropTypes.func.isRequired,
+  page: PropTypes.number.isRequired,
+  rowsPerPage: PropTypes.number.isRequired,
+  rowsPerPageOptions: PropTypes.arrayOf(PropTypes.number).isRequired,
+  onPageChange: PropTypes.func.isRequired,
+  onRowsPerPageChange: PropTypes.func.isRequired,
 };
 
 export default FlagsTable;

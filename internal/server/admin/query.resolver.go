@@ -14,7 +14,7 @@ func (r *queryResolver) Ping(ctx context.Context) (bool, error) {
 	return true, nil
 }
 
-func (r *queryResolver) Flags(ctx context.Context, search *string, offset, limit *int) ([]*flaggio.Flag, error) {
+func (r *queryResolver) Flags(ctx context.Context, search *string, offset, limit *int) (*flaggio.FlagResults, error) {
 	var ofst, lmt *int64
 	if offset != nil {
 		v := int64(*offset)

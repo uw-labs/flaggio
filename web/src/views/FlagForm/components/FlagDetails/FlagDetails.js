@@ -128,6 +128,7 @@ const FlagDetails = props => {
                   onChange={handleChange()}
                   onBlur={handleSetSlugifiedKey}
                   required
+                  autoFocus
                   value={flag.name}
                   variant="outlined"
                 />

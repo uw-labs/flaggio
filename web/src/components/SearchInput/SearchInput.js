@@ -30,7 +30,7 @@ const SearchInput = props => {
   const { className, onChange, style, ...rest } = props;
 
   const classes = useStyles();
-  const handler = useCallback(debounce(onChange, 200), []);
+  const handler = useCallback(debounce(onChange, 300), []);
 
   return (
     <Paper

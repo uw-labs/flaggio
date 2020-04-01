@@ -84,8 +84,8 @@ func (s *flagService) EvaluateAll(ctx context.Context, req *EvaluationRequest) (
 	}
 
 	// TODO: use go routines
-	var evals []*flaggio.Evaluation
-	for _, flg := range flgs {
+	evals := make([]*flaggio.Evaluation, flgs.Total)
+	for _, flg := range flgs.Flags {
 		flg.Populate(iders)
 
 		evltn := &flaggio.Evaluation{

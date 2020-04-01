@@ -12,6 +12,11 @@ type Ruler interface {
 	IsRuler()
 }
 
+type FlagResults struct {
+	Flags []*Flag `json:"flags"`
+	Total int     `json:"total"`
+}
+
 type NewConstraint struct {
 	Property  string        `json:"property"`
 	Operation Operation     `json:"operation"`

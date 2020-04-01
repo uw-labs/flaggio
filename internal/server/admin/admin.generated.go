@@ -71,6 +71,11 @@ type ComplexityRoot struct {
 		Variants              func(childComplexity int) int
 	}
 
+	FlagResults struct {
+		Flags func(childComplexity int) int
+		Total func(childComplexity int) int
+	}
+
 	FlagRule struct {
 		Constraints   func(childComplexity int) int
 		Distributions func(childComplexity int) int
@@ -145,7 +150,7 @@ type MutationResolver interface {
 }
 type QueryResolver interface {
 	Ping(ctx context.Context) (bool, error)
-	Flags(ctx context.Context, search *string, offset *int, limit *int) ([]*flaggio.Flag, error)
+	Flags(ctx context.Context, search *string, offset *int, limit *int) (*flaggio.FlagResults, error)
 	Flag(ctx context.Context, id string) (*flaggio.Flag, error)
 	Segments(ctx context.Context, offset *int, limit *int) ([]*flaggio.Segment, error)
 	Segment(ctx context.Context, id string) (*flaggio.Segment, error)
@@ -284,6 +289,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Flag.Variants(childComplexity), true
+
+	case "FlagResults.flags":
+		if e.complexity.FlagResults.Flags == nil {
+			break
+		}
+
+		return e.complexity.FlagResults.Flags(childComplexity), true
+
+	case "FlagResults.total":
+		if e.complexity.FlagResults.Total == nil {
+			break
+		}
+
+		return e.complexity.FlagResults.Total(childComplexity), true
 
 	case "FlagRule.constraints":
 		if e.complexity.FlagRule.Constraints == nil {
@@ -843,8 +862,13 @@ input UpdateSegment {
     description: String
 }
 
+type FlagResults {
+    flags: [Flag!]!
+    total: Int!
+}
+
 extend type Query {
-    flags(search: String, offset: Int, limit: Int): [Flag!]!
+    flags(search: String, offset: Int, limit: Int): FlagResults!
     flag(id: ID!): Flag
     segments(offset: Int, limit: Int): [Segment!]!
     segment(id: ID!): Segment
@@ -1895,6 +1919,74 @@ func (ec *executionContext) _Flag_updatedAt(ctx context.Context, field graphql.C
 	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _FlagResults_flags(ctx context.Context, field graphql.CollectedField, obj *flaggio.FlagResults) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "FlagResults",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Flags, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*flaggio.Flag)
+	fc.Result = res
+	return ec.marshalNFlag2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlagᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FlagResults_total(ctx context.Context, field graphql.CollectedField, obj *flaggio.FlagResults) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "FlagResults",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Total, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _FlagRule_id(ctx context.Context, field graphql.CollectedField, obj *flaggio.FlagRule) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -2710,9 +2802,9 @@ func (ec *executionContext) _Query_flags(ctx context.Context, field graphql.Coll
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*flaggio.Flag)
+	res := resTmp.(*flaggio.FlagResults)
 	fc.Result = res
-	return ec.marshalNFlag2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlagᚄ(ctx, field.Selections, res)
+	return ec.marshalNFlagResults2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlagResults(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_flag(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -4800,6 +4892,38 @@ func (ec *executionContext) _Flag(ctx context.Context, sel ast.SelectionSet, obj
 	return out
 }
 
+var flagResultsImplementors = []string{"FlagResults"}
+
+func (ec *executionContext) _FlagResults(ctx context.Context, sel ast.SelectionSet, obj *flaggio.FlagResults) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, flagResultsImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("FlagResults")
+		case "flags":
+			out.Values[i] = ec._FlagResults_flags(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "total":
+			out.Values[i] = ec._FlagResults_total(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var flagRuleImplementors = []string{"FlagRule", "Ruler"}
 
 func (ec *executionContext) _FlagRule(ctx context.Context, sel ast.SelectionSet, obj *flaggio.FlagRule) graphql.Marshaler {
@@ -5557,6 +5681,20 @@ func (ec *executionContext) marshalNFlag2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋ
 		return graphql.Null
 	}
 	return ec._Flag(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNFlagResults2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlagResults(ctx context.Context, sel ast.SelectionSet, v flaggio.FlagResults) graphql.Marshaler {
+	return ec._FlagResults(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNFlagResults2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlagResults(ctx context.Context, sel ast.SelectionSet, v *flaggio.FlagResults) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._FlagResults(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNFlagRule2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlagRule(ctx context.Context, sel ast.SelectionSet, v flaggio.FlagRule) graphql.Marshaler {

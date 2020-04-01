@@ -27,7 +27,9 @@ function EmptyMessage({ message }) {
 
 const SegmentList = () => {
   const classes = useStyles();
-  const { loading, error, data } = useQuery(SEGMENTS_QUERY);
+  const { loading, error, data } = useQuery(SEGMENTS_QUERY, {
+    fetchPolicy: 'cache-and-network',
+  });
   let content;
   switch (true) {
     case loading:

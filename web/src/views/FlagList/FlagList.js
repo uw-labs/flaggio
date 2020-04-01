@@ -17,6 +17,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const rowsPerPageKey = 'rowsPerPage';
+const rowsPerPageOptions = [10, 25, 50];
+
 function EmptyMessage({ message }) {
   return (
     <Typography color="textSecondary" align="center" style={{ margin: '40px 16px' }}>
@@ -28,26 +31,47 @@ function EmptyMessage({ message }) {
 const FlagList = () => {
   const classes = useStyles();
   const [search, setSearch] = useState();
-  const { loading, error, data } = useQuery(FLAGS_QUERY, { variables: { search } });
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(Number(localStorage.getItem(rowsPerPageKey) || 25));
+  const { loading, error, data } = useQuery(FLAGS_QUERY, {
+    fetchPolicy: 'cache-and-network',
+    variables: { search, offset: page * rowsPerPage, limit: rowsPerPage },
+  });
   const [toggleFlag] = useMutation(TOGGLE_FLAG_QUERY);
   let content;
   switch (true) {
     case loading:
       content = <CircularProgress className={classes.progress}/>;
       break;
-    case  error:
+    case error:
       content = <EmptyMessage message="There were an error while loading the flag list :("/>;
       break;
-    case !data || !data.flags || data.flags.length === 0:
+    case page === 0 && (!data || !data.flags || !data.flags.total):
       content = <EmptyMessage message="No flags for this project yet"/>;
       break;
     default:
-      content = <FlagsTable flags={data.flags} toggleFlag={toggleFlag}/>;
+      content = (
+        <FlagsTable
+          flags={data.flags}
+          onToggleFlag={toggleFlag}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          rowsPerPageOptions={rowsPerPageOptions}
+          onPageChange={setPage}
+          onRowsPerPageChange={v => {
+            localStorage.setItem(rowsPerPageKey, v);
+            setRowsPerPage(v);
+          }}
+        />
+      );
   }
 
   return (
     <div className={classes.root}>
-      <FlagsToolbar onSearch={setSearch}/>
+      <FlagsToolbar onSearch={v => {
+        setSearch(v);
+        setPage(0)
+      }}/>
       <div className={classes.content}>
         {content}
       </div>

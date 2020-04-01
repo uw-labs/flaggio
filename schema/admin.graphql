@@ -62,8 +62,13 @@ input UpdateSegment {
     description: String
 }
 
+type FlagResults {
+    flags: [Flag!]!
+    total: Int!
+}
+
 extend type Query {
-    flags(search: String, offset: Int, limit: Int): [Flag!]!
+    flags(search: String, offset: Int, limit: Int): FlagResults!
     flag(id: ID!): Flag
     segments(offset: Int, limit: Int): [Segment!]!
     segment(id: ID!): Segment
