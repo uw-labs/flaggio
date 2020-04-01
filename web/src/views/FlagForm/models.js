@@ -14,6 +14,8 @@ export const newFlag = (flag = {}, flagType) => {
   const variants = isArray(flag.variants) && flag.variants.length > 0 ?
     flag.variants.map(v => newVariant(v)) :
     createNewVariants(flagType);
+  const [var1, var2] = variants;
+
   return {
     __new: isNew,
     id: flag.id || uuid(),
@@ -22,8 +24,8 @@ export const newFlag = (flag = {}, flagType) => {
     description: flag.description || '',
     variants,
     rules: flag.rules ? flag.rules.map(r => newRule(r)) : [],
-    defaultVariantWhenOn: flag.defaultVariantWhenOn || ((isNew && variants[0]) || { id: '' }),
-    defaultVariantWhenOff: flag.defaultVariantWhenOff || ((isNew && variants[1]) || { id: '' }),
+    defaultVariantWhenOn: flag.defaultVariantWhenOn || { id: (isNew && var1 && var1.id) || '' },
+    defaultVariantWhenOff: flag.defaultVariantWhenOff || { id: (isNew && var2 && var2.id) || '' },
   }
 };
 
