@@ -61,6 +61,9 @@ func LowerOrEqual(usrValue interface{}, validValues []interface{}) (bool, error)
 }
 
 func greater(cnstrnValue, userValue interface{}, orEqual bool) (bool, error) {
+	if userValue == nil {
+		return false, nil
+	}
 	switch cv := cnstrnValue.(type) {
 	case int, int32, int64:
 		n1, _ := toInt64(cv)
@@ -97,6 +100,9 @@ func greater(cnstrnValue, userValue interface{}, orEqual bool) (bool, error) {
 }
 
 func lower(cnstrnValue, userValue interface{}, orEqual bool) (bool, error) {
+	if userValue == nil {
+		return false, nil
+	}
 	switch cv := cnstrnValue.(type) {
 	case int, int32, int64:
 		n1, _ := toInt64(cv)

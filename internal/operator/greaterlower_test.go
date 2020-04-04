@@ -38,6 +38,13 @@ func TestGreater(t *testing.T) {
 			expectedResult: false,
 		},
 		{
+			name:           "nil not greater than int",
+			usrContext:     map[string]interface{}{"prop": nil},
+			property:       "prop",
+			values:         []interface{}{int(0)},
+			expectedResult: false,
+		},
+		{
 			name:           "int greater than int32",
 			usrContext:     map[string]interface{}{"prop": int(1)},
 			property:       "prop",
@@ -236,6 +243,13 @@ func TestGreaterOrEqual(t *testing.T) {
 			usrContext:     map[string]interface{}{"prop": int(1)},
 			property:       "prop",
 			values:         []interface{}{int(2)},
+			expectedResult: false,
+		},
+		{
+			name:           "nil not greater or equal than int",
+			usrContext:     map[string]interface{}{"prop": nil},
+			property:       "prop",
+			values:         []interface{}{int(0)},
 			expectedResult: false,
 		},
 		{
@@ -440,6 +454,13 @@ func TestLower(t *testing.T) {
 			expectedResult: false,
 		},
 		{
+			name:           "nil not lower than int",
+			usrContext:     map[string]interface{}{"prop": nil},
+			property:       "prop",
+			values:         []interface{}{int(0)},
+			expectedResult: false,
+		},
+		{
 			name:           "int lower than int32",
 			usrContext:     map[string]interface{}{"prop": int(1)},
 			property:       "prop",
@@ -636,6 +657,13 @@ func TestLowerOrEqual(t *testing.T) {
 		{
 			name:           "int not lower or equal than int",
 			usrContext:     map[string]interface{}{"prop": int(1)},
+			property:       "prop",
+			values:         []interface{}{int(0)},
+			expectedResult: false,
+		},
+		{
+			name:           "nil not lower or equal than int",
+			usrContext:     map[string]interface{}{"prop": nil},
 			property:       "prop",
 			values:         []interface{}{int(0)},
 			expectedResult: false,

@@ -36,6 +36,9 @@ func NotOneOf(usrValue interface{}, validValues []interface{}) (bool, error) {
 }
 
 func equals(cnstrnValue, userValue interface{}) (bool, error) {
+	if userValue == nil {
+		return false, nil
+	}
 	switch v := cnstrnValue.(type) {
 	case string, bool, float64:
 		return v == userValue, nil

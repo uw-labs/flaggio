@@ -10,6 +10,7 @@ import (
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
+	"github.com/victorkt/clientip"
 	"github.com/victorkt/flaggio/internal/repository/mongodb"
 	"github.com/victorkt/flaggio/internal/server/api"
 	"github.com/victorkt/flaggio/internal/server/api/service"
@@ -49,6 +50,7 @@ func startAPI(ctx context.Context, c *cli.Context, logger *logrus.Entry) error {
 			AllowCredentials: true,
 			Debug:            c.Bool("cors-debug"),
 		}).Handler,
+		clientip.Middleware,
 	)
 
 	srv := &http.Server{

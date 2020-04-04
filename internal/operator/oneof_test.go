@@ -37,6 +37,13 @@ func TestOneOf(t *testing.T) {
 			values:         []interface{}{"cde"},
 			expectedResult: false,
 		},
+		{
+			name:           "nil not equals string",
+			usrContext:     map[string]interface{}{"prop": nil},
+			property:       "prop",
+			values:         []interface{}{"abc"},
+			expectedResult: false,
+		},
 		// ========================================================================
 		{
 			name:           "equals []byte",
@@ -57,6 +64,13 @@ func TestOneOf(t *testing.T) {
 			usrContext:     map[string]interface{}{"prop": []byte("abc")},
 			property:       "prop",
 			values:         []interface{}{[]byte("cde")},
+			expectedResult: false,
+		},
+		{
+			name:           "nil not equals []byte",
+			usrContext:     map[string]interface{}{"prop": nil},
+			property:       "prop",
+			values:         []interface{}{[]byte("abc")},
 			expectedResult: false,
 		},
 		// ========================================================================
@@ -81,6 +95,13 @@ func TestOneOf(t *testing.T) {
 			values:         []interface{}{false},
 			expectedResult: false,
 		},
+		{
+			name:           "nil not equals bool",
+			usrContext:     map[string]interface{}{"prop": nil},
+			property:       "prop",
+			values:         []interface{}{true},
+			expectedResult: false,
+		},
 		// ========================================================================
 		{
 			name:           "int equals int",
@@ -99,6 +120,13 @@ func TestOneOf(t *testing.T) {
 		{
 			name:           "int not equals int",
 			usrContext:     map[string]interface{}{"prop": int(1)},
+			property:       "prop",
+			values:         []interface{}{int(2)},
+			expectedResult: false,
+		},
+		{
+			name:           "nil not equals int",
+			usrContext:     map[string]interface{}{"prop": nil},
 			property:       "prop",
 			values:         []interface{}{int(2)},
 			expectedResult: false,
@@ -434,6 +462,13 @@ func TestNotOneOf(t *testing.T) {
 		expectedResult bool
 	}{
 		{
+			name:           "nil not equals string",
+			usrContext:     map[string]interface{}{"prop": nil},
+			property:       "prop",
+			values:         []interface{}{"abc"},
+			expectedResult: true,
+		},
+		{
 			name:           "not equals string",
 			usrContext:     map[string]interface{}{"prop": "abc"},
 			property:       "prop",
@@ -463,6 +498,13 @@ func TestNotOneOf(t *testing.T) {
 		},
 		// ========================================================================
 		{
+			name:           "nil not equals []byte",
+			usrContext:     map[string]interface{}{"prop": nil},
+			property:       "prop",
+			values:         []interface{}{[]byte("abc")},
+			expectedResult: true,
+		},
+		{
 			name:           "not equals []byte",
 			usrContext:     map[string]interface{}{"prop": []byte("abc")},
 			property:       "prop",
@@ -485,6 +527,13 @@ func TestNotOneOf(t *testing.T) {
 		},
 		// ========================================================================
 		{
+			name:           "nil not equals bool",
+			usrContext:     map[string]interface{}{"prop": nil},
+			property:       "prop",
+			values:         []interface{}{true},
+			expectedResult: true,
+		},
+		{
 			name:           "not equals bool",
 			usrContext:     map[string]interface{}{"prop": true},
 			property:       "prop",
@@ -506,6 +555,13 @@ func TestNotOneOf(t *testing.T) {
 			expectedResult: true,
 		},
 		// ========================================================================
+		{
+			name:           "nil is not equal int",
+			usrContext:     map[string]interface{}{"prop": nil},
+			property:       "prop",
+			values:         []interface{}{int(0)},
+			expectedResult: true,
+		},
 		{
 			name:           "int not equals int",
 			usrContext:     map[string]interface{}{"prop": int(1)},
