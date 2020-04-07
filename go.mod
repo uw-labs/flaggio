@@ -4,7 +4,7 @@ go 1.13
 
 require (
 	github.com/99designs/gqlgen v0.11.3
-	github.com/go-chi/chi v4.0.4+incompatible
+	github.com/go-chi/chi v4.1.0+incompatible
 	github.com/go-chi/render v1.0.1
 	github.com/golang/mock v1.4.3
 	github.com/google/go-cmp v0.3.1 // indirect
