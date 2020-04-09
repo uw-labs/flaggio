@@ -4,13 +4,13 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
-	"github.com/victorkt/flaggio/internal/server/api/service"
+	"github.com/victorkt/flaggio/internal/service"
 )
 
 // NewServer returns a new server object
 func NewServer(
 	router chi.Router,
-	flagsService service.FlagService,
+	flagsService service.Flag,
 ) *Server {
 	srv := &Server{
 		router:       router,
@@ -23,7 +23,7 @@ func NewServer(
 // Server handles evaluation requests
 type Server struct {
 	router       chi.Router
-	flagsService service.FlagService
+	flagsService service.Flag
 }
 
 // ServeHTTP responds to an HTTP request

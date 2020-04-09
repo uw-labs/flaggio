@@ -16,36 +16,58 @@ import (
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
-	"github.com/victorkt/flaggio/internal/repository/mongodb"
+	mongo_repo "github.com/victorkt/flaggio/internal/repository/mongodb"
+	redis_repo "github.com/victorkt/flaggio/internal/repository/redis"
 	"github.com/victorkt/flaggio/internal/server/admin"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func startAdmin(ctx context.Context, c *cli.Context, logger *logrus.Entry) error {
 	logger.Info("starting admin server ...")
 	isDev := c.String("app-env") == "dev"
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(c.String("database-uri")))
+	// connect to mongo
+	db, err := getMongoDatabase(ctx, c.String("database-uri"))
 	if err != nil {
 		return err
 	}
 
-	db := client.Database("flaggio") // TODO: make configurable
-	flgRepo, err := mongodb.NewMongoFlagRepository(ctx, db)
+	// connect to redis
+	redisClient, err := getRedisClient(c.String("redis-uri"))
 	if err != nil {
 		return err
 	}
-	sgmntRepo, err := mongodb.NewMongoSegmentRepository(ctx, db)
+
+	// setup repositories
+	flgMongoRepo, err := mongo_repo.NewFlagRepository(ctx, db)
 	if err != nil {
 		return err
 	}
+	flgRedisRepo := redis_repo.NewFlagRepository(redisClient, flgMongoRepo)
+	sgmntMongoRepo, err := mongo_repo.NewSegmentRepository(ctx, db)
+	if err != nil {
+		return err
+	}
+	sgmntRedisRepo := redis_repo.NewSegmentRepository(redisClient, sgmntMongoRepo)
+	vrntRedisRepo := redis_repo.NewVariantRepository(redisClient,
+		mongo_repo.NewVariantRepository(flgMongoRepo), flgRedisRepo)
+	ruleRedisRepo := redis_repo.NewRuleRepository(redisClient,
+		mongo_repo.NewRuleRepository(flgMongoRepo, sgmntMongoRepo), flgRedisRepo, sgmntRedisRepo)
+
+	// setup graphql resolver
 	resolver := &admin.Resolver{
-		FlagRepo:    flgRepo,
-		VariantRepo: mongodb.NewMongoVariantRepository(flgRepo),
-		RuleRepo:    mongodb.NewMongoRuleRepository(flgRepo, sgmntRepo),
-		SegmentRepo: sgmntRepo,
+		FlagRepo:    flgRedisRepo,
+		VariantRepo: vrntRedisRepo,
+		RuleRepo:    ruleRedisRepo,
+		SegmentRepo: sgmntRedisRepo,
 	}
 
+	// setup graphql server
+	gqlSrv := handler.New(
+		admin.NewExecutableSchema(admin.Config{Resolvers: resolver}),
+	)
+	gqlSrv.AddTransport(transport.POST{})
+	gqlSrv.Use(extension.Introspection{})
+
+	// setup router
 	router := chi.NewRouter()
 	router.Use(
 		middleware.Recoverer,
@@ -62,18 +84,12 @@ func startAdmin(ctx context.Context, c *cli.Context, logger *logrus.Entry) error
 			Debug:            c.Bool("cors-debug"),
 		}).Handler,
 	)
-
-	gqlSrv := handler.New(
-		admin.NewExecutableSchema(admin.Config{Resolvers: resolver}),
-	)
-	gqlSrv.AddTransport(transport.POST{})
-	gqlSrv.Use(extension.Introspection{})
-
 	router.Method("POST", "/query", gqlSrv)
 	if isDev {
 		router.Get("/playground", playground.Handler("GraphQL playground", "/query"))
 	}
 
+	// setup admin UI routes
 	if !c.Bool("no-admin-ui") {
 		workDir, _ := os.Getwd()
 		buildPath := workDir + "/web/build"
@@ -92,6 +108,7 @@ func startAdmin(ctx context.Context, c *cli.Context, logger *logrus.Entry) error
 		logger.Infof("admin UI enabled")
 	}
 
+	// setup http server
 	srv := &http.Server{
 		Addr:         c.String("admin-addr"),
 		Handler:      router,

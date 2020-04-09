@@ -6,6 +6,7 @@ require (
 	github.com/99designs/gqlgen v0.11.3
 	github.com/go-chi/chi v4.1.0+incompatible
 	github.com/go-chi/render v1.0.1
+	github.com/go-redis/redis/v7 v7.2.0
 	github.com/golang/mock v1.4.3
 	github.com/google/go-cmp v0.3.1 // indirect
 	github.com/rs/cors v1.7.0
@@ -14,6 +15,7 @@ require (
 	github.com/urfave/cli/v2 v2.2.0
 	github.com/vektah/gqlparser/v2 v2.0.1
 	github.com/victorkt/clientip v0.2.0
+	github.com/vmihailenco/msgpack/v4 v4.3.11
 	github.com/xdg/stringprep v1.0.0 // indirect
 	go.mongodb.org/mongo-driver v1.3.1
 )

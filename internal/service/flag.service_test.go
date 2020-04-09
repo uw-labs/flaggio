@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/victorkt/flaggio/internal/flaggio"
 	repository_mock "github.com/victorkt/flaggio/internal/repository/mocks"
-	"github.com/victorkt/flaggio/internal/server/api/service"
+	"github.com/victorkt/flaggio/internal/service"
 )
 
 func TestFlagService_Evaluate(t *testing.T) {

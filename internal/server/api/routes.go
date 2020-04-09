@@ -9,7 +9,7 @@ import (
 	"github.com/go-chi/render"
 	internalerrors "github.com/victorkt/flaggio/internal/errors"
 	"github.com/victorkt/flaggio/internal/flaggio"
-	"github.com/victorkt/flaggio/internal/server/api/service"
+	"github.com/victorkt/flaggio/internal/service"
 )
 
 // POST /evaluate/{id}

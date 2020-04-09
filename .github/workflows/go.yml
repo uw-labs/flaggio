@@ -18,6 +18,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
     container: "golang:1.14"
+    services:
+      redis:
+        image: "redis:5-alpine"
+        ports:
+          - 6379:6379
+        options: --entrypoint redis-server
     steps:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
@@ -25,6 +31,9 @@ jobs:
         run: go get -v -t -d ./...
       - name: Test
         run: make test
+        env:
+          REDIS_HOST: redis
+          REDIS_PORT: ${{ job.services.redis.ports[6379] }}
 
   lint:
     runs-on: ubuntu-latest

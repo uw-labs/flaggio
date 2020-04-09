@@ -14,7 +14,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var _ repository.Flag = FlagRepository{}
+var _ repository.Flag = (*FlagRepository)(nil)
 
 // FlagRepository implements repository.Flag interface using mongodb.
 type FlagRepository struct {
@@ -23,7 +23,7 @@ type FlagRepository struct {
 }
 
 // FindAll returns a list of flags, based on an optional offset and limit.
-func (r FlagRepository) FindAll(ctx context.Context, search *string, offset, limit *int64) (*flaggio.FlagResults, error) {
+func (r *FlagRepository) FindAll(ctx context.Context, search *string, offset, limit *int64) (*flaggio.FlagResults, error) {
 	filter := bson.M{}
 	if search != nil {
 		filter["$or"] = []bson.M{
@@ -67,7 +67,7 @@ func (r FlagRepository) FindAll(ctx context.Context, search *string, offset, lim
 }
 
 // FindByID returns a flag that has a given ID.
-func (r FlagRepository) FindByID(ctx context.Context, idHex string) (*flaggio.Flag, error) {
+func (r *FlagRepository) FindByID(ctx context.Context, idHex string) (*flaggio.Flag, error) {
 	id, err := primitive.ObjectIDFromHex(idHex)
 	if err != nil {
 		return nil, err
@@ -85,7 +85,7 @@ func (r FlagRepository) FindByID(ctx context.Context, idHex string) (*flaggio.Fl
 }
 
 // FindByKey returns a flag that has a given key.
-func (r FlagRepository) FindByKey(ctx context.Context, key string) (*flaggio.Flag, error) {
+func (r *FlagRepository) FindByKey(ctx context.Context, key string) (*flaggio.Flag, error) {
 	// filter for the flag key
 	filter := bson.M{"key": key}
 
@@ -100,7 +100,7 @@ func (r FlagRepository) FindByKey(ctx context.Context, key string) (*flaggio.Fla
 }
 
 // Create creates a new flag.
-func (r FlagRepository) Create(ctx context.Context, f flaggio.NewFlag) (string, error) {
+func (r *FlagRepository) Create(ctx context.Context, f flaggio.NewFlag) (string, error) {
 	id := primitive.NewObjectID()
 	_, err := r.col.InsertOne(ctx, &flagModel{
 		ID:          id,
@@ -120,7 +120,7 @@ func (r FlagRepository) Create(ctx context.Context, f flaggio.NewFlag) (string, 
 }
 
 // Update updates a flag.
-func (r FlagRepository) Update(ctx context.Context, idHex string, f flaggio.UpdateFlag) error {
+func (r *FlagRepository) Update(ctx context.Context, idHex string, f flaggio.UpdateFlag) error {
 	id, err := primitive.ObjectIDFromHex(idHex)
 	if err != nil {
 		return err
@@ -173,7 +173,7 @@ func (r FlagRepository) Update(ctx context.Context, idHex string, f flaggio.Upda
 }
 
 // Delete deletes a flag.
-func (r FlagRepository) Delete(ctx context.Context, idHex string) error {
+func (r *FlagRepository) Delete(ctx context.Context, idHex string) error {
 	id, err := primitive.ObjectIDFromHex(idHex)
 	if err != nil {
 		return err
@@ -188,9 +188,9 @@ func (r FlagRepository) Delete(ctx context.Context, idHex string) error {
 	return nil
 }
 
-// NewMongoFlagRepository returns a new flag repository that uses mongodb as underlying storage.
+// NewFlagRepository returns a new flag repository that uses mongodb as underlying storage.
 // It also creates all needed indexes, if they don't yet exist.
-func NewMongoFlagRepository(ctx context.Context, db *mongo.Database) (*FlagRepository, error) {
+func NewFlagRepository(ctx context.Context, db *mongo.Database) (*FlagRepository, error) {
 	col := db.Collection("flags")
 	_, err := col.Indexes().CreateMany(ctx, []mongo.IndexModel{
 		{

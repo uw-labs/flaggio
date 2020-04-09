@@ -11,30 +11,44 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 	"github.com/victorkt/clientip"
-	"github.com/victorkt/flaggio/internal/repository/mongodb"
+	mongo_repo "github.com/victorkt/flaggio/internal/repository/mongodb"
+	redis_repo "github.com/victorkt/flaggio/internal/repository/redis"
 	"github.com/victorkt/flaggio/internal/server/api"
-	"github.com/victorkt/flaggio/internal/server/api/service"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"github.com/victorkt/flaggio/internal/service"
+	redis_svc "github.com/victorkt/flaggio/internal/service/redis"
 )
 
 func startAPI(ctx context.Context, c *cli.Context, logger *logrus.Entry) error {
 	logger.Info("starting api server ...")
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(c.String("database-uri")))
+	// connect to mongo
+	db, err := getMongoDatabase(ctx, c.String("database-uri"))
 	if err != nil {
 		return err
 	}
 
-	db := client.Database("flaggio") // TODO: make configurable
-	flgRepo, err := mongodb.NewMongoFlagRepository(ctx, db)
-	if err != nil {
-		return err
-	}
-	sgmntRepo, err := mongodb.NewMongoSegmentRepository(ctx, db)
+	// connect to redis
+	redisClient, err := getRedisClient(c.String("redis-uri"))
 	if err != nil {
 		return err
 	}
 
+	// setup repositories
+	flgMongoRepo, err := mongo_repo.NewFlagRepository(ctx, db)
+	if err != nil {
+		return err
+	}
+	flgRedisRepo := redis_repo.NewFlagRepository(redisClient, flgMongoRepo)
+	sgmntMongoRepo, err := mongo_repo.NewSegmentRepository(ctx, db)
+	if err != nil {
+		return err
+	}
+	sgmntRedisRepo := redis_repo.NewSegmentRepository(redisClient, sgmntMongoRepo)
+
+	// setup services
+	flagService := service.NewFlagService(flgRedisRepo, sgmntRedisRepo)
+	flagRedisService := redis_svc.NewFlagService(redisClient, flagService)
+
+	// setup router
 	router := chi.NewRouter()
 	router.Use(
 		middleware.Recoverer,
@@ -53,11 +67,12 @@ func startAPI(ctx context.Context, c *cli.Context, logger *logrus.Entry) error {
 		clientip.Middleware,
 	)
 
+	// setup http server
 	srv := &http.Server{
 		Addr: c.String("api-addr"),
 		Handler: api.NewServer(
 			router,
-			service.NewFlagService(flgRepo, sgmntRepo),
+			flagRedisService,
 		),
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,

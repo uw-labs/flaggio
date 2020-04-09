@@ -13,7 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var _ repository.Variant = VariantRepository{}
+var _ repository.Variant = (*VariantRepository)(nil)
 
 // VariantRepository implements repository.Variant interface using mongodb.
 type VariantRepository struct {
@@ -21,7 +21,7 @@ type VariantRepository struct {
 }
 
 // FindByID returns a variant that has a given ID.
-func (r VariantRepository) FindByID(ctx context.Context, flagIDHex, idHex string) (*flaggio.Variant, error) {
+func (r *VariantRepository) FindByID(ctx context.Context, flagIDHex, idHex string) (*flaggio.Variant, error) {
 	flagID, err := primitive.ObjectIDFromHex(flagIDHex)
 	if err != nil {
 		return nil, err
@@ -48,7 +48,7 @@ func (r VariantRepository) FindByID(ctx context.Context, flagIDHex, idHex string
 }
 
 // Create creates a new variant under a flag.
-func (r VariantRepository) Create(ctx context.Context, flagIDHex string, v flaggio.NewVariant) (string, error) {
+func (r *VariantRepository) Create(ctx context.Context, flagIDHex string, v flaggio.NewVariant) (string, error) {
 	vrntModel := &variantModel{
 		ID:          primitive.NewObjectID(),
 		Description: v.Description,
@@ -74,7 +74,7 @@ func (r VariantRepository) Create(ctx context.Context, flagIDHex string, v flagg
 }
 
 // Update updates a variant under a flag.
-func (r VariantRepository) Update(ctx context.Context, flagIDHex, idHex string, v flaggio.UpdateVariant) error {
+func (r *VariantRepository) Update(ctx context.Context, flagIDHex, idHex string, v flaggio.UpdateVariant) error {
 	flagID, err := primitive.ObjectIDFromHex(flagIDHex)
 	if err != nil {
 		return err
@@ -107,7 +107,7 @@ func (r VariantRepository) Update(ctx context.Context, flagIDHex, idHex string, 
 }
 
 // Delete deletes a variant under a flag.
-func (r VariantRepository) Delete(ctx context.Context, flagIDHex, idHex string) error {
+func (r *VariantRepository) Delete(ctx context.Context, flagIDHex, idHex string) error {
 	flagID, err := primitive.ObjectIDFromHex(flagIDHex)
 	if err != nil {
 		return err
@@ -130,9 +130,9 @@ func (r VariantRepository) Delete(ctx context.Context, flagIDHex, idHex string) 
 	return nil
 }
 
-// NewMongoVariantRepository returns a new variant repository that uses mongodb
+// NewVariantRepository returns a new variant repository that uses mongodb
 // as underlying storage.
-func NewMongoVariantRepository(flagRepo *FlagRepository) *VariantRepository {
+func NewVariantRepository(flagRepo *FlagRepository) *VariantRepository {
 	return &VariantRepository{
 		flagRepo: flagRepo,
 	}

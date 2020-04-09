@@ -14,7 +14,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var _ repository.Rule = RuleRepository{}
+var _ repository.Rule = (*RuleRepository)(nil)
 
 // RuleRepository implements repository.Rule interface using mongodb.
 type RuleRepository struct {
@@ -23,7 +23,7 @@ type RuleRepository struct {
 }
 
 // FindFlagRuleByID returns a flag rule that has a given ID.
-func (r RuleRepository) FindFlagRuleByID(ctx context.Context, flagIDHex, idHex string) (*flaggio.FlagRule, error) {
+func (r *RuleRepository) FindFlagRuleByID(ctx context.Context, flagIDHex, idHex string) (*flaggio.FlagRule, error) {
 	flagID, err := primitive.ObjectIDFromHex(flagIDHex)
 	if err != nil {
 		return nil, err
@@ -51,7 +51,7 @@ func (r RuleRepository) FindFlagRuleByID(ctx context.Context, flagIDHex, idHex s
 }
 
 // CreateFlagRule creates a new rule under a flag.
-func (r RuleRepository) CreateFlagRule(ctx context.Context, flagIDHex string, fr flaggio.NewFlagRule) (string, error) {
+func (r *RuleRepository) CreateFlagRule(ctx context.Context, flagIDHex string, fr flaggio.NewFlagRule) (string, error) {
 	constraints := make([]constraintModel, len(fr.Constraints))
 	distributions := make([]distributionModel, len(fr.Distributions))
 	for idx, c := range fr.Constraints {
@@ -98,7 +98,7 @@ func (r RuleRepository) CreateFlagRule(ctx context.Context, flagIDHex string, fr
 }
 
 // UpdateFlagRule updates a rule under a flag.
-func (r RuleRepository) UpdateFlagRule(ctx context.Context, flagIDHex, idHex string, fr flaggio.UpdateFlagRule) error {
+func (r *RuleRepository) UpdateFlagRule(ctx context.Context, flagIDHex, idHex string, fr flaggio.UpdateFlagRule) error {
 	flagID, err := primitive.ObjectIDFromHex(flagIDHex)
 	if err != nil {
 		return err
@@ -148,7 +148,7 @@ func (r RuleRepository) UpdateFlagRule(ctx context.Context, flagIDHex, idHex str
 }
 
 // DeleteFlagRule deletes a rule under a flag.
-func (r RuleRepository) DeleteFlagRule(ctx context.Context, flagIDHex, idHex string) error {
+func (r *RuleRepository) DeleteFlagRule(ctx context.Context, flagIDHex, idHex string) error {
 	flagID, err := primitive.ObjectIDFromHex(flagIDHex)
 	if err != nil {
 		return err
@@ -172,7 +172,7 @@ func (r RuleRepository) DeleteFlagRule(ctx context.Context, flagIDHex, idHex str
 }
 
 // FindSegmentRuleByID returns a segment rule that has a given ID.
-func (r RuleRepository) FindSegmentRuleByID(ctx context.Context, segmentIDHex, idHex string) (*flaggio.SegmentRule, error) {
+func (r *RuleRepository) FindSegmentRuleByID(ctx context.Context, segmentIDHex, idHex string) (*flaggio.SegmentRule, error) {
 	segmentID, err := primitive.ObjectIDFromHex(segmentIDHex)
 	if err != nil {
 		return nil, err
@@ -199,7 +199,7 @@ func (r RuleRepository) FindSegmentRuleByID(ctx context.Context, segmentIDHex, i
 }
 
 // CreateSegmentRule creates a new rule under a segment.
-func (r RuleRepository) CreateSegmentRule(ctx context.Context, segmentIDHex string, fr flaggio.NewSegmentRule) (string, error) {
+func (r *RuleRepository) CreateSegmentRule(ctx context.Context, segmentIDHex string, fr flaggio.NewSegmentRule) (string, error) {
 	constraints := make([]constraintModel, len(fr.Constraints))
 	for idx, c := range fr.Constraints {
 		constraints[idx] = constraintModel{
@@ -232,7 +232,7 @@ func (r RuleRepository) CreateSegmentRule(ctx context.Context, segmentIDHex stri
 }
 
 // UpdateSegmentRule updates a rule under a segment.
-func (r RuleRepository) UpdateSegmentRule(ctx context.Context, segmentIDHex, idHex string, fr flaggio.UpdateSegmentRule) error {
+func (r *RuleRepository) UpdateSegmentRule(ctx context.Context, segmentIDHex, idHex string, fr flaggio.UpdateSegmentRule) error {
 	segmentID, err := primitive.ObjectIDFromHex(segmentIDHex)
 	if err != nil {
 		return err
@@ -269,7 +269,7 @@ func (r RuleRepository) UpdateSegmentRule(ctx context.Context, segmentIDHex, idH
 }
 
 // DeleteSegmentRule deletes a rule under a segment.
-func (r RuleRepository) DeleteSegmentRule(ctx context.Context, segmentIDHex, idHex string) error {
+func (r *RuleRepository) DeleteSegmentRule(ctx context.Context, segmentIDHex, idHex string) error {
 	segmentID, err := primitive.ObjectIDFromHex(segmentIDHex)
 	if err != nil {
 		return err
@@ -291,8 +291,8 @@ func (r RuleRepository) DeleteSegmentRule(ctx context.Context, segmentIDHex, idH
 	return nil
 }
 
-// NewMongoRuleRepository returns a new rule repository that uses mongodb as underlying storage.
-func NewMongoRuleRepository(flagRepo *FlagRepository, segmentRepo *SegmentRepository) *RuleRepository {
+// NewRuleRepository returns a new rule repository that uses mongodb as underlying storage.
+func NewRuleRepository(flagRepo *FlagRepository, segmentRepo *SegmentRepository) *RuleRepository {
 	return &RuleRepository{
 		flagRepo:    flagRepo,
 		segmentRepo: segmentRepo,

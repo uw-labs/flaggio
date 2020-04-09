@@ -42,6 +42,12 @@ func main() {
 				Value:   "mongodb://localhost:27017/flaggio",
 			},
 			&cli.StringFlag{
+				Name:    "redis-uri",
+				Usage:   "Redis URI",
+				EnvVars: []string{"REDIS_URI"},
+				Value:   "redis://localhost:6379",
+			},
+			&cli.StringFlag{
 				Name:    "build-path",
 				Usage:   "UI build absolute path",
 				EnvVars: []string{"BUILD_PATH"},

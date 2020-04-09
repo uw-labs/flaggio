@@ -1,5 +1,7 @@
 package repository
 
+//go:generate mockgen -destination=./mocks/rule_mock.go -package=repository_mock github.com/victorkt/flaggio/internal/repository Rule
+
 import (
 	"context"
 
