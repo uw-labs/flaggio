@@ -292,7 +292,7 @@ func (r *RuleRepository) DeleteSegmentRule(ctx context.Context, segmentIDHex, id
 }
 
 // NewRuleRepository returns a new rule repository that uses mongodb as underlying storage.
-func NewRuleRepository(flagRepo *FlagRepository, segmentRepo *SegmentRepository) *RuleRepository {
+func NewRuleRepository(flagRepo *FlagRepository, segmentRepo *SegmentRepository) repository.Rule {
 	return &RuleRepository{
 		flagRepo:    flagRepo,
 		segmentRepo: segmentRepo,

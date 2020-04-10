@@ -190,7 +190,7 @@ func (r *FlagRepository) Delete(ctx context.Context, idHex string) error {
 
 // NewFlagRepository returns a new flag repository that uses mongodb as underlying storage.
 // It also creates all needed indexes, if they don't yet exist.
-func NewFlagRepository(ctx context.Context, db *mongo.Database) (*FlagRepository, error) {
+func NewFlagRepository(ctx context.Context, db *mongo.Database) (repository.Flag, error) {
 	col := db.Collection("flags")
 	_, err := col.Indexes().CreateMany(ctx, []mongo.IndexModel{
 		{

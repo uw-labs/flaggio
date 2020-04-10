@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/go-redis/redis/v7"
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
@@ -19,34 +20,42 @@ import (
 )
 
 func startAPI(ctx context.Context, c *cli.Context, logger *logrus.Entry) error {
-	logger.Info("starting api server ...")
+	logger.Debug("starting api server ...")
+
 	// connect to mongo
 	db, err := getMongoDatabase(ctx, c.String("database-uri"))
 	if err != nil {
 		return err
 	}
 
-	// connect to redis
-	redisClient, err := getRedisClient(c.String("redis-uri"))
-	if err != nil {
-		return err
+	var redisClient *redis.Client
+	if c.IsSet("redis-uri") {
+		// connect to redis
+		redisClient, err = getRedisClient(c.String("redis-uri"))
+		if err != nil {
+			return err
+		}
 	}
 
 	// setup repositories
-	flgMongoRepo, err := mongo_repo.NewFlagRepository(ctx, db)
+	flagRepo, err := mongo_repo.NewFlagRepository(ctx, db)
 	if err != nil {
 		return err
 	}
-	flgRedisRepo := redis_repo.NewFlagRepository(redisClient, flgMongoRepo)
-	sgmntMongoRepo, err := mongo_repo.NewSegmentRepository(ctx, db)
+	segmentRepo, err := mongo_repo.NewSegmentRepository(ctx, db)
 	if err != nil {
 		return err
 	}
-	sgmntRedisRepo := redis_repo.NewSegmentRepository(redisClient, sgmntMongoRepo)
+	if redisClient != nil {
+		flagRepo = redis_repo.NewFlagRepository(redisClient, flagRepo)
+		segmentRepo = redis_repo.NewSegmentRepository(redisClient, segmentRepo)
+	}
 
 	// setup services
-	flagService := service.NewFlagService(flgRedisRepo, sgmntRedisRepo)
-	flagRedisService := redis_svc.NewFlagService(redisClient, flagService)
+	flagService := service.NewFlagService(flagRepo, segmentRepo)
+	if redisClient != nil {
+		flagService = redis_svc.NewFlagService(redisClient, flagService)
+	}
 
 	// setup router
 	router := chi.NewRouter()
@@ -72,7 +81,7 @@ func startAPI(ctx context.Context, c *cli.Context, logger *logrus.Entry) error {
 		Addr: c.String("api-addr"),
 		Handler: api.NewServer(
 			router,
-			flagRedisService,
+			flagService,
 		),
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
@@ -85,9 +94,13 @@ func startAPI(ctx context.Context, c *cli.Context, logger *logrus.Entry) error {
 		defer shutdownCancel()
 
 		if err := srv.Shutdown(shutdownCtx); err != nil {
-			logrus.Fatalf("api server shutdown failed: %+v", err)
+			logger.Fatalf("api server shutdown failed: %+v", err)
 		}
 	}()
-	logger.WithField("listening", c.String("api-addr")).Infof("api server started")
+
+	logger.WithFields(logrus.Fields{
+		"cache_enabled": c.IsSet("redis-uri"),
+		"listening":     c.String("api-addr"),
+	}).Infof("api server started")
 	return srv.ListenAndServe()
 }

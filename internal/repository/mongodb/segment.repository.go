@@ -132,7 +132,7 @@ func (r *SegmentRepository) Delete(ctx context.Context, idHex string) error {
 
 // NewSegmentRepository returns a new segment repository that uses mongodb as underlying storage.
 // It also creates all needed indexes, if they don't yet exist.
-func NewSegmentRepository(ctx context.Context, db *mongo.Database) (*SegmentRepository, error) {
+func NewSegmentRepository(ctx context.Context, db *mongo.Database) (repository.Segment, error) {
 	col := db.Collection("segments")
 	_, err := col.Indexes().CreateMany(ctx, []mongo.IndexModel{
 		{

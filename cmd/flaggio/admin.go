@@ -13,6 +13,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/go-redis/redis/v7"
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
@@ -22,42 +23,49 @@ import (
 )
 
 func startAdmin(ctx context.Context, c *cli.Context, logger *logrus.Entry) error {
-	logger.Info("starting admin server ...")
+	logger.Debug("starting admin server ...")
 	isDev := c.String("app-env") == "dev"
+
 	// connect to mongo
 	db, err := getMongoDatabase(ctx, c.String("database-uri"))
 	if err != nil {
 		return err
 	}
 
-	// connect to redis
-	redisClient, err := getRedisClient(c.String("redis-uri"))
-	if err != nil {
-		return err
+	var redisClient *redis.Client
+	if c.IsSet("redis-uri") {
+		// connect to redis
+		redisClient, err = getRedisClient(c.String("redis-uri"))
+		if err != nil {
+			return err
+		}
 	}
 
 	// setup repositories
-	flgMongoRepo, err := mongo_repo.NewFlagRepository(ctx, db)
+	flagRepo, err := mongo_repo.NewFlagRepository(ctx, db)
 	if err != nil {
 		return err
 	}
-	flgRedisRepo := redis_repo.NewFlagRepository(redisClient, flgMongoRepo)
-	sgmntMongoRepo, err := mongo_repo.NewSegmentRepository(ctx, db)
+	segmentRepo, err := mongo_repo.NewSegmentRepository(ctx, db)
 	if err != nil {
 		return err
 	}
-	sgmntRedisRepo := redis_repo.NewSegmentRepository(redisClient, sgmntMongoRepo)
-	vrntRedisRepo := redis_repo.NewVariantRepository(redisClient,
-		mongo_repo.NewVariantRepository(flgMongoRepo), flgRedisRepo)
-	ruleRedisRepo := redis_repo.NewRuleRepository(redisClient,
-		mongo_repo.NewRuleRepository(flgMongoRepo, sgmntMongoRepo), flgRedisRepo, sgmntRedisRepo)
+	variantRepo := mongo_repo.NewVariantRepository(flagRepo.(*mongo_repo.FlagRepository))
+	ruleRepo := mongo_repo.NewRuleRepository(
+		flagRepo.(*mongo_repo.FlagRepository), segmentRepo.(*mongo_repo.SegmentRepository))
+	if redisClient != nil {
+		flagRepo = redis_repo.NewFlagRepository(redisClient, flagRepo)
+		segmentRepo = redis_repo.NewSegmentRepository(redisClient, segmentRepo)
+		variantRepo = redis_repo.NewVariantRepository(redisClient, variantRepo, flagRepo)
+		ruleRepo = redis_repo.NewRuleRepository(redisClient, ruleRepo, flagRepo, segmentRepo)
+	}
 
 	// setup graphql resolver
 	resolver := &admin.Resolver{
-		FlagRepo:    flgRedisRepo,
-		VariantRepo: vrntRedisRepo,
-		RuleRepo:    ruleRedisRepo,
-		SegmentRepo: sgmntRedisRepo,
+		FlagRepo:    flagRepo,
+		VariantRepo: variantRepo,
+		RuleRepo:    ruleRepo,
+		SegmentRepo: segmentRepo,
 	}
 
 	// setup graphql server
@@ -105,7 +113,6 @@ func startAdmin(ctx context.Context, c *cli.Context, logger *logrus.Entry) error
 		router.Get("/*", func(w http.ResponseWriter, r *http.Request) {
 			http.ServeFile(w, r, buildPath+"/index.html")
 		})
-		logger.Infof("admin UI enabled")
 	}
 
 	// setup http server
@@ -123,13 +130,16 @@ func startAdmin(ctx context.Context, c *cli.Context, logger *logrus.Entry) error
 		defer shutdownCancel()
 
 		if err := srv.Shutdown(shutdownCtx); err != nil {
-			logrus.Fatalf("admin server shutdown failed: %+v", err)
+			logger.Fatalf("admin server shutdown failed: %+v", err)
 		}
 	}()
-	if isDev {
-		logger.Infof("GraphQL playground enabled")
-	}
-	logger.WithField("listening", c.String("admin-addr")).Infof("admin server started")
+
+	logger.WithFields(logrus.Fields{
+		"cache_enabled": c.IsSet("redis-uri"),
+		"listening":     c.String("admin-addr"),
+		"playground":    isDev,
+		"admin_ui":      !c.Bool("no-admin-ui"),
+	}).Infof("admin server started")
 	return srv.ListenAndServe()
 }
 

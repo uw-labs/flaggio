@@ -132,7 +132,7 @@ func (r *VariantRepository) Delete(ctx context.Context, flagIDHex, idHex string)
 
 // NewVariantRepository returns a new variant repository that uses mongodb
 // as underlying storage.
-func NewVariantRepository(flagRepo *FlagRepository) *VariantRepository {
+func NewVariantRepository(flagRepo *FlagRepository) repository.Variant {
 	return &VariantRepository{
 		flagRepo: flagRepo,
 	}
