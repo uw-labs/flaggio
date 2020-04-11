@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const rowsPerPageKey = 'rowsPerPage';
-const rowsPerPageOptions = [10, 25, 50];
+const rowsPerPageOptions = [10, 25, 50, { value: -1, label: 'All' }];
 
 function EmptyMessage({ message }) {
   return (
@@ -35,7 +35,7 @@ const FlagList = () => {
   const [rowsPerPage, setRowsPerPage] = useState(Number(localStorage.getItem(rowsPerPageKey) || 25));
   const { loading, error, data } = useQuery(FLAGS_QUERY, {
     fetchPolicy: 'cache-and-network',
-    variables: { search, offset: page * rowsPerPage, limit: rowsPerPage },
+    variables: { search, offset: page * rowsPerPage, limit: rowsPerPage > 0 ? rowsPerPage : undefined },
   });
   const [toggleFlag] = useMutation(TOGGLE_FLAG_QUERY);
   let content;
