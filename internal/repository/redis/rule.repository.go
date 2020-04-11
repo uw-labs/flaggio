@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis/v7"
+	"github.com/opentracing/opentracing-go"
 	"github.com/victorkt/flaggio/internal/flaggio"
 	"github.com/victorkt/flaggio/internal/repository"
 )
@@ -22,12 +23,18 @@ type RuleRepository struct {
 
 // FindFlagRuleByID returns a flag rule that has a given ID.
 func (r *RuleRepository) FindFlagRuleByID(ctx context.Context, flagIDHex, idHex string) (*flaggio.FlagRule, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisRuleRepository.FindFlagRuleByID")
+	defer span.Finish()
+
 	// no caching for rules
 	return r.store.FindFlagRuleByID(ctx, flagIDHex, idHex)
 }
 
 // CreateFlagRule creates a new rule under a flag.
 func (r *RuleRepository) CreateFlagRule(ctx context.Context, flagID string, input flaggio.NewFlagRule) (string, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisRuleRepository.CreateFlagRule")
+	defer span.Finish()
+
 	id, err := r.store.CreateFlagRule(ctx, flagID, input)
 	if err != nil {
 		return "", err
@@ -39,6 +46,9 @@ func (r *RuleRepository) CreateFlagRule(ctx context.Context, flagID string, inpu
 
 // UpdateFlagRule updates a rule under a flag.
 func (r *RuleRepository) UpdateFlagRule(ctx context.Context, flagID, id string, input flaggio.UpdateFlagRule) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisRuleRepository.UpdateFlagRule")
+	defer span.Finish()
+
 	err := r.store.UpdateFlagRule(ctx, flagID, id, input)
 	if err != nil {
 		return err
@@ -50,6 +60,9 @@ func (r *RuleRepository) UpdateFlagRule(ctx context.Context, flagID, id string, 
 
 // DeleteFlagRule deletes a rule under a flag.
 func (r *RuleRepository) DeleteFlagRule(ctx context.Context, flagID, id string) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisRuleRepository.DeleteFlagRule")
+	defer span.Finish()
+
 	err := r.store.DeleteFlagRule(ctx, flagID, id)
 	if err != nil {
 		return err
@@ -61,12 +74,18 @@ func (r *RuleRepository) DeleteFlagRule(ctx context.Context, flagID, id string) 
 
 // FindSegmentRuleByID returns a segment rule that has a given ID.
 func (r *RuleRepository) FindSegmentRuleByID(ctx context.Context, segmentIDHex, idHex string) (*flaggio.SegmentRule, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisRuleRepository.FindSegmentRuleByID")
+	defer span.Finish()
+
 	// no caching for rules
 	return r.store.FindSegmentRuleByID(ctx, segmentIDHex, idHex)
 }
 
 // CreateSegmentRule creates a new rule under a segment.
 func (r *RuleRepository) CreateSegmentRule(ctx context.Context, segmentID string, input flaggio.NewSegmentRule) (string, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisRuleRepository.CreateSegmentRule")
+	defer span.Finish()
+
 	id, err := r.store.CreateSegmentRule(ctx, segmentID, input)
 	if err != nil {
 		return "", err
@@ -78,6 +97,9 @@ func (r *RuleRepository) CreateSegmentRule(ctx context.Context, segmentID string
 
 // UpdateSegmentRule updates a rule under a segment.
 func (r *RuleRepository) UpdateSegmentRule(ctx context.Context, segmentID, id string, input flaggio.UpdateSegmentRule) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisRuleRepository.UpdateSegmentRule")
+	defer span.Finish()
+
 	err := r.store.UpdateSegmentRule(ctx, segmentID, id, input)
 	if err != nil {
 		return err
@@ -89,6 +111,9 @@ func (r *RuleRepository) UpdateSegmentRule(ctx context.Context, segmentID, id st
 
 // DeleteSegmentRule deletes a rule under a segment.
 func (r *RuleRepository) DeleteSegmentRule(ctx context.Context, segmentID, id string) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisRuleRepository.DeleteSegmentRule")
+	defer span.Finish()
+
 	err := r.store.DeleteFlagRule(ctx, segmentID, id)
 	if err != nil {
 		return err

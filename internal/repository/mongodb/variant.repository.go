@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/opentracing/opentracing-go"
 	"github.com/victorkt/flaggio/internal/errors"
 	"github.com/victorkt/flaggio/internal/flaggio"
 	"github.com/victorkt/flaggio/internal/repository"
@@ -22,6 +23,9 @@ type VariantRepository struct {
 
 // FindByID returns a variant that has a given ID.
 func (r *VariantRepository) FindByID(ctx context.Context, flagIDHex, idHex string) (*flaggio.Variant, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "MongoVariantRepository.FindByID")
+	defer span.Finish()
+
 	flagID, err := primitive.ObjectIDFromHex(flagIDHex)
 	if err != nil {
 		return nil, err
@@ -49,6 +53,9 @@ func (r *VariantRepository) FindByID(ctx context.Context, flagIDHex, idHex strin
 
 // Create creates a new variant under a flag.
 func (r *VariantRepository) Create(ctx context.Context, flagIDHex string, v flaggio.NewVariant) (string, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "MongoVariantRepository.Create")
+	defer span.Finish()
+
 	vrntModel := &variantModel{
 		ID:          primitive.NewObjectID(),
 		Description: v.Description,
@@ -75,6 +82,9 @@ func (r *VariantRepository) Create(ctx context.Context, flagIDHex string, v flag
 
 // Update updates a variant under a flag.
 func (r *VariantRepository) Update(ctx context.Context, flagIDHex, idHex string, v flaggio.UpdateVariant) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "MongoVariantRepository.Update")
+	defer span.Finish()
+
 	flagID, err := primitive.ObjectIDFromHex(flagIDHex)
 	if err != nil {
 		return err
@@ -108,6 +118,9 @@ func (r *VariantRepository) Update(ctx context.Context, flagIDHex, idHex string,
 
 // Delete deletes a variant under a flag.
 func (r *VariantRepository) Delete(ctx context.Context, flagIDHex, idHex string) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "MongoVariantRepository.Delete")
+	defer span.Finish()
+
 	flagID, err := primitive.ObjectIDFromHex(flagIDHex)
 	if err != nil {
 		return err

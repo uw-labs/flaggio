@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis/v7"
+	"github.com/opentracing/opentracing-go"
 	"github.com/victorkt/flaggio/internal/flaggio"
 	"github.com/victorkt/flaggio/internal/repository"
 	"github.com/vmihailenco/msgpack/v4"
@@ -22,6 +23,9 @@ type SegmentRepository struct {
 
 // FindAll returns a list of segments, based on an optional offset and limit.
 func (r *SegmentRepository) FindAll(ctx context.Context, offset, limit *int64) ([]*flaggio.Segment, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisSegmentRepository.FindAll")
+	defer span.Finish()
+
 	shouldCache := shouldCacheFindAll(nil, offset, limit)
 	cacheKey := flaggio.SegmentCacheKey("*")
 
@@ -64,6 +68,9 @@ func (r *SegmentRepository) FindAll(ctx context.Context, offset, limit *int64) (
 
 // FindByID returns a segment that has a given ID.
 func (r *SegmentRepository) FindByID(ctx context.Context, id string) (*flaggio.Segment, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisSegmentRepository.FindByID")
+	defer span.Finish()
+
 	cacheKey := flaggio.SegmentCacheKey(id)
 
 	// fetch results from cache
@@ -101,6 +108,9 @@ func (r *SegmentRepository) FindByID(ctx context.Context, id string) (*flaggio.S
 
 // Create creates a new segment.
 func (r *SegmentRepository) Create(ctx context.Context, input flaggio.NewSegment) (string, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisSegmentRepository.Create")
+	defer span.Finish()
+
 	id, err := r.store.Create(ctx, input)
 	if err != nil {
 		return "", err
@@ -112,6 +122,9 @@ func (r *SegmentRepository) Create(ctx context.Context, input flaggio.NewSegment
 
 // Update updates a segment.
 func (r *SegmentRepository) Update(ctx context.Context, id string, input flaggio.UpdateSegment) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisSegmentRepository.Update")
+	defer span.Finish()
+
 	if err := r.store.Update(ctx, id, input); err != nil {
 		return err
 	}
@@ -122,6 +135,9 @@ func (r *SegmentRepository) Update(ctx context.Context, id string, input flaggio
 
 // Delete deletes a segment.
 func (r *SegmentRepository) Delete(ctx context.Context, id string) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisSegmentRepository.Delete")
+	defer span.Finish()
+
 	if err := r.store.Delete(ctx, id); err != nil {
 		return err
 	}

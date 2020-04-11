@@ -3,14 +3,13 @@ package main
 import (
 	"context"
 	"net/http"
-	"time"
+	"sync"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-redis/redis/v7"
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
-	"github.com/urfave/cli/v2"
 	"github.com/victorkt/clientip"
 	mongo_repo "github.com/victorkt/flaggio/internal/repository/mongodb"
 	redis_repo "github.com/victorkt/flaggio/internal/repository/redis"
@@ -19,19 +18,19 @@ import (
 	redis_svc "github.com/victorkt/flaggio/internal/service/redis"
 )
 
-func startAPI(ctx context.Context, c *cli.Context, logger *logrus.Entry) error {
+func startAPI(ctx context.Context, wg *sync.WaitGroup, logger *logrus.Entry) error {
 	logger.Debug("starting api server ...")
 
 	// connect to mongo
-	db, err := getMongoDatabase(ctx, c.String("database-uri"))
+	db, err := newMongoDatabase(ctx, cfg.databaseURI, logger, wg)
 	if err != nil {
 		return err
 	}
 
 	var redisClient *redis.Client
-	if c.IsSet("redis-uri") {
+	if cfg.isCachingEnabled() {
 		// connect to redis
-		redisClient, err = getRedisClient(c.String("redis-uri"))
+		redisClient, err = newRedisClient(ctx, cfg.redisURI, logger, wg)
 		if err != nil {
 			return err
 		}
@@ -62,45 +61,36 @@ func startAPI(ctx context.Context, c *cli.Context, logger *logrus.Entry) error {
 	router.Use(
 		middleware.Recoverer,
 		middleware.RequestID,
+		middleware.Heartbeat("/ready"),
 		middleware.RequestLogger(&middleware.DefaultLogFormatter{
 			Logger:  logger,
-			NoColor: c.String("log-formatter") != "text",
+			NoColor: cfg.logFormatter != logFormatterText,
 		}),
+		tracingMiddleware("flaggio-api", logger),
 		cors.New(cors.Options{
-			AllowedOrigins:   c.StringSlice("cors-allowed-origins"),
-			AllowedHeaders:   c.StringSlice("cors-allowed-headers"),
+			AllowedOrigins:   cfg.corsAllowedOrigins.Value(),
+			AllowedHeaders:   cfg.corsAllowedHeaders.Value(),
 			AllowedMethods:   []string{http.MethodGet, http.MethodPost, http.MethodOptions},
 			AllowCredentials: true,
-			Debug:            c.Bool("cors-debug"),
+			Debug:            cfg.corsDebug,
 		}).Handler,
 		clientip.Middleware,
 	)
 
-	// setup http server
-	srv := &http.Server{
-		Addr: c.String("api-addr"),
-		Handler: api.NewServer(
-			router,
-			flagService,
-		),
-		WriteTimeout: 15 * time.Second,
-		ReadTimeout:  15 * time.Second,
-	}
-
-	go func() {
-		<-ctx.Done()
-
-		shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 5*time.Second)
-		defer shutdownCancel()
-
-		if err := srv.Shutdown(shutdownCtx); err != nil {
-			logger.Fatalf("api server shutdown failed: %+v", err)
-		}
-	}()
+	// setup API server
+	apiSrv := api.NewServer(
+		router,
+		flagService,
+	)
 
 	logger.WithFields(logrus.Fields{
-		"cache_enabled": c.IsSet("redis-uri"),
-		"listening":     c.String("api-addr"),
-	}).Infof("api server started")
+		"caching":   cfg.isCachingEnabled(),
+		"tracing":   cfg.isTracingEnabled(),
+		"listening": cfg.apiAddr,
+	}).Info("api server started")
+
+	// setup http server
+	srv := newHTTPServer(ctx, cfg.apiAddr, apiSrv, logger, wg)
+
 	return srv.ListenAndServe()
 }

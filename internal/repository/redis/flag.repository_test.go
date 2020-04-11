@@ -2,6 +2,7 @@ package redis_test
 
 import (
 	"context"
+	"reflect"
 	"testing"
 	"time"
 
@@ -20,6 +21,7 @@ var (
 		},
 		Total: 2,
 	}
+	ctxInterface = reflect.TypeOf((*context.Context)(nil)).Elem()
 )
 
 func TestFlagRepository_FindAll(t *testing.T) {
@@ -39,7 +41,7 @@ func TestFlagRepository_FindAll(t *testing.T) {
 				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 				defer cancel()
 				flagRedisRepo := redis_repo.NewFlagRepository(redisClient, flagStoreRepo)
-				flagStoreRepo.EXPECT().FindAll(ctx, nil, nil, nil).
+				flagStoreRepo.EXPECT().FindAll(gomock.AssignableToTypeOf(ctxInterface), nil, nil, nil).
 					Times(1).Return(flagResults, nil)
 
 				res, err := flagRedisRepo.FindAll(ctx, nil, nil, nil)
@@ -53,7 +55,7 @@ func TestFlagRepository_FindAll(t *testing.T) {
 				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 				defer cancel()
 				flagRedisRepo := redis_repo.NewFlagRepository(redisClient, flagStoreRepo)
-				flagStoreRepo.EXPECT().FindAll(ctx, nil, nil, nil).
+				flagStoreRepo.EXPECT().FindAll(gomock.AssignableToTypeOf(ctxInterface), nil, nil, nil).
 					Times(0)
 
 				res, err := flagRedisRepo.FindAll(ctx, nil, nil, nil)
@@ -67,7 +69,7 @@ func TestFlagRepository_FindAll(t *testing.T) {
 				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 				defer cancel()
 				flagRedisRepo := redis_repo.NewFlagRepository(redisClient, flagStoreRepo)
-				flagStoreRepo.EXPECT().FindAll(ctx, stringPtr("my search"), nil, nil).
+				flagStoreRepo.EXPECT().FindAll(gomock.AssignableToTypeOf(ctxInterface), stringPtr("my search"), nil, nil).
 					Times(1).Return(flagResults, nil)
 
 				res, err := flagRedisRepo.FindAll(ctx, stringPtr("my search"), nil, nil)
@@ -81,7 +83,7 @@ func TestFlagRepository_FindAll(t *testing.T) {
 				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 				defer cancel()
 				flagRedisRepo := redis_repo.NewFlagRepository(redisClient, flagStoreRepo)
-				flagStoreRepo.EXPECT().FindAll(ctx, nil, int64Ptr(1), nil).
+				flagStoreRepo.EXPECT().FindAll(gomock.AssignableToTypeOf(ctxInterface), nil, int64Ptr(1), nil).
 					Times(1).Return(flagResults, nil)
 
 				res, err := flagRedisRepo.FindAll(ctx, nil, int64Ptr(1), nil)
@@ -95,7 +97,7 @@ func TestFlagRepository_FindAll(t *testing.T) {
 				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 				defer cancel()
 				flagRedisRepo := redis_repo.NewFlagRepository(redisClient, flagStoreRepo)
-				flagStoreRepo.EXPECT().FindAll(ctx, nil, nil, int64Ptr(10)).
+				flagStoreRepo.EXPECT().FindAll(gomock.AssignableToTypeOf(ctxInterface), nil, nil, int64Ptr(10)).
 					Times(1).Return(flagResults, nil)
 
 				res, err := flagRedisRepo.FindAll(ctx, nil, nil, int64Ptr(10))
@@ -135,7 +137,7 @@ func TestFlagRepository_FindByID(t *testing.T) {
 				defer cancel()
 				flg := flagResults.Flags[0]
 				flagRedisRepo := redis_repo.NewFlagRepository(redisClient, flagStoreRepo)
-				flagStoreRepo.EXPECT().FindByID(ctx, "1").
+				flagStoreRepo.EXPECT().FindByID(gomock.AssignableToTypeOf(ctxInterface), "1").
 					Times(1).Return(flg, nil)
 
 				res, err := flagRedisRepo.FindByID(ctx, "1")
@@ -150,7 +152,7 @@ func TestFlagRepository_FindByID(t *testing.T) {
 				defer cancel()
 				flg := flagResults.Flags[0]
 				flagRedisRepo := redis_repo.NewFlagRepository(redisClient, flagStoreRepo)
-				flagStoreRepo.EXPECT().FindByID(ctx, "1").
+				flagStoreRepo.EXPECT().FindByID(gomock.AssignableToTypeOf(ctxInterface), "1").
 					Times(0)
 
 				res, err := flagRedisRepo.FindByID(ctx, "1")
@@ -190,7 +192,7 @@ func TestFlagRepository_FindByKey(t *testing.T) {
 				defer cancel()
 				flg := flagResults.Flags[1]
 				flagRedisRepo := redis_repo.NewFlagRepository(redisClient, flagStoreRepo)
-				flagStoreRepo.EXPECT().FindByKey(ctx, "f2").
+				flagStoreRepo.EXPECT().FindByKey(gomock.AssignableToTypeOf(ctxInterface), "f2").
 					Times(1).Return(flg, nil)
 
 				res, err := flagRedisRepo.FindByKey(ctx, "f2")
@@ -205,7 +207,7 @@ func TestFlagRepository_FindByKey(t *testing.T) {
 				defer cancel()
 				flg := flagResults.Flags[1]
 				flagRedisRepo := redis_repo.NewFlagRepository(redisClient, flagStoreRepo)
-				flagStoreRepo.EXPECT().FindByKey(ctx, "f2").
+				flagStoreRepo.EXPECT().FindByKey(gomock.AssignableToTypeOf(ctxInterface), "f2").
 					Times(0)
 
 				res, err := flagRedisRepo.FindByKey(ctx, "f2")
@@ -257,7 +259,7 @@ func TestFlagRepository_Create(t *testing.T) {
 				// prepare repository mock
 				flg := flagResults.Flags[0]
 				flagRedisRepo := redis_repo.NewFlagRepository(redisClient, flagStoreRepo)
-				flagStoreRepo.EXPECT().Create(ctx, flaggio.NewFlag{Key: "f1", Name: "f1"}).
+				flagStoreRepo.EXPECT().Create(gomock.AssignableToTypeOf(ctxInterface), flaggio.NewFlag{Key: "f1", Name: "f1"}).
 					Times(1).Return(flg.ID, nil)
 
 				// call redis repository
@@ -290,7 +292,7 @@ func TestFlagRepository_Create(t *testing.T) {
 				// prepare repository mock
 				flg := flagResults.Flags[0]
 				flagRedisRepo := redis_repo.NewFlagRepository(redisClient, flagStoreRepo)
-				flagStoreRepo.EXPECT().Create(ctx, flaggio.NewFlag{Key: "f1", Name: "f1"}).
+				flagStoreRepo.EXPECT().Create(gomock.AssignableToTypeOf(ctxInterface), flaggio.NewFlag{Key: "f1", Name: "f1"}).
 					Times(1).Return(flg.ID, nil)
 
 				// call redis repository
@@ -348,9 +350,9 @@ func TestFlagRepository_Update(t *testing.T) {
 				// prepare repository mock
 				flg := flagResults.Flags[0]
 				flagRedisRepo := redis_repo.NewFlagRepository(redisClient, flagStoreRepo)
-				flagStoreRepo.EXPECT().Update(ctx, "1", flaggio.UpdateFlag{Name: stringPtr("f1")}).
+				flagStoreRepo.EXPECT().Update(gomock.AssignableToTypeOf(ctxInterface), "1", flaggio.UpdateFlag{Name: stringPtr("f1")}).
 					Times(1).Return(nil)
-				flagStoreRepo.EXPECT().FindByID(ctx, "1").
+				flagStoreRepo.EXPECT().FindByID(gomock.AssignableToTypeOf(ctxInterface), "1").
 					Times(1).Return(flg, nil)
 
 				// call redis repository
@@ -381,9 +383,9 @@ func TestFlagRepository_Update(t *testing.T) {
 
 				// prepare repository mock
 				flagRedisRepo := redis_repo.NewFlagRepository(redisClient, flagStoreRepo)
-				flagStoreRepo.EXPECT().Update(ctx, "1", flaggio.UpdateFlag{Key: stringPtr("f1")}).
+				flagStoreRepo.EXPECT().Update(gomock.AssignableToTypeOf(ctxInterface), "1", flaggio.UpdateFlag{Key: stringPtr("f1")}).
 					Times(1).Return(nil)
-				flagStoreRepo.EXPECT().FindByID(ctx, "1").
+				flagStoreRepo.EXPECT().FindByID(gomock.AssignableToTypeOf(ctxInterface), "1").
 					Times(0)
 
 				// call redis repository
@@ -440,9 +442,9 @@ func TestFlagRepository_Delete(t *testing.T) {
 				// prepare repository mock
 				flg := flagResults.Flags[0]
 				flagRedisRepo := redis_repo.NewFlagRepository(redisClient, flagStoreRepo)
-				flagStoreRepo.EXPECT().Delete(ctx, "1").
+				flagStoreRepo.EXPECT().Delete(gomock.AssignableToTypeOf(ctxInterface), "1").
 					Times(1).Return(nil)
-				flagStoreRepo.EXPECT().FindByID(ctx, "1").
+				flagStoreRepo.EXPECT().FindByID(gomock.AssignableToTypeOf(ctxInterface), "1").
 					Times(1).Return(flg, nil)
 
 				// call redis repository
@@ -474,9 +476,9 @@ func TestFlagRepository_Delete(t *testing.T) {
 				// prepare repository mock
 				flg := flagResults.Flags[0]
 				flagRedisRepo := redis_repo.NewFlagRepository(redisClient, flagStoreRepo)
-				flagStoreRepo.EXPECT().Delete(ctx, "1").
+				flagStoreRepo.EXPECT().Delete(gomock.AssignableToTypeOf(ctxInterface), "1").
 					Times(1).Return(nil)
-				flagStoreRepo.EXPECT().FindByID(ctx, "1").
+				flagStoreRepo.EXPECT().FindByID(gomock.AssignableToTypeOf(ctxInterface), "1").
 					Times(1).Return(flg, nil)
 
 				// call redis repository

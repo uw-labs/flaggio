@@ -38,7 +38,7 @@ func TestRuleRepository_FindFlagRuleByID(t *testing.T) {
 				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 				defer cancel()
 				ruleRedisRepo := redis_repo.NewRuleRepository(redisClient, ruleStoreRepo, flagStoreRepo, segmentStoreRepo)
-				ruleStoreRepo.EXPECT().FindFlagRuleByID(ctx, "2", "1").
+				ruleStoreRepo.EXPECT().FindFlagRuleByID(gomock.AssignableToTypeOf(ctxInterface), "2", "1").
 					Times(2).Return(frl, nil)
 
 				res, err := ruleRedisRepo.FindFlagRuleByID(ctx, "2", "1")
@@ -96,9 +96,9 @@ func TestRuleRepository_CreateFlagRule(t *testing.T) {
 				// prepare repository mock
 				flg := flagResults.Flags[0]
 				ruleRedisRepo := redis_repo.NewRuleRepository(redisClient, ruleStoreRepo, flagStoreRepo, segmentStoreRepo)
-				ruleStoreRepo.EXPECT().CreateFlagRule(ctx, "2", flaggio.NewFlagRule{}).
+				ruleStoreRepo.EXPECT().CreateFlagRule(gomock.AssignableToTypeOf(ctxInterface), "2", flaggio.NewFlagRule{}).
 					Times(1).Return(frl.ID, nil)
-				flagStoreRepo.EXPECT().FindByID(ctx, "2").
+				flagStoreRepo.EXPECT().FindByID(gomock.AssignableToTypeOf(ctxInterface), "2").
 					Times(1).Return(flg, nil)
 
 				// call redis repository
@@ -131,9 +131,9 @@ func TestRuleRepository_CreateFlagRule(t *testing.T) {
 				// prepare repository mock
 				flg := flagResults.Flags[0]
 				ruleRedisRepo := redis_repo.NewRuleRepository(redisClient, ruleStoreRepo, flagStoreRepo, segmentStoreRepo)
-				ruleStoreRepo.EXPECT().CreateFlagRule(ctx, "2", flaggio.NewFlagRule{}).
+				ruleStoreRepo.EXPECT().CreateFlagRule(gomock.AssignableToTypeOf(ctxInterface), "2", flaggio.NewFlagRule{}).
 					Times(1).Return(frl.ID, nil)
-				flagStoreRepo.EXPECT().FindByID(ctx, "2").
+				flagStoreRepo.EXPECT().FindByID(gomock.AssignableToTypeOf(ctxInterface), "2").
 					Times(1).Return(flg, nil)
 
 				// call redis repository
@@ -193,9 +193,9 @@ func TestRuleRepository_UpdateFlagRule(t *testing.T) {
 				// prepare repository mock
 				flg := flagResults.Flags[0]
 				ruleRedisRepo := redis_repo.NewRuleRepository(redisClient, ruleStoreRepo, flagStoreRepo, segmentStoreRepo)
-				ruleStoreRepo.EXPECT().UpdateFlagRule(ctx, "2", "1", flaggio.UpdateFlagRule{}).
+				ruleStoreRepo.EXPECT().UpdateFlagRule(gomock.AssignableToTypeOf(ctxInterface), "2", "1", flaggio.UpdateFlagRule{}).
 					Times(1).Return(nil)
-				flagStoreRepo.EXPECT().FindByID(ctx, "2").
+				flagStoreRepo.EXPECT().FindByID(gomock.AssignableToTypeOf(ctxInterface), "2").
 					Times(1).Return(flg, nil)
 
 				// call redis repository
@@ -227,9 +227,9 @@ func TestRuleRepository_UpdateFlagRule(t *testing.T) {
 				// prepare repository mock
 				flg := flagResults.Flags[0]
 				ruleRedisRepo := redis_repo.NewRuleRepository(redisClient, ruleStoreRepo, flagStoreRepo, segmentStoreRepo)
-				ruleStoreRepo.EXPECT().UpdateFlagRule(ctx, "2", "1", flaggio.UpdateFlagRule{}).
+				ruleStoreRepo.EXPECT().UpdateFlagRule(gomock.AssignableToTypeOf(ctxInterface), "2", "1", flaggio.UpdateFlagRule{}).
 					Times(1).Return(nil)
-				flagStoreRepo.EXPECT().FindByID(ctx, "2").
+				flagStoreRepo.EXPECT().FindByID(gomock.AssignableToTypeOf(ctxInterface), "2").
 					Times(1).Return(flg, nil)
 
 				// call redis repository
@@ -288,9 +288,9 @@ func TestRuleRepository_DeleteFlagRule(t *testing.T) {
 				// prepare repository mock
 				flg := flagResults.Flags[0]
 				ruleRedisRepo := redis_repo.NewRuleRepository(redisClient, ruleStoreRepo, flagStoreRepo, segmentStoreRepo)
-				ruleStoreRepo.EXPECT().DeleteFlagRule(ctx, "2", "1").
+				ruleStoreRepo.EXPECT().DeleteFlagRule(gomock.AssignableToTypeOf(ctxInterface), "2", "1").
 					Times(1).Return(nil)
-				flagStoreRepo.EXPECT().FindByID(ctx, "2").
+				flagStoreRepo.EXPECT().FindByID(gomock.AssignableToTypeOf(ctxInterface), "2").
 					Times(1).Return(flg, nil)
 
 				// call redis repository
@@ -322,9 +322,9 @@ func TestRuleRepository_DeleteFlagRule(t *testing.T) {
 				// prepare repository mock
 				flg := flagResults.Flags[0]
 				ruleRedisRepo := redis_repo.NewRuleRepository(redisClient, ruleStoreRepo, flagStoreRepo, segmentStoreRepo)
-				ruleStoreRepo.EXPECT().DeleteFlagRule(ctx, "2", "1").
+				ruleStoreRepo.EXPECT().DeleteFlagRule(gomock.AssignableToTypeOf(ctxInterface), "2", "1").
 					Times(1).Return(nil)
-				flagStoreRepo.EXPECT().FindByID(ctx, "2").
+				flagStoreRepo.EXPECT().FindByID(gomock.AssignableToTypeOf(ctxInterface), "2").
 					Times(1).Return(flg, nil)
 
 				// call redis repository
@@ -370,7 +370,7 @@ func TestRuleRepository_FindSegmentRuleByID(t *testing.T) {
 				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 				defer cancel()
 				ruleRedisRepo := redis_repo.NewRuleRepository(redisClient, ruleStoreRepo, flagStoreRepo, segmentStoreRepo)
-				ruleStoreRepo.EXPECT().FindSegmentRuleByID(ctx, "2", "1").
+				ruleStoreRepo.EXPECT().FindSegmentRuleByID(gomock.AssignableToTypeOf(ctxInterface), "2", "1").
 					Times(2).Return(srl, nil)
 
 				res, err := ruleRedisRepo.FindSegmentRuleByID(ctx, "2", "1")
@@ -427,7 +427,7 @@ func TestRuleRepository_CreateSegmentRule(t *testing.T) {
 
 				// prepare repository mock
 				ruleRedisRepo := redis_repo.NewRuleRepository(redisClient, ruleStoreRepo, flagStoreRepo, segmentStoreRepo)
-				ruleStoreRepo.EXPECT().CreateSegmentRule(ctx, "1", flaggio.NewSegmentRule{}).
+				ruleStoreRepo.EXPECT().CreateSegmentRule(gomock.AssignableToTypeOf(ctxInterface), "1", flaggio.NewSegmentRule{}).
 					Times(1).Return(srl.ID, nil)
 
 				// call redis repository
@@ -459,7 +459,7 @@ func TestRuleRepository_CreateSegmentRule(t *testing.T) {
 
 				// prepare repository mock
 				ruleRedisRepo := redis_repo.NewRuleRepository(redisClient, ruleStoreRepo, flagStoreRepo, segmentStoreRepo)
-				ruleStoreRepo.EXPECT().CreateSegmentRule(ctx, "1", flaggio.NewSegmentRule{}).
+				ruleStoreRepo.EXPECT().CreateSegmentRule(gomock.AssignableToTypeOf(ctxInterface), "1", flaggio.NewSegmentRule{}).
 					Times(1).Return(srl.ID, nil)
 
 				// call redis repository
@@ -518,7 +518,7 @@ func TestRuleRepository_UpdateSegmentRule(t *testing.T) {
 
 				// prepare repository mock
 				ruleRedisRepo := redis_repo.NewRuleRepository(redisClient, ruleStoreRepo, flagStoreRepo, segmentStoreRepo)
-				ruleStoreRepo.EXPECT().UpdateSegmentRule(ctx, "1", "1", flaggio.UpdateSegmentRule{}).
+				ruleStoreRepo.EXPECT().UpdateSegmentRule(gomock.AssignableToTypeOf(ctxInterface), "1", "1", flaggio.UpdateSegmentRule{}).
 					Times(1).Return(nil)
 
 				// call redis repository
@@ -549,7 +549,7 @@ func TestRuleRepository_UpdateSegmentRule(t *testing.T) {
 
 				// prepare repository mock
 				ruleRedisRepo := redis_repo.NewRuleRepository(redisClient, ruleStoreRepo, flagStoreRepo, segmentStoreRepo)
-				ruleStoreRepo.EXPECT().UpdateSegmentRule(ctx, "1", "1", flaggio.UpdateSegmentRule{}).
+				ruleStoreRepo.EXPECT().UpdateSegmentRule(gomock.AssignableToTypeOf(ctxInterface), "1", "1", flaggio.UpdateSegmentRule{}).
 					Times(1).Return(nil)
 
 				// call redis repository
@@ -607,7 +607,7 @@ func DeleteSegmentRule(t *testing.T) {
 
 				// prepare repository mock
 				ruleRedisRepo := redis_repo.NewRuleRepository(redisClient, ruleStoreRepo, flagStoreRepo, segmentStoreRepo)
-				ruleStoreRepo.EXPECT().DeleteSegmentRule(ctx, "1", "1").
+				ruleStoreRepo.EXPECT().DeleteSegmentRule(gomock.AssignableToTypeOf(ctxInterface), "1", "1").
 					Times(1).Return(nil)
 
 				// call redis repository
@@ -638,7 +638,7 @@ func DeleteSegmentRule(t *testing.T) {
 
 				// prepare repository mock
 				ruleRedisRepo := redis_repo.NewRuleRepository(redisClient, ruleStoreRepo, flagStoreRepo, segmentStoreRepo)
-				ruleStoreRepo.EXPECT().DeleteSegmentRule(ctx, "1", "1").
+				ruleStoreRepo.EXPECT().DeleteSegmentRule(gomock.AssignableToTypeOf(ctxInterface), "1", "1").
 					Times(1).Return(nil)
 
 				// call redis repository

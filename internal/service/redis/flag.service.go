@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis/v7"
+	"github.com/opentracing/opentracing-go"
 	"github.com/victorkt/flaggio/internal/flaggio"
 	"github.com/victorkt/flaggio/internal/service"
 	"github.com/vmihailenco/msgpack/v4"
@@ -22,6 +23,9 @@ type flagService struct {
 
 // Evaluate returns the result of an evaluation of a single flag.
 func (s flagService) Evaluate(ctx context.Context, flagKey string, req *service.EvaluationRequest) (*service.EvaluationResponse, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisFlagService.Evaluate")
+	defer span.Finish()
+
 	shouldCache := shouldCacheEvaluation(req)
 	var cacheKey string
 
@@ -70,6 +74,9 @@ func (s flagService) Evaluate(ctx context.Context, flagKey string, req *service.
 
 // EvaluateAll returns the results of the evaluation of all flags.
 func (s flagService) EvaluateAll(ctx context.Context, req *service.EvaluationRequest) (*service.EvaluationsResponse, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisFlagService.EvaluateAll")
+	defer span.Finish()
+
 	shouldCache := shouldCacheEvaluation(req)
 	var cacheKey string
 

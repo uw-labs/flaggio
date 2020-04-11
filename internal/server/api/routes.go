@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
+	"github.com/opentracing/opentracing-go"
 	internalerrors "github.com/victorkt/flaggio/internal/errors"
 	"github.com/victorkt/flaggio/internal/flaggio"
 	"github.com/victorkt/flaggio/internal/service"
@@ -15,6 +16,9 @@ import (
 // POST /evaluate/{id}
 // Evaluates a given flag for the user
 func (s *Server) handleEvaluate(w http.ResponseWriter, r *http.Request) {
+	span, ctx := opentracing.StartSpanFromContext(r.Context(), "POST /evaluate/{id}")
+	defer span.Finish()
+
 	flagKey := chi.URLParam(r, "key")
 	er := &service.EvaluationRequest{
 		UserContext: make(flaggio.UserContext),
@@ -29,7 +33,7 @@ func (s *Server) handleEvaluate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// evaluate flag
-	eval, err := s.flagsService.Evaluate(r.Context(), flagKey, er)
+	eval, err := s.flagsService.Evaluate(ctx, flagKey, er)
 	if err != nil {
 		_ = render.Render(w, r, formatErr(err))
 		return
@@ -46,6 +50,9 @@ func (s *Server) handleEvaluate(w http.ResponseWriter, r *http.Request) {
 // POST /evaluate
 // Evaluates all flags for the user
 func (s *Server) handleEvaluateAll(w http.ResponseWriter, r *http.Request) {
+	span, ctx := opentracing.StartSpanFromContext(r.Context(), "POST /evaluate")
+	defer span.Finish()
+
 	er := &service.EvaluationRequest{
 		UserContext: make(flaggio.UserContext),
 	}
@@ -59,7 +66,7 @@ func (s *Server) handleEvaluateAll(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// evaluate flags
-	eval, err := s.flagsService.EvaluateAll(r.Context(), er)
+	eval, err := s.flagsService.EvaluateAll(ctx, er)
 	if err != nil {
 		_ = render.Render(w, r, formatErr(err))
 		return

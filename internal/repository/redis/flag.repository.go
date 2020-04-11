@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis/v7"
+	"github.com/opentracing/opentracing-go"
 	"github.com/victorkt/flaggio/internal/flaggio"
 	"github.com/victorkt/flaggio/internal/repository"
 	"github.com/vmihailenco/msgpack/v4"
@@ -22,6 +23,9 @@ type FlagRepository struct {
 
 // FindAll returns a list of flags, based on an optional offset and limit.
 func (r *FlagRepository) FindAll(ctx context.Context, search *string, offset, limit *int64) (*flaggio.FlagResults, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisFlagRepository.FindAll")
+	defer span.Finish()
+
 	shouldCache := shouldCacheFindAll(search, offset, limit)
 	cacheKey := flaggio.FlagCacheKey("*")
 
@@ -64,6 +68,9 @@ func (r *FlagRepository) FindAll(ctx context.Context, search *string, offset, li
 
 // FindByID returns a flag that has a given ID.
 func (r *FlagRepository) FindByID(ctx context.Context, id string) (*flaggio.Flag, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisFlagRepository.FindByID")
+	defer span.Finish()
+
 	cacheKey := flaggio.FlagCacheKey(id)
 
 	// fetch flag results from cache
@@ -101,6 +108,9 @@ func (r *FlagRepository) FindByID(ctx context.Context, id string) (*flaggio.Flag
 
 // FindByKey returns a flag that has a given key.
 func (r *FlagRepository) FindByKey(ctx context.Context, key string) (*flaggio.Flag, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisFlagRepository.FindByKey")
+	defer span.Finish()
+
 	cacheKey := flaggio.FlagCacheKey("key", key)
 
 	// fetch flag results from cache
@@ -138,6 +148,9 @@ func (r *FlagRepository) FindByKey(ctx context.Context, key string) (*flaggio.Fl
 
 // Create creates a new flag.
 func (r *FlagRepository) Create(ctx context.Context, input flaggio.NewFlag) (string, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisFlagRepository.Create")
+	defer span.Finish()
+
 	id, err := r.store.Create(ctx, input)
 	if err != nil {
 		return "", err
@@ -149,6 +162,9 @@ func (r *FlagRepository) Create(ctx context.Context, input flaggio.NewFlag) (str
 
 // Update updates a flag.
 func (r *FlagRepository) Update(ctx context.Context, id string, input flaggio.UpdateFlag) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisFlagRepository.Update")
+	defer span.Finish()
+
 	if err := r.store.Update(ctx, id, input); err != nil {
 		return err
 	}
@@ -170,6 +186,9 @@ func (r *FlagRepository) Update(ctx context.Context, id string, input flaggio.Up
 
 // Delete deletes a flag.
 func (r *FlagRepository) Delete(ctx context.Context, id string) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisFlagRepository.Delete")
+	defer span.Finish()
+
 	// find the flag so we can get the flag key
 	f, err := r.FindByID(ctx, id)
 	if err != nil {

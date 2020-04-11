@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"time"
+	"sync"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
@@ -16,26 +16,24 @@ import (
 	"github.com/go-redis/redis/v7"
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
-	"github.com/urfave/cli/v2"
 	mongo_repo "github.com/victorkt/flaggio/internal/repository/mongodb"
 	redis_repo "github.com/victorkt/flaggio/internal/repository/redis"
 	"github.com/victorkt/flaggio/internal/server/admin"
 )
 
-func startAdmin(ctx context.Context, c *cli.Context, logger *logrus.Entry) error {
+func startAdmin(ctx context.Context, wg *sync.WaitGroup, logger *logrus.Entry) error {
 	logger.Debug("starting admin server ...")
-	isDev := c.String("app-env") == "dev"
 
 	// connect to mongo
-	db, err := getMongoDatabase(ctx, c.String("database-uri"))
+	db, err := newMongoDatabase(ctx, cfg.databaseURI, logger, wg)
 	if err != nil {
 		return err
 	}
 
 	var redisClient *redis.Client
-	if c.IsSet("redis-uri") {
+	if cfg.isCachingEnabled() {
 		// connect to redis
-		redisClient, err = getRedisClient(c.String("redis-uri"))
+		redisClient, err = newRedisClient(ctx, cfg.redisURI, logger, wg)
 		if err != nil {
 			return err
 		}
@@ -80,29 +78,31 @@ func startAdmin(ctx context.Context, c *cli.Context, logger *logrus.Entry) error
 	router.Use(
 		middleware.Recoverer,
 		middleware.RequestID,
+		middleware.Heartbeat("/ready"),
 		middleware.RequestLogger(&middleware.DefaultLogFormatter{
 			Logger:  logger,
-			NoColor: c.String("log-formatter") != logFormatterText,
+			NoColor: cfg.logFormatter != logFormatterText,
 		}),
+		tracingMiddleware("flaggio-admin", logger),
 		cors.New(cors.Options{
-			AllowedOrigins:   c.StringSlice("cors-allowed-origins"),
-			AllowedHeaders:   c.StringSlice("cors-allowed-headers"),
+			AllowedOrigins:   cfg.corsAllowedOrigins.Value(),
+			AllowedHeaders:   cfg.corsAllowedHeaders.Value(),
 			AllowedMethods:   []string{http.MethodGet, http.MethodPost, http.MethodOptions},
 			AllowCredentials: true,
-			Debug:            c.Bool("cors-debug"),
+			Debug:            cfg.corsDebug,
 		}).Handler,
 	)
 	router.Method("POST", "/query", gqlSrv)
-	if isDev {
+	if cfg.playgroundEnabled {
 		router.Get("/playground", playground.Handler("GraphQL playground", "/query"))
 	}
 
 	// setup admin UI routes
-	if !c.Bool("no-admin-ui") {
+	if !cfg.noAdminUI {
 		workDir, _ := os.Getwd()
 		buildPath := workDir + "/web/build"
-		if c.IsSet("build-path") {
-			buildPath = c.String("build-path")
+		if cfg.uiBuildPath != "" {
+			buildPath = cfg.uiBuildPath
 		}
 
 		fileServer(router, "/static", http.Dir(buildPath+"/static"))
@@ -115,31 +115,17 @@ func startAdmin(ctx context.Context, c *cli.Context, logger *logrus.Entry) error
 		})
 	}
 
-	// setup http server
-	srv := &http.Server{
-		Addr:         c.String("admin-addr"),
-		Handler:      router,
-		WriteTimeout: 15 * time.Second,
-		ReadTimeout:  15 * time.Second,
-	}
-
-	go func() {
-		<-ctx.Done()
-
-		shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 5*time.Second)
-		defer shutdownCancel()
-
-		if err := srv.Shutdown(shutdownCtx); err != nil {
-			logger.Fatalf("admin server shutdown failed: %+v", err)
-		}
-	}()
-
 	logger.WithFields(logrus.Fields{
-		"cache_enabled": c.IsSet("redis-uri"),
-		"listening":     c.String("admin-addr"),
-		"playground":    isDev,
-		"admin_ui":      !c.Bool("no-admin-ui"),
-	}).Infof("admin server started")
+		"caching":    cfg.isCachingEnabled(),
+		"tracing":    cfg.isTracingEnabled(),
+		"listening":  cfg.adminAddr,
+		"playground": cfg.playgroundEnabled,
+		"admin_ui":   cfg.noAdminUI,
+	}).Info("admin server started")
+
+	// setup http server
+	srv := newHTTPServer(ctx, cfg.adminAddr, router, logger, wg)
+
 	return srv.ListenAndServe()
 }
 

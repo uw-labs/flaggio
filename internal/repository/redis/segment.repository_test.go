@@ -36,7 +36,7 @@ func TestSegmentRepository_FindAll(t *testing.T) {
 				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 				defer cancel()
 				segmentRedisRepo := redis_repo.NewSegmentRepository(redisClient, segmmentStoreRepo)
-				segmmentStoreRepo.EXPECT().FindAll(ctx, nil, nil).
+				segmmentStoreRepo.EXPECT().FindAll(gomock.AssignableToTypeOf(ctxInterface), nil, nil).
 					Times(1).Return(segmentResults, nil)
 
 				res, err := segmentRedisRepo.FindAll(ctx, nil, nil)
@@ -50,7 +50,7 @@ func TestSegmentRepository_FindAll(t *testing.T) {
 				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 				defer cancel()
 				segmentRedisRepo := redis_repo.NewSegmentRepository(redisClient, segmmentStoreRepo)
-				segmmentStoreRepo.EXPECT().FindAll(ctx, nil, nil).
+				segmmentStoreRepo.EXPECT().FindAll(gomock.AssignableToTypeOf(ctxInterface), nil, nil).
 					Times(0)
 
 				res, err := segmentRedisRepo.FindAll(ctx, nil, nil)
@@ -64,7 +64,7 @@ func TestSegmentRepository_FindAll(t *testing.T) {
 				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 				defer cancel()
 				segmentRedisRepo := redis_repo.NewSegmentRepository(redisClient, segmmentStoreRepo)
-				segmmentStoreRepo.EXPECT().FindAll(ctx, int64Ptr(1), nil).
+				segmmentStoreRepo.EXPECT().FindAll(gomock.AssignableToTypeOf(ctxInterface), int64Ptr(1), nil).
 					Times(1).Return(segmentResults, nil)
 
 				res, err := segmentRedisRepo.FindAll(ctx, int64Ptr(1), nil)
@@ -78,7 +78,7 @@ func TestSegmentRepository_FindAll(t *testing.T) {
 				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 				defer cancel()
 				segmentRedisRepo := redis_repo.NewSegmentRepository(redisClient, segmmentStoreRepo)
-				segmmentStoreRepo.EXPECT().FindAll(ctx, nil, int64Ptr(10)).
+				segmmentStoreRepo.EXPECT().FindAll(gomock.AssignableToTypeOf(ctxInterface), nil, int64Ptr(10)).
 					Times(1).Return(segmentResults, nil)
 
 				res, err := segmentRedisRepo.FindAll(ctx, nil, int64Ptr(10))
@@ -118,7 +118,7 @@ func TestSegmentRepository_FindByID(t *testing.T) {
 				defer cancel()
 				sgmnt := segmentResults[0]
 				segmentRedisRepo := redis_repo.NewSegmentRepository(redisClient, segmentStoreRepo)
-				segmentStoreRepo.EXPECT().FindByID(ctx, "1").
+				segmentStoreRepo.EXPECT().FindByID(gomock.AssignableToTypeOf(ctxInterface), "1").
 					Times(1).Return(sgmnt, nil)
 
 				res, err := segmentRedisRepo.FindByID(ctx, "1")
@@ -133,7 +133,7 @@ func TestSegmentRepository_FindByID(t *testing.T) {
 				defer cancel()
 				sgmnt := segmentResults[0]
 				segmentRedisRepo := redis_repo.NewSegmentRepository(redisClient, segmentStoreRepo)
-				segmentStoreRepo.EXPECT().FindByID(ctx, "1").
+				segmentStoreRepo.EXPECT().FindByID(gomock.AssignableToTypeOf(ctxInterface), "1").
 					Times(0)
 
 				res, err := segmentRedisRepo.FindByID(ctx, "1")
@@ -185,7 +185,7 @@ func TestSegmentRepository_Create(t *testing.T) {
 				// prepare repository mock
 				sgmnt := segmentResults[0]
 				segmentRedisRepo := redis_repo.NewSegmentRepository(redisClient, segmentStoreRepo)
-				segmentStoreRepo.EXPECT().Create(ctx, flaggio.NewSegment{Name: "s1"}).
+				segmentStoreRepo.EXPECT().Create(gomock.AssignableToTypeOf(ctxInterface), flaggio.NewSegment{Name: "s1"}).
 					Times(1).Return(sgmnt.ID, nil)
 
 				// call redis repository
@@ -218,7 +218,7 @@ func TestSegmentRepository_Create(t *testing.T) {
 				// prepare repository mock
 				sgmnt := segmentResults[0]
 				segmentRedisRepo := redis_repo.NewSegmentRepository(redisClient, segmentStoreRepo)
-				segmentStoreRepo.EXPECT().Create(ctx, flaggio.NewSegment{Name: "s1"}).
+				segmentStoreRepo.EXPECT().Create(gomock.AssignableToTypeOf(ctxInterface), flaggio.NewSegment{Name: "s1"}).
 					Times(1).Return(sgmnt.ID, nil)
 
 				// call redis repository
@@ -275,7 +275,7 @@ func TestSegmentRepository_Update(t *testing.T) {
 
 				// prepare repository mock
 				segmentRedisRepo := redis_repo.NewSegmentRepository(redisClient, segmentStoreRepo)
-				segmentStoreRepo.EXPECT().Update(ctx, "1", flaggio.UpdateSegment{Name: stringPtr("s1")}).
+				segmentStoreRepo.EXPECT().Update(gomock.AssignableToTypeOf(ctxInterface), "1", flaggio.UpdateSegment{Name: stringPtr("s1")}).
 					Times(1).Return(nil)
 
 				// call redis repository
@@ -306,7 +306,7 @@ func TestSegmentRepository_Update(t *testing.T) {
 
 				// prepare repository mock
 				segmentRedisRepo := redis_repo.NewSegmentRepository(redisClient, segmentStoreRepo)
-				segmentStoreRepo.EXPECT().Update(ctx, "1", flaggio.UpdateSegment{Name: stringPtr("s1")}).
+				segmentStoreRepo.EXPECT().Update(gomock.AssignableToTypeOf(ctxInterface), "1", flaggio.UpdateSegment{Name: stringPtr("s1")}).
 					Times(1).Return(nil)
 
 				// call redis repository
@@ -362,7 +362,7 @@ func TestSegmentRepository_Delete(t *testing.T) {
 
 				// prepare repository mock
 				segmentRedisRepo := redis_repo.NewSegmentRepository(redisClient, segmentStoreRepo)
-				segmentStoreRepo.EXPECT().Delete(ctx, "1").
+				segmentStoreRepo.EXPECT().Delete(gomock.AssignableToTypeOf(ctxInterface), "1").
 					Times(1).Return(nil)
 
 				// call redis repository
@@ -393,7 +393,7 @@ func TestSegmentRepository_Delete(t *testing.T) {
 
 				// prepare repository mock
 				segmentRedisRepo := redis_repo.NewSegmentRepository(redisClient, segmentStoreRepo)
-				segmentStoreRepo.EXPECT().Delete(ctx, "1").
+				segmentStoreRepo.EXPECT().Delete(gomock.AssignableToTypeOf(ctxInterface), "1").
 					Times(1).Return(nil)
 
 				// call redis repository

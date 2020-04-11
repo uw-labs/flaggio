@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis/v7"
+	"github.com/opentracing/opentracing-go"
 	"github.com/victorkt/flaggio/internal/flaggio"
 	"github.com/victorkt/flaggio/internal/repository"
 )
@@ -21,12 +22,18 @@ type VariantRepository struct {
 
 // FindByID returns a variant that has a given ID.
 func (r *VariantRepository) FindByID(ctx context.Context, flagIDHex, idHex string) (*flaggio.Variant, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisVariantRepository.FindByID")
+	defer span.Finish()
+
 	// no caching for variants
 	return r.store.FindByID(ctx, flagIDHex, idHex)
 }
 
 // Create creates a new variant.
 func (r *VariantRepository) Create(ctx context.Context, flagID string, input flaggio.NewVariant) (string, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisVariantRepository.Create")
+	defer span.Finish()
+
 	id, err := r.store.Create(ctx, flagID, input)
 	if err != nil {
 		return "", err
@@ -38,6 +45,9 @@ func (r *VariantRepository) Create(ctx context.Context, flagID string, input fla
 
 // Update updates a variant.
 func (r *VariantRepository) Update(ctx context.Context, flagID, id string, input flaggio.UpdateVariant) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisVariantRepository.Update")
+	defer span.Finish()
+
 	if err := r.store.Update(ctx, flagID, id, input); err != nil {
 		return err
 	}
@@ -48,6 +58,9 @@ func (r *VariantRepository) Update(ctx context.Context, flagID, id string, input
 
 // Delete deletes a variant.
 func (r *VariantRepository) Delete(ctx context.Context, flagID, id string) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisVariantRepository.Delete")
+	defer span.Finish()
+
 	// delete the flag
 	if err := r.store.Delete(ctx, flagID, id); err != nil {
 		return err

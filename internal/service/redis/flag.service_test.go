@@ -2,6 +2,7 @@ package redis_test
 
 import (
 	"context"
+	"reflect"
 	"testing"
 	"time"
 
@@ -18,6 +19,7 @@ var (
 		{FlagKey: "f1", Value: "abc"},
 		{FlagKey: "f2", Value: int64(1)},
 	}
+	ctxInterface = reflect.TypeOf((*context.Context)(nil)).Elem()
 )
 
 func TestFlagService_Evaluate(t *testing.T) {
@@ -42,7 +44,7 @@ func TestFlagService_Evaluate(t *testing.T) {
 					UserID:      "123",
 					UserContext: flaggio.UserContext{"test": "abc"},
 				}
-				flagSvc.EXPECT().Evaluate(ctx, "f1", evalReq).
+				flagSvc.EXPECT().Evaluate(gomock.AssignableToTypeOf(ctxInterface), "f1", evalReq).
 					Times(1).Return(evalRes, nil)
 
 				res, err := flagRedisSvc.Evaluate(ctx, "f1", evalReq)
@@ -61,7 +63,7 @@ func TestFlagService_Evaluate(t *testing.T) {
 					UserID:      "123",
 					UserContext: flaggio.UserContext{"test": "abc"},
 				}
-				flagSvc.EXPECT().Evaluate(ctx, "f1", evalReq).
+				flagSvc.EXPECT().Evaluate(gomock.AssignableToTypeOf(ctxInterface), "f1", evalReq).
 					Times(0)
 
 				res, err := flagRedisSvc.Evaluate(ctx, "f1", evalReq)
@@ -83,7 +85,7 @@ func TestFlagService_Evaluate(t *testing.T) {
 					UserContext: flaggio.UserContext{"test": "abc"},
 					Debug:       boolPtr(true),
 				}
-				flagSvc.EXPECT().Evaluate(ctx, "f1", evalReq).
+				flagSvc.EXPECT().Evaluate(gomock.AssignableToTypeOf(ctxInterface), "f1", evalReq).
 					Times(1).Return(evalRes, nil)
 
 				res, err := flagRedisSvc.Evaluate(ctx, "f1", evalReq)
@@ -127,7 +129,7 @@ func TestFlagService_EvaluateAll(t *testing.T) {
 					UserID:      "123",
 					UserContext: flaggio.UserContext{"test": "abc"},
 				}
-				flagSvc.EXPECT().EvaluateAll(ctx, evalReq).
+				flagSvc.EXPECT().EvaluateAll(gomock.AssignableToTypeOf(ctxInterface), evalReq).
 					Times(1).Return(evalsRes, nil)
 
 				res, err := flagRedisSvc.EvaluateAll(ctx, evalReq)
@@ -146,7 +148,7 @@ func TestFlagService_EvaluateAll(t *testing.T) {
 					UserID:      "123",
 					UserContext: flaggio.UserContext{"test": "abc"},
 				}
-				flagSvc.EXPECT().EvaluateAll(ctx, evalReq).
+				flagSvc.EXPECT().EvaluateAll(gomock.AssignableToTypeOf(ctxInterface), evalReq).
 					Times(0)
 
 				res, err := flagRedisSvc.EvaluateAll(ctx, evalReq)
@@ -168,7 +170,7 @@ func TestFlagService_EvaluateAll(t *testing.T) {
 					UserContext: flaggio.UserContext{"test": "abc"},
 					Debug:       boolPtr(true),
 				}
-				flagSvc.EXPECT().EvaluateAll(ctx, evalReq).
+				flagSvc.EXPECT().EvaluateAll(gomock.AssignableToTypeOf(ctxInterface), evalReq).
 					Times(1).Return(evalsRes, nil)
 
 				res, err := flagRedisSvc.EvaluateAll(ctx, evalReq)

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/opentracing/opentracing-go"
 	"github.com/victorkt/flaggio/internal/errors"
 	"github.com/victorkt/flaggio/internal/flaggio"
 	"github.com/victorkt/flaggio/internal/repository"
@@ -24,6 +25,9 @@ type RuleRepository struct {
 
 // FindFlagRuleByID returns a flag rule that has a given ID.
 func (r *RuleRepository) FindFlagRuleByID(ctx context.Context, flagIDHex, idHex string) (*flaggio.FlagRule, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "MongoRuleRepository.FindFlagRuleByID")
+	defer span.Finish()
+
 	flagID, err := primitive.ObjectIDFromHex(flagIDHex)
 	if err != nil {
 		return nil, err
@@ -52,6 +56,9 @@ func (r *RuleRepository) FindFlagRuleByID(ctx context.Context, flagIDHex, idHex 
 
 // CreateFlagRule creates a new rule under a flag.
 func (r *RuleRepository) CreateFlagRule(ctx context.Context, flagIDHex string, fr flaggio.NewFlagRule) (string, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "MongoRuleRepository.CreateFlagRule")
+	defer span.Finish()
+
 	constraints := make([]constraintModel, len(fr.Constraints))
 	distributions := make([]distributionModel, len(fr.Distributions))
 	for idx, c := range fr.Constraints {
@@ -99,6 +106,9 @@ func (r *RuleRepository) CreateFlagRule(ctx context.Context, flagIDHex string, f
 
 // UpdateFlagRule updates a rule under a flag.
 func (r *RuleRepository) UpdateFlagRule(ctx context.Context, flagIDHex, idHex string, fr flaggio.UpdateFlagRule) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "MongoRuleRepository.UpdateFlagRule")
+	defer span.Finish()
+
 	flagID, err := primitive.ObjectIDFromHex(flagIDHex)
 	if err != nil {
 		return err
@@ -149,6 +159,9 @@ func (r *RuleRepository) UpdateFlagRule(ctx context.Context, flagIDHex, idHex st
 
 // DeleteFlagRule deletes a rule under a flag.
 func (r *RuleRepository) DeleteFlagRule(ctx context.Context, flagIDHex, idHex string) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "MongoRuleRepository.DeleteFlagRule")
+	defer span.Finish()
+
 	flagID, err := primitive.ObjectIDFromHex(flagIDHex)
 	if err != nil {
 		return err
@@ -173,6 +186,9 @@ func (r *RuleRepository) DeleteFlagRule(ctx context.Context, flagIDHex, idHex st
 
 // FindSegmentRuleByID returns a segment rule that has a given ID.
 func (r *RuleRepository) FindSegmentRuleByID(ctx context.Context, segmentIDHex, idHex string) (*flaggio.SegmentRule, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "MongoRuleRepository.FindSegmentRuleByID")
+	defer span.Finish()
+
 	segmentID, err := primitive.ObjectIDFromHex(segmentIDHex)
 	if err != nil {
 		return nil, err
@@ -200,6 +216,9 @@ func (r *RuleRepository) FindSegmentRuleByID(ctx context.Context, segmentIDHex, 
 
 // CreateSegmentRule creates a new rule under a segment.
 func (r *RuleRepository) CreateSegmentRule(ctx context.Context, segmentIDHex string, fr flaggio.NewSegmentRule) (string, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "MongoRuleRepository.CreateSegmentRule")
+	defer span.Finish()
+
 	constraints := make([]constraintModel, len(fr.Constraints))
 	for idx, c := range fr.Constraints {
 		constraints[idx] = constraintModel{
@@ -233,6 +252,9 @@ func (r *RuleRepository) CreateSegmentRule(ctx context.Context, segmentIDHex str
 
 // UpdateSegmentRule updates a rule under a segment.
 func (r *RuleRepository) UpdateSegmentRule(ctx context.Context, segmentIDHex, idHex string, fr flaggio.UpdateSegmentRule) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "MongoRuleRepository.UpdateSegmentRule")
+	defer span.Finish()
+
 	segmentID, err := primitive.ObjectIDFromHex(segmentIDHex)
 	if err != nil {
 		return err
@@ -270,6 +292,9 @@ func (r *RuleRepository) UpdateSegmentRule(ctx context.Context, segmentIDHex, id
 
 // DeleteSegmentRule deletes a rule under a segment.
 func (r *RuleRepository) DeleteSegmentRule(ctx context.Context, segmentIDHex, idHex string) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "MongoRuleRepository.DeleteSegmentRule")
+	defer span.Finish()
+
 	segmentID, err := primitive.ObjectIDFromHex(segmentIDHex)
 	if err != nil {
 		return err

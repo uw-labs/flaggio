@@ -35,7 +35,7 @@ func TestVariantRepository_FindByID(t *testing.T) {
 				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 				defer cancel()
 				variantRedisRepo := redis_repo.NewVariantRepository(redisClient, variantStoreRepo, flagStoreRepo)
-				variantStoreRepo.EXPECT().FindByID(ctx, "2", "1").
+				variantStoreRepo.EXPECT().FindByID(gomock.AssignableToTypeOf(ctxInterface), "2", "1").
 					Times(2).Return(vrnt, nil)
 
 				res, err := variantRedisRepo.FindByID(ctx, "2", "1")
@@ -92,9 +92,9 @@ func TestVariantRepository_Create(t *testing.T) {
 				// prepare repository mock
 				flg := flagResults.Flags[0]
 				variantRedisRepo := redis_repo.NewVariantRepository(redisClient, variantStoreRepo, flagStoreRepo)
-				variantStoreRepo.EXPECT().Create(ctx, "2", flaggio.NewVariant{Value: 1}).
+				variantStoreRepo.EXPECT().Create(gomock.AssignableToTypeOf(ctxInterface), "2", flaggio.NewVariant{Value: 1}).
 					Times(1).Return(vrnt.ID, nil)
-				flagStoreRepo.EXPECT().FindByID(ctx, "2").
+				flagStoreRepo.EXPECT().FindByID(gomock.AssignableToTypeOf(ctxInterface), "2").
 					Times(1).Return(flg, nil)
 
 				// call redis repository
@@ -127,9 +127,9 @@ func TestVariantRepository_Create(t *testing.T) {
 				// prepare repository mock
 				flg := flagResults.Flags[0]
 				variantRedisRepo := redis_repo.NewVariantRepository(redisClient, variantStoreRepo, flagStoreRepo)
-				variantStoreRepo.EXPECT().Create(ctx, "2", flaggio.NewVariant{Value: false}).
+				variantStoreRepo.EXPECT().Create(gomock.AssignableToTypeOf(ctxInterface), "2", flaggio.NewVariant{Value: false}).
 					Times(1).Return(vrnt.ID, nil)
-				flagStoreRepo.EXPECT().FindByID(ctx, "2").
+				flagStoreRepo.EXPECT().FindByID(gomock.AssignableToTypeOf(ctxInterface), "2").
 					Times(1).Return(flg, nil)
 
 				// call redis repository
@@ -188,9 +188,9 @@ func TestVariantRepository_Update(t *testing.T) {
 				// prepare repository mock
 				flg := flagResults.Flags[0]
 				variantRedisRepo := redis_repo.NewVariantRepository(redisClient, variantStoreRepo, flagStoreRepo)
-				variantStoreRepo.EXPECT().Update(ctx, "2", "1", flaggio.UpdateVariant{Value: "abc"}).
+				variantStoreRepo.EXPECT().Update(gomock.AssignableToTypeOf(ctxInterface), "2", "1", flaggio.UpdateVariant{Value: "abc"}).
 					Times(1).Return(nil)
-				flagStoreRepo.EXPECT().FindByID(ctx, "2").
+				flagStoreRepo.EXPECT().FindByID(gomock.AssignableToTypeOf(ctxInterface), "2").
 					Times(1).Return(flg, nil)
 
 				// call redis repository
@@ -222,9 +222,9 @@ func TestVariantRepository_Update(t *testing.T) {
 				// prepare repository mock
 				flg := flagResults.Flags[0]
 				variantRedisRepo := redis_repo.NewVariantRepository(redisClient, variantStoreRepo, flagStoreRepo)
-				variantStoreRepo.EXPECT().Update(ctx, "2", "1", flaggio.UpdateVariant{Value: "cde"}).
+				variantStoreRepo.EXPECT().Update(gomock.AssignableToTypeOf(ctxInterface), "2", "1", flaggio.UpdateVariant{Value: "cde"}).
 					Times(1).Return(nil)
-				flagStoreRepo.EXPECT().FindByID(ctx, "2").
+				flagStoreRepo.EXPECT().FindByID(gomock.AssignableToTypeOf(ctxInterface), "2").
 					Times(1).Return(flg, nil)
 
 				// call redis repository
@@ -282,9 +282,9 @@ func TestVariantRepository_Delete(t *testing.T) {
 				// prepare repository mock
 				flg := flagResults.Flags[0]
 				variantRedisRepo := redis_repo.NewVariantRepository(redisClient, variantStoreRepo, flagStoreRepo)
-				variantStoreRepo.EXPECT().Delete(ctx, "2", "1").
+				variantStoreRepo.EXPECT().Delete(gomock.AssignableToTypeOf(ctxInterface), "2", "1").
 					Times(1).Return(nil)
-				flagStoreRepo.EXPECT().FindByID(ctx, "2").
+				flagStoreRepo.EXPECT().FindByID(gomock.AssignableToTypeOf(ctxInterface), "2").
 					Times(1).Return(flg, nil)
 
 				// call redis repository
@@ -316,9 +316,9 @@ func TestVariantRepository_Delete(t *testing.T) {
 				// prepare repository mock
 				flg := flagResults.Flags[0]
 				variantRedisRepo := redis_repo.NewVariantRepository(redisClient, variantStoreRepo, flagStoreRepo)
-				variantStoreRepo.EXPECT().Delete(ctx, "2", "1").
+				variantStoreRepo.EXPECT().Delete(gomock.AssignableToTypeOf(ctxInterface), "2", "1").
 					Times(1).Return(nil)
-				flagStoreRepo.EXPECT().FindByID(ctx, "2").
+				flagStoreRepo.EXPECT().FindByID(gomock.AssignableToTypeOf(ctxInterface), "2").
 					Times(1).Return(flg, nil)
 
 				// call redis repository

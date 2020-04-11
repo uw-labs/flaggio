@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/opentracing/opentracing-go"
 	"github.com/victorkt/flaggio/internal/errors"
 	"github.com/victorkt/flaggio/internal/flaggio"
 	"github.com/victorkt/flaggio/internal/repository"
@@ -23,6 +24,9 @@ type SegmentRepository struct {
 
 // FindAll returns a list of segments, based on an optional offset and limit.
 func (r *SegmentRepository) FindAll(ctx context.Context, offset, limit *int64) ([]*flaggio.Segment, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "MongoSegmentRepository.FindAll")
+	defer span.Finish()
+
 	cursor, err := r.col.Find(ctx, bson.M{}, &options.FindOptions{
 		Skip:      offset,
 		Limit:     limit,
@@ -52,6 +56,9 @@ func (r *SegmentRepository) FindAll(ctx context.Context, offset, limit *int64) (
 
 // FindByID returns a segment that has a given ID.
 func (r *SegmentRepository) FindByID(ctx context.Context, idHex string) (*flaggio.Segment, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "MongoSegmentRepository.FindByID")
+	defer span.Finish()
+
 	id, err := primitive.ObjectIDFromHex(idHex)
 	if err != nil {
 		return nil, err
@@ -70,6 +77,9 @@ func (r *SegmentRepository) FindByID(ctx context.Context, idHex string) (*flaggi
 
 // Create creates a new segment.
 func (r *SegmentRepository) Create(ctx context.Context, f flaggio.NewSegment) (string, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "MongoSegmentRepository.Create")
+	defer span.Finish()
+
 	id := primitive.NewObjectID()
 	_, err := r.col.InsertOne(ctx, &segmentModel{
 		ID:          id,
@@ -86,6 +96,9 @@ func (r *SegmentRepository) Create(ctx context.Context, f flaggio.NewSegment) (s
 
 // Update updates a segment.
 func (r *SegmentRepository) Update(ctx context.Context, idHex string, f flaggio.UpdateSegment) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "MongoSegmentRepository.Update")
+	defer span.Finish()
+
 	id, err := primitive.ObjectIDFromHex(idHex)
 	if err != nil {
 		return err
@@ -116,6 +129,9 @@ func (r *SegmentRepository) Update(ctx context.Context, idHex string, f flaggio.
 
 // Delete deletes a segment.
 func (r *SegmentRepository) Delete(ctx context.Context, idHex string) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "MongoSegmentRepository.Delete")
+	defer span.Finish()
+
 	id, err := primitive.ObjectIDFromHex(idHex)
 	if err != nil {
 		return err

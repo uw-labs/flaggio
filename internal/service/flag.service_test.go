@@ -2,6 +2,7 @@ package service_test
 
 import (
 	"context"
+	"reflect"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -9,6 +10,10 @@ import (
 	"github.com/victorkt/flaggio/internal/flaggio"
 	repository_mock "github.com/victorkt/flaggio/internal/repository/mocks"
 	"github.com/victorkt/flaggio/internal/service"
+)
+
+var (
+	ctxInterface = reflect.TypeOf((*context.Context)(nil)).Elem()
 )
 
 func TestFlagService_Evaluate(t *testing.T) {
@@ -70,10 +75,10 @@ func TestFlagService_Evaluate(t *testing.T) {
 			segmentesults := make([]*flaggio.Segment, 0)
 
 			flagRepo.EXPECT().
-				FindByKey(ctx, tt.flagKey).
+				FindByKey(gomock.AssignableToTypeOf(ctxInterface), tt.flagKey).
 				Times(1).Return(flagResults, nil)
 			segmentRepo.EXPECT().
-				FindAll(ctx, nil, nil).
+				FindAll(gomock.AssignableToTypeOf(ctxInterface), nil, nil).
 				Times(1).Return(segmentesults, nil)
 
 			result, err := flagService.Evaluate(ctx, tt.flagKey, tt.evaluationRequest)
@@ -143,10 +148,10 @@ func TestFlagService_EvaluateAll(t *testing.T) {
 			segmentesults := make([]*flaggio.Segment, 0)
 
 			flagRepo.EXPECT().
-				FindAll(ctx, nil, nil, nil).
+				FindAll(gomock.AssignableToTypeOf(ctxInterface), nil, nil, nil).
 				Times(1).Return(flagResults, nil)
 			segmentRepo.EXPECT().
-				FindAll(ctx, nil, nil).
+				FindAll(gomock.AssignableToTypeOf(ctxInterface), nil, nil).
 				Times(1).Return(segmentesults, nil)
 
 			result, err := flagService.EvaluateAll(ctx, tt.evaluationRequest)

@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 
+	"github.com/opentracing/opentracing-go"
 	"github.com/victorkt/flaggio/internal/flaggio"
 	"github.com/victorkt/flaggio/internal/repository"
 )
@@ -27,6 +28,9 @@ type flagService struct {
 
 // Evaluate evaluates a flag by key, returning a value based on the user context
 func (s *flagService) Evaluate(ctx context.Context, flagKey string, req *EvaluationRequest) (*EvaluationResponse, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "FlagService.Evaluate")
+	defer span.Finish()
+
 	flg, err := s.flagsRepo.FindByKey(ctx, flagKey)
 	if err != nil {
 		return nil, err
@@ -38,7 +42,9 @@ func (s *flagService) Evaluate(ctx context.Context, flagKey string, req *Evaluat
 
 	flg.Populate(sgmts)
 
+	evalSpan, _ := opentracing.StartSpanFromContext(ctx, "flaggio.Evaluate")
 	res, err := flaggio.Evaluate(req.UserContext, flg)
+	evalSpan.Finish()
 	if err != nil {
 		return nil, err
 	}
@@ -60,6 +66,9 @@ func (s *flagService) Evaluate(ctx context.Context, flagKey string, req *Evaluat
 
 // EvaluateAll evaluates all flags, returning a value or an error for each flag based on the user context
 func (s *flagService) EvaluateAll(ctx context.Context, req *EvaluationRequest) (*EvaluationsResponse, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "FlagService.EvaluateAll")
+	defer span.Finish()
+
 	flgs, err := s.flagsRepo.FindAll(ctx, nil, nil, nil)
 	if err != nil {
 		return nil, err
@@ -70,6 +79,7 @@ func (s *flagService) EvaluateAll(ctx context.Context, req *EvaluationRequest) (
 	}
 
 	evals := make([]*flaggio.Evaluation, flgs.Total)
+	evalSpan, _ := opentracing.StartSpanFromContext(ctx, "flaggio.Evaluate")
 	for idx, flg := range flgs.Flags {
 		flg.Populate(sgmts)
 
@@ -85,6 +95,7 @@ func (s *flagService) EvaluateAll(ctx context.Context, req *EvaluationRequest) (
 
 		evals[idx] = evltn
 	}
+	evalSpan.Finish()
 
 	evalRes := &EvaluationsResponse{
 		Evaluations: evals,

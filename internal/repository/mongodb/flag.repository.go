@@ -5,6 +5,7 @@ import (
 	"regexp"
 	"time"
 
+	"github.com/opentracing/opentracing-go"
 	"github.com/victorkt/flaggio/internal/errors"
 	"github.com/victorkt/flaggio/internal/flaggio"
 	"github.com/victorkt/flaggio/internal/repository"
@@ -24,6 +25,9 @@ type FlagRepository struct {
 
 // FindAll returns a list of flags, based on an optional offset and limit.
 func (r *FlagRepository) FindAll(ctx context.Context, search *string, offset, limit *int64) (*flaggio.FlagResults, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "MongoFlagRepository.FindAll")
+	defer span.Finish()
+
 	filter := bson.M{}
 	if search != nil {
 		filter["$or"] = []bson.M{
@@ -68,6 +72,9 @@ func (r *FlagRepository) FindAll(ctx context.Context, search *string, offset, li
 
 // FindByID returns a flag that has a given ID.
 func (r *FlagRepository) FindByID(ctx context.Context, idHex string) (*flaggio.Flag, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "MongoFlagRepository.FindByID")
+	defer span.Finish()
+
 	id, err := primitive.ObjectIDFromHex(idHex)
 	if err != nil {
 		return nil, err
@@ -86,6 +93,9 @@ func (r *FlagRepository) FindByID(ctx context.Context, idHex string) (*flaggio.F
 
 // FindByKey returns a flag that has a given key.
 func (r *FlagRepository) FindByKey(ctx context.Context, key string) (*flaggio.Flag, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "MongoFlagRepository.FindByKey")
+	defer span.Finish()
+
 	// filter for the flag key
 	filter := bson.M{"key": key}
 
@@ -101,6 +111,9 @@ func (r *FlagRepository) FindByKey(ctx context.Context, key string) (*flaggio.Fl
 
 // Create creates a new flag.
 func (r *FlagRepository) Create(ctx context.Context, f flaggio.NewFlag) (string, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "MongoFlagRepository.Create")
+	defer span.Finish()
+
 	id := primitive.NewObjectID()
 	_, err := r.col.InsertOne(ctx, &flagModel{
 		ID:          id,
@@ -121,6 +134,9 @@ func (r *FlagRepository) Create(ctx context.Context, f flaggio.NewFlag) (string,
 
 // Update updates a flag.
 func (r *FlagRepository) Update(ctx context.Context, idHex string, f flaggio.UpdateFlag) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "MongoFlagRepository.Update")
+	defer span.Finish()
+
 	id, err := primitive.ObjectIDFromHex(idHex)
 	if err != nil {
 		return err
@@ -174,6 +190,9 @@ func (r *FlagRepository) Update(ctx context.Context, idHex string, f flaggio.Upd
 
 // Delete deletes a flag.
 func (r *FlagRepository) Delete(ctx context.Context, idHex string) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "MongoFlagRepository.Delete")
+	defer span.Finish()
+
 	id, err := primitive.ObjectIDFromHex(idHex)
 	if err != nil {
 		return err
