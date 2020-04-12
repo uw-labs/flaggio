@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { Button, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Tooltip } from '@material-ui/core';
+import { Button, Divider, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Tooltip } from '@material-ui/core';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import { makeStyles } from '@material-ui/styles';
 import ConstraintFields from '../../../../components/ConstraintFields';
+import DistributionFields from '../../../../components/DistributionFields';
 import * as copy from '../../copy';
 import { BooleanType } from '../../copy';
-import { OperationTypes, VariantTypes } from '../../models';
+import { OperationTypes, PercentageRollout, VariantTypes } from '../../models';
 
 const AllowMaxConstraints = 5;
 
@@ -43,8 +44,11 @@ const RuleFields = props => {
     onAddConstraint,
     onUpdateConstraint,
     onDeleteConstraint,
+    onUpdateDistribution,
   } = props;
   const classes = useStyles();
+  const sum = rule.distributions.reduce((total, d) => (total + Number(d.percentage)), 0);
+
   return (
     <Paper className={classes.paper}>
       <Grid container spacing={1}>
@@ -73,8 +77,8 @@ const RuleFields = props => {
           >
             <InputLabel>Return</InputLabel>
             <Select
-              value={rule.distributions[0].variant.id}
-              name="distributions[0].variant.id"
+              value={rule.returnVariant}
+              name="returnVariant"
               onChange={onUpdateRule}
               labelWidth={50}
             >
@@ -83,6 +87,9 @@ const RuleFields = props => {
                   {typeof variant.value === VariantTypes.BOOLEAN ? BooleanType[variant.value] : variant.value}
                 </MenuItem>
               ))}
+              <MenuItem key="distribution" value={PercentageRollout}>
+                a percentage rollout
+              </MenuItem>
             </Select>
           </FormControl>
         </Grid>
@@ -98,6 +105,24 @@ const RuleFields = props => {
             </Button>
           </Tooltip>
         </Grid>
+
+        {rule.returnVariant === PercentageRollout && (
+          <Grid item xs={12}>
+            <Divider/>
+            {rule.distributions.map((distribution, idx) => (
+              <Fragment key={distribution.id}>
+                <DistributionFields
+                  key={distribution.id}
+                  distribution={distribution}
+                  sum={idx === 0 ? sum : null}
+                  variant={variants.find(v => v.id === distribution.variant.id)}
+                  onUpdateDistribution={onUpdateDistribution(`distributions[${idx}].`)}
+                />
+                <Divider variant="middle"/>
+              </Fragment>
+            ))}
+          </Grid>
+        )}
       </Grid>
     </Paper>
   );
@@ -113,6 +138,7 @@ RuleFields.propTypes = {
   onAddConstraint: PropTypes.func.isRequired,
   onUpdateConstraint: PropTypes.func.isRequired,
   onDeleteConstraint: PropTypes.func.isRequired,
+  onUpdateDistribution: PropTypes.func.isRequired,
 };
 
 export default RuleFields;

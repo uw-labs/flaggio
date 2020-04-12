@@ -151,7 +151,7 @@ FlagsTable.propTypes = {
   onToggleFlag: PropTypes.func.isRequired,
   page: PropTypes.number.isRequired,
   rowsPerPage: PropTypes.number.isRequired,
-  rowsPerPageOptions: PropTypes.arrayOf(PropTypes.number).isRequired,
+  rowsPerPageOptions: PropTypes.array.isRequired,
   onPageChange: PropTypes.func.isRequired,
   onRowsPerPageChange: PropTypes.func.isRequired,
 };

@@ -53,6 +53,7 @@ type ComplexityRoot struct {
 	}
 
 	Distribution struct {
+		ID         func(childComplexity int) int
 		Percentage func(childComplexity int) int
 		Variant    func(childComplexity int) int
 	}
@@ -198,6 +199,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Constraint.Values(childComplexity), true
+
+	case "Distribution.id":
+		if e.complexity.Distribution.ID == nil {
+			break
+		}
+
+		return e.complexity.Distribution.ID(childComplexity), true
 
 	case "Distribution.percentage":
 		if e.complexity.Distribution.Percentage == nil {
@@ -739,6 +747,7 @@ type Constraint {
 }
 
 type Distribution {
+    id: ID!
     variant: Variant!
     percentage: Int!
 }
@@ -1487,6 +1496,40 @@ func (ec *executionContext) _Constraint_values(ctx context.Context, field graphq
 	res := resTmp.([]interface{})
 	fc.Result = res
 	return ec.marshalNAny2ᚕinterface(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Distribution_id(ctx context.Context, field graphql.CollectedField, obj *flaggio.Distribution) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Distribution",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Distribution_variant(ctx context.Context, field graphql.CollectedField, obj *flaggio.Distribution) (ret graphql.Marshaler) {
@@ -4806,6 +4849,11 @@ func (ec *executionContext) _Distribution(ctx context.Context, sel ast.Selection
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Distribution")
+		case "id":
+			out.Values[i] = ec._Distribution_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "variant":
 			out.Values[i] = ec._Distribution_variant(ctx, field, obj)
 			if out.Values[i] == graphql.Null {

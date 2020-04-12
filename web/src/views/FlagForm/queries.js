@@ -17,6 +17,7 @@ export const FLAG_QUERY = gql`
                     values
                 }
                 distributions {
+                    id
                     variant {
                         id
                     }

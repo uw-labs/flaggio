@@ -112,6 +112,7 @@ type distributionModel struct {
 
 func (d distributionModel) asDistribution(vrnts map[string]*flaggio.Variant) *flaggio.Distribution {
 	return &flaggio.Distribution{
+		ID:         d.ID.Hex(),
 		Variant:    vrnts[d.VariantID.Hex()],
 		Percentage: d.Percentage,
 	}

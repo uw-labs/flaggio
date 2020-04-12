@@ -1,5 +1,5 @@
 import { v1 as uuid } from 'uuid';
-import { isArray } from 'lodash';
+import { get, isArray, isNil } from 'lodash';
 import { Operations, VariantType } from './copy';
 import { cast } from '../../helpers';
 
@@ -9,8 +9,10 @@ export const OperationTypes = Object.keys(Operations)
 export const VariantTypes = Object.keys(VariantType)
   .reduce((vts, vt) => ({ ...vts, [vt]: vt.toLowerCase() }), {});
 
+export const PercentageRollout = 'ROLLOUT';
+
 export const newFlag = (flag = {}, flagType) => {
-  const isNew = !flag.id;
+  const isNew = flag.__new || !flag.id;
   const variants = isArray(flag.variants) && flag.variants.length > 0 ?
     flag.variants.map(v => newVariant(v)) :
     createNewVariants(flagType);
@@ -23,14 +25,14 @@ export const newFlag = (flag = {}, flagType) => {
     key: flag.key || '',
     description: flag.description || '',
     variants,
-    rules: flag.rules ? flag.rules.map(r => newRule(r)) : [],
+    rules: flag.rules ? flag.rules.map(r => newRule(r, variants)) : [],
     defaultVariantWhenOn: flag.defaultVariantWhenOn || { id: (isNew && var1 && var1.id) || '' },
     defaultVariantWhenOff: flag.defaultVariantWhenOff || { id: (isNew && var2 && var2.id) || '' },
   }
 };
 
 export const newVariant = (variant = {}) => ({
-  __new: !variant.id,
+  __new: variant.__new || !variant.id,
   id: variant.id || uuid(),
   description: variant.description || '',
   value: variant.value !== undefined ? variant.value : '',
@@ -38,16 +40,30 @@ export const newVariant = (variant = {}) => ({
     variant.value !== undefined ? typeof variant.value : VariantTypes.BOOLEAN,
 });
 
-export const newRule = (rule = {}) => ({
-  __new: !rule.id,
-  id: rule.id || uuid(),
-  constraints: rule.constraints ?
-    rule.constraints.map(c => newConstraint(c)) :
-    [newConstraint()],
-  distributions: rule.distributions ?
-    rule.distributions.map(d => newDistribution(d)) :
-    [newDistribution()],
-});
+export const newRule = (rule = {}, variants) => {
+  const isNew = rule.__new || !rule.id;
+
+  // ensure there is one distribution for each variant
+  const distributions = variants.map(v => {
+    const d = rule.distributions && rule.distributions.find(d => d.variant.id === v.id);
+    return newDistribution(d ? d : { variant: v, percentage: 0 });
+  });
+
+  // check if there is a distribution with 100% chance (means this was the value selected to be returned)
+  let returnVariant = get(distributions.find(d => d.percentage === 100), 'variant.id', '');
+  // no return variant found, if the flag is not new then the return value must be a percentage rollout
+  if (!returnVariant && !isNew) returnVariant = PercentageRollout;
+
+  return {
+    __new: isNew,
+    id: rule.id || uuid(),
+    returnVariant,
+    constraints: rule.constraints ?
+      rule.constraints.map(c => newConstraint(c)) :
+      [newConstraint()],
+    distributions,
+  }
+};
 
 export const newConstraint = (constraint = {}) => ({
   __new: !constraint.id,
@@ -63,7 +79,7 @@ export const newDistribution = (distribution = {}) => ({
   __new: !distribution.id,
   id: distribution.id || uuid(),
   variant: distribution.variant || { id: '' },
-  percentage: distribution.percentage || 100,
+  percentage: isNil(distribution.percentage) ? 100 : distribution.percentage,
 });
 
 export const formatFlag = (flag, variantsRef) => ({
@@ -81,7 +97,12 @@ export const formatVariant = variant => ({
 
 export const formatRule = (rule, variantsRef) => ({
   constraints: rule.constraints.map(c => formatConstraint(c)),
-  distributions: rule.distributions.map(d => formatDistribution(d, variantsRef)),
+  distributions: rule.distributions.map((d, idx) => {
+    if (rule.returnVariant !== PercentageRollout) {
+      d.percentage = idx === 0 ? 100 : 0;
+    }
+    return formatDistribution(d, variantsRef);
+  }),
 });
 
 export const formatConstraint = constraint => ({

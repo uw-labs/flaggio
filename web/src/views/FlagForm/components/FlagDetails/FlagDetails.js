@@ -25,7 +25,7 @@ import { Link } from 'react-router-dom';
 import { reject, set } from 'lodash';
 import slugify from '@sindresorhus/slugify';
 import { DeleteFlagDialog, RuleFields, VariantFields } from '../';
-import { newConstraint, newRule, newVariant, VariantTypes } from '../../models';
+import { newConstraint, newFlag, newRule, newVariant, VariantTypes } from '../../models';
 import { BooleanType } from '../../copy';
 
 const AllowMaxVariants = 5;
@@ -51,14 +51,14 @@ const FlagDetails = props => {
   const [deletedItems, setDeletedItems] = React.useState([]);
   const classes = useStyles();
 
-  const handleAddVariant = () => setFlag({ ...flag, variants: [...flag.variants, newVariant()] });
+  const handleAddVariant = () => setFlag(newFlag({ ...flag, variants:  [...flag.variants, newVariant()] }));
   const handleDelVariant = variant => () => {
     setDeletedItems([...deletedItems, { type: 'variant', id: variant.id, flagId: flag.id }]);
     const newVariants = reject(flag.variants, v => v === variant);
     if (newVariants.length === 0) newVariants.push(newVariant());
-    setFlag({ ...flag, variants: newVariants });
+    setFlag(newFlag({ ...flag, variants: newVariants }));
   };
-  const handleAddRule = () => setFlag({ ...flag, rules: [...flag.rules, newRule()] });
+  const handleAddRule = () => setFlag({ ...flag, rules: [...flag.rules, newRule({}, flag.variants)] });
   const handleDelRule = rule => () => {
     setDeletedItems([...deletedItems, { type: 'rule', id: rule.id, flagId: flag.id }]);
     setFlag({ ...flag, rules: reject(flag.rules, r => r === rule) });
@@ -251,6 +251,7 @@ const FlagDetails = props => {
                   onAddConstraint={handleAddConstraint(rule)}
                   onUpdateConstraint={handleChange2Deep(`rules[${idx}].`)}
                   onDeleteConstraint={handleDelConstraint(rule)}
+                  onUpdateDistribution={handleChange2Deep(`rules[${idx}].`)}
                 />
               ))
             }
