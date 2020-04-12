@@ -32,7 +32,7 @@ const ConstraintFields = props => {
   const classes = useStyles();
   const {
     constraint,
-    isLast,
+    showAddButton,
     operations,
     segments,
     copy: { BooleanType, Operations },
@@ -217,7 +217,7 @@ const ConstraintFields = props => {
           </Button>
         </Tooltip>
         {
-          isLast ? (
+          showAddButton ? (
             <Tooltip title="New constraint" placement="top">
               <Button
                 size="small"
@@ -247,7 +247,7 @@ const ConstraintFields = props => {
 ConstraintFields.propTypes = {
   constraint: PropTypes.object.isRequired,
   segments: PropTypes.arrayOf(PropTypes.object),
-  isLast: PropTypes.bool.isRequired,
+  showAddButton: PropTypes.bool.isRequired,
   copy: PropTypes.shape({
     BooleanType: PropTypes.object.isRequired,
     Operations: PropTypes.object.isRequired,

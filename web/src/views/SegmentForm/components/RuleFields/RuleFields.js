@@ -7,6 +7,8 @@ import ConstraintFields from '../../../../components/ConstraintFields';
 import * as copy from '../../copy';
 import { OperationTypes } from '../../models';
 
+const AllowMaxConstraints = 5;
+
 const useStyles = makeStyles(theme => ({
   formControl: {
     fullWidth: true,
@@ -47,7 +49,7 @@ const RuleFields = props => {
             <ConstraintFields
               key={constraint.id}
               constraint={constraint}
-              isLast={idx === rule.constraints.length - 1}
+              showAddButton={idx === rule.constraints.length - 1 && rule.constraints.length < AllowMaxConstraints}
               operations={operations}
               copy={copy}
               operationTypes={OperationTypes}

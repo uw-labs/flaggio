@@ -19,6 +19,8 @@ import { reject, set } from 'lodash';
 import { DeleteSegmentDialog, RuleFields } from '../';
 import { newConstraint, newRule } from '../../models';
 
+const AllowMaxRules = 5;
+
 const useStyles = makeStyles(theme => ({
   root: {},
   formControl: {
@@ -68,6 +70,7 @@ const SegmentDetails = props => {
     );
   };
   const handleChange2Deep = (prefix = '') => (prefix2 = '') => handleChange(prefix, prefix2);
+  const showAddRuleButton = segment.rules.length < AllowMaxRules;
 
   return (
     <Card
@@ -127,18 +130,20 @@ const SegmentDetails = props => {
               />
             ))
           }
-          <Grid container>
-            <Grid item xs={12}>
-              <Button
-                color="inherit"
-                variant="outlined"
-                className={classes.actionButton}
-                onClick={handleAddRule}
-              >
-                New rule
-              </Button>
+          {showAddRuleButton && (
+            <Grid container>
+              <Grid item xs={12}>
+                <Button
+                  color="inherit"
+                  variant="outlined"
+                  className={classes.actionButton}
+                  onClick={handleAddRule}
+                >
+                  New rule
+                </Button>
+              </Grid>
             </Grid>
-          </Grid>
+          )}
         </CardContent>
 
         <Divider/>

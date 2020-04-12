@@ -8,6 +8,8 @@ import * as copy from '../../copy';
 import { BooleanType } from '../../copy';
 import { OperationTypes, VariantTypes } from '../../models';
 
+const AllowMaxConstraints = 5;
+
 const useStyles = makeStyles(theme => ({
   formControl: {
     fullWidth: true,
@@ -52,7 +54,7 @@ const RuleFields = props => {
               key={constraint.id}
               constraint={constraint}
               segments={segments}
-              isLast={idx === rule.constraints.length - 1}
+              showAddButton={idx === rule.constraints.length - 1 && rule.constraints.length < AllowMaxConstraints}
               operations={operations}
               copy={copy}
               operationTypes={OperationTypes}

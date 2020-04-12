@@ -28,6 +28,9 @@ import { DeleteFlagDialog, RuleFields, VariantFields } from '../';
 import { newConstraint, newRule, newVariant, VariantTypes } from '../../models';
 import { BooleanType } from '../../copy';
 
+const AllowMaxVariants = 5;
+const AllowMaxRules = 5;
+
 const useStyles = makeStyles(theme => ({
   root: {},
   formControl: {
@@ -91,6 +94,7 @@ const FlagDetails = props => {
     if (flag.key) return;
     handleChange()({ target: { name: 'key', value: getKeySlug() } });
   };
+  const showAddRuleButton = flag.rules.length < AllowMaxRules;
 
   return (
     <Card
@@ -169,7 +173,7 @@ const FlagDetails = props => {
                 <VariantFields
                   key={variant.id}
                   variant={variant}
-                  isLast={idx === flag.variants.length - 1}
+                  showAddButton={idx === flag.variants.length - 1 && flag.variants.length < AllowMaxVariants}
                   onAddVariant={handleAddVariant}
                   onUpdateVariant={handleChange(`variants[${idx}].`)}
                   onDeleteVariant={handleDelVariant(variant)}
@@ -250,18 +254,20 @@ const FlagDetails = props => {
                 />
               ))
             }
-            <Grid container>
-              <Grid item xs={12}>
-                <Button
-                  color="inherit"
-                  variant="outlined"
-                  className={classes.actionButton}
-                  onClick={handleAddRule}
-                >
-                  New rule
-                </Button>
+            {showAddRuleButton && (
+              <Grid container>
+                <Grid item xs={12}>
+                  <Button
+                    color="inherit"
+                    variant="outlined"
+                    className={classes.actionButton}
+                    onClick={handleAddRule}
+                  >
+                    New rule
+                  </Button>
+                </Grid>
               </Grid>
-            </Grid>
+            )}
           </CardContent>
         </Box>
 

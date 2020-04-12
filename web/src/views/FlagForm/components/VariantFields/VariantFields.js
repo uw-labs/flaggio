@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const VariantFields = ({ variant, isLast, onAddVariant, onUpdateVariant, onDeleteVariant }) => {
+const VariantFields = ({ variant, showAddButton, onAddVariant, onUpdateVariant, onDeleteVariant }) => {
   const classes = useStyles();
   return (
     <Grid container spacing={1}>
@@ -118,7 +118,7 @@ const VariantFields = ({ variant, isLast, onAddVariant, onUpdateVariant, onDelet
           </Button>
         </Tooltip>
         {
-          isLast ? (
+          showAddButton ? (
             <Tooltip title="New variant" placement="top">
               <Button
                 size="small"
@@ -147,7 +147,7 @@ const VariantFields = ({ variant, isLast, onAddVariant, onUpdateVariant, onDelet
 
 VariantFields.propTypes = {
   variant: PropTypes.object.isRequired,
-  isLast: PropTypes.bool.isRequired,
+  showAddButton: PropTypes.bool.isRequired,
   onAddVariant: PropTypes.func.isRequired,
   onUpdateVariant: PropTypes.func.isRequired,
   onDeleteVariant: PropTypes.func.isRequired,
