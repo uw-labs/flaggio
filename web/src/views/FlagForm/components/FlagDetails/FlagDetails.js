@@ -51,7 +51,13 @@ const FlagDetails = props => {
   const [deletedItems, setDeletedItems] = React.useState([]);
   const classes = useStyles();
 
-  const handleAddVariant = () => setFlag(newFlag({ ...flag, variants:  [...flag.variants, newVariant()] }));
+  const handleAddVariant = () => setFlag(newFlag({
+    ...flag, variants: [
+      ...flag.variants,
+      // create a new variant of the same type as the previous one
+      newVariant({ value: '', type: flag.variants[flag.variants.length - 1].type }),
+    ],
+  }));
   const handleDelVariant = variant => () => {
     setDeletedItems([...deletedItems, { type: 'variant', id: variant.id, flagId: flag.id }]);
     const newVariants = reject(flag.variants, v => v === variant);
