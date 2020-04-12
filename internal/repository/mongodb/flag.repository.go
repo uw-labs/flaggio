@@ -36,9 +36,10 @@ func (r *FlagRepository) FindAll(ctx context.Context, search *string, offset, li
 		}
 	}
 	cursor, err := r.col.Find(ctx, filter, &options.FindOptions{
-		Skip:  offset,
-		Limit: limit,
-		Sort:  bson.M{"key": 1},
+		Skip:      offset,
+		Limit:     limit,
+		Sort:      bson.M{"key": 1},
+		Collation: &options.Collation{Locale: "en"},
 	})
 	if err != nil {
 		return nil, err
