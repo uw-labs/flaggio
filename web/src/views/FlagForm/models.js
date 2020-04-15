@@ -97,9 +97,9 @@ export const formatVariant = variant => ({
 
 export const formatRule = (rule, variantsRef) => ({
   constraints: rule.constraints.map(c => formatConstraint(c)),
-  distributions: rule.distributions.map((d, idx) => {
+  distributions: rule.distributions.map(d => {
     if (rule.returnVariant !== PercentageRollout) {
-      d.percentage = idx === 0 ? 100 : 0;
+      d.percentage = d.variant.id === rule.returnVariant ? 100 : 0;
     }
     return formatDistribution(d, variantsRef);
   }),

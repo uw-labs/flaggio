@@ -120,7 +120,7 @@ func startAdmin(ctx context.Context, wg *sync.WaitGroup, logger *logrus.Entry) e
 		"tracing":    cfg.isTracingEnabled(),
 		"listening":  cfg.adminAddr,
 		"playground": cfg.playgroundEnabled,
-		"admin_ui":   cfg.noAdminUI,
+		"admin_ui":   !cfg.noAdminUI,
 	}).Info("admin server started")
 
 	// setup http server
