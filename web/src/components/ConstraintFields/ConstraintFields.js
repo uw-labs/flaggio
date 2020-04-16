@@ -1,7 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { includes } from 'lodash';
-import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip } from '@material-ui/core';
+import {
+  Button,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Tooltip,
+  Typography,
+} from '@material-ui/core';
 import RemoveIcon from '@material-ui/icons/RemoveCircleOutline';
 import AddIcon from '@material-ui/icons/AddCircleOutline';
 import { makeStyles } from '@material-ui/styles';
@@ -26,6 +36,16 @@ const useStyles = makeStyles(theme => ({
     background: 'white',
     padding: theme.spacing(0, 1, 0, 1),
   },
+  propertyGrid: {
+    justifyContent: 'space-between',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  constraintLogicLabel: {
+    minWidth: theme.spacing(5),
+    textAlign: 'center',
+    paddingRight: theme.spacing(1),
+  },
 }));
 
 const ConstraintFields = props => {
@@ -33,6 +53,7 @@ const ConstraintFields = props => {
   const {
     constraint,
     showAddButton,
+    first,
     operations,
     segments,
     copy: { BooleanType, Operations },
@@ -62,7 +83,14 @@ const ConstraintFields = props => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={3}>
+      <Grid item xs={3} className={classes.propertyGrid}>
+        <Typography
+          className={classes.constraintLogicLabel}
+          variant="caption"
+          display="block"
+        >
+          {first ? 'IF' : 'AND'}
+        </Typography>
         <TextField
           label="Property"
           value={constraint.property}
@@ -248,6 +276,7 @@ ConstraintFields.propTypes = {
   constraint: PropTypes.object.isRequired,
   segments: PropTypes.arrayOf(PropTypes.object),
   showAddButton: PropTypes.bool.isRequired,
+  first: PropTypes.bool.isRequired,
   copy: PropTypes.shape({
     BooleanType: PropTypes.object.isRequired,
     Operations: PropTypes.object.isRequired,

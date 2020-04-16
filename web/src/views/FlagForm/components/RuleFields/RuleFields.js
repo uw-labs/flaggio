@@ -59,6 +59,7 @@ const RuleFields = props => {
               constraint={constraint}
               segments={segments}
               showAddButton={idx === rule.constraints.length - 1 && rule.constraints.length < AllowMaxConstraints}
+              first={idx === 0}
               operations={operations}
               copy={copy}
               operationTypes={OperationTypes}
