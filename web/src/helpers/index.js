@@ -1,1 +1,20 @@
 export { cast } from './cast';
+export {
+  newFlag,
+  newVariant,
+  newRule,
+  newConstraint,
+  newDistribution,
+  formatFlag,
+  formatVariant,
+  formatRule,
+  formatConstraint,
+  formatDistribution,
+  newSegment,
+  newSegmentRule,
+  formatSegment,
+  formatSegmentRule,
+  OperationTypes,
+  PercentageRollout,
+  VariantTypes,
+} from './models';

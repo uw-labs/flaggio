@@ -7,7 +7,7 @@ import ConstraintFields from '../../../../components/ConstraintFields';
 import DistributionFields from '../../../../components/DistributionFields';
 import * as copy from '../../copy';
 import { BooleanType } from '../../copy';
-import { OperationTypes, PercentageRollout, VariantTypes } from '../../models';
+import { OperationTypes, PercentageRollout, VariantTypes } from '../../../../helpers';
 
 const AllowMaxConstraints = 5;
 

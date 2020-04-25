@@ -14,7 +14,7 @@ import {
   UPDATE_SEGMENT_QUERY,
   UPDATE_SEGMENT_RULE_QUERY,
 } from './queries';
-import { formatRule, formatSegment, newSegment } from './models';
+import { formatSegmentRule, formatSegment, newSegment } from '../../helpers';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -59,7 +59,7 @@ const SegmentForm = () => {
         const variables = {
           id: rule.id,
           segmentId: segment.id,
-          input: formatRule(rule, variantsRef),
+          input: formatSegmentRule(rule, variantsRef),
         };
         if (rule.__new) {
           return createRule({ variables });

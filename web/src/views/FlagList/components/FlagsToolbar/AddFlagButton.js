@@ -10,7 +10,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import { makeStyles } from '@material-ui/styles';
 import { Link } from 'react-router-dom';
-import { VariantTypes } from '../../../FlagForm/models';
+import { VariantTypes } from '../../../../helpers';
 
 const options = [
   { name: 'Add boolean flag', to: { pathname: '/flags/new', flagType: VariantTypes.BOOLEAN } },

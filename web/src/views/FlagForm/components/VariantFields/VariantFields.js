@@ -14,7 +14,7 @@ import {
 import { makeStyles } from '@material-ui/styles';
 import RemoveIcon from '@material-ui/icons/RemoveCircleOutline';
 import AddIcon from '@material-ui/icons/AddCircleOutline';
-import { VariantTypes } from '../../models';
+import { VariantTypes } from '../../../../helpers';
 import { BooleanType, VariantType } from '../../copy';
 
 const useStyles = makeStyles(theme => ({

@@ -25,7 +25,7 @@ import { Link } from 'react-router-dom';
 import { reject, set } from 'lodash';
 import slugify from '@sindresorhus/slugify';
 import { DeleteFlagDialog, RuleFields, VariantFields } from '../';
-import { newConstraint, newFlag, newRule, newVariant, VariantTypes } from '../../models';
+import { newConstraint, newFlag, newRule, newVariant, VariantTypes } from '../../../../helpers';
 import { BooleanType } from '../../copy';
 
 const AllowMaxVariants = 5;

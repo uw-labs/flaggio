@@ -16,7 +16,7 @@ import RemoveIcon from '@material-ui/icons/RemoveCircleOutline';
 import AddIcon from '@material-ui/icons/AddCircleOutline';
 import { makeStyles } from '@material-ui/styles';
 import ChipInput from 'material-ui-chip-input'
-import { VariantTypes } from '../../views/FlagForm/models';
+import { VariantTypes } from '../../helpers';
 import { VariantType } from '../../views/FlagForm/copy';
 
 const useStyles = makeStyles(theme => ({
@@ -147,11 +147,11 @@ const ConstraintFields = props => {
               required
               onChange={e => {
                 onUpdateConstraint(e);
-                switch (e.target.value) {
-                  case VariantTypes.BOOLEAN:
-                    return onUpdateConstraint({ target: { name: 'values', value: [false] } });
-                  default:
-                    return onUpdateConstraint({ target: { name: 'values', value: [] } });
+                // reset constraint value
+                if (e.target.value === VariantTypes.BOOLEAN) {
+                  return onUpdateConstraint({ target: { name: 'values', value: [false] } });
+                } else {
+                  return onUpdateConstraint({ target: { name: 'values', value: [] } });
                 }
               }}
               labelWidth={30}

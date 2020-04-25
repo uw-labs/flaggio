@@ -17,7 +17,7 @@ import {
   UPDATE_FLAG_RULE_QUERY,
   UPDATE_VARIANT_QUERY,
 } from './queries';
-import { formatFlag, formatRule, formatVariant, newFlag, VariantTypes } from './models';
+import { formatFlag, formatRule, formatVariant, newFlag, VariantTypes } from '../../helpers';
 
 const useStyles = makeStyles(theme => ({
   root: {

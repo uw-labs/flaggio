@@ -17,7 +17,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { Link } from 'react-router-dom';
 import { reject, set } from 'lodash';
 import { DeleteSegmentDialog, RuleFields } from '../';
-import { newConstraint, newRule } from '../../models';
+import { newConstraint, newSegmentRule } from '../../../../helpers';
 
 const AllowMaxRules = 5;
 
@@ -40,8 +40,7 @@ const SegmentDetails = props => {
   const [deletedItems, setDeletedItems] = React.useState([]);
   const classes = useStyles();
 
-  // TODO: delete segments from flag rules
-  const handleAddRule = () => setSegment({ ...segment, rules: [...segment.rules, newRule()] });
+  const handleAddRule = () => setSegment({ ...segment, rules: [...segment.rules, newSegmentRule()] });
   const handleDelRule = rule => () => {
     setDeletedItems([...deletedItems, { type: 'rule', id: rule.id, segmentId: segment.id }]);
     setSegment({ ...segment, rules: reject(segment.rules, r => r === rule) });

@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/styles';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import ConstraintFields from '../../../../components/ConstraintFields';
 import * as copy from '../../copy';
-import { OperationTypes } from '../../models';
+import { OperationTypes } from '../../../../helpers';
 
 const AllowMaxConstraints = 5;
 

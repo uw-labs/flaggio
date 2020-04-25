@@ -1,13 +1,24 @@
 import { v1 as uuid } from 'uuid';
 import { get, isArray, isNil } from 'lodash';
-import { Operations, VariantType } from './copy';
-import { cast } from '../../helpers';
+import { cast } from '.';
 
-export const OperationTypes = Object.keys(Operations)
-  .reduce((ops, op) => ({ ...ops, [op]: op }), {});
+const Operations = [
+  'ONE_OF', 'NOT_ONE_OF',
+  'GREATER', 'GREATER_OR_EQUAL',
+  'LOWER', 'LOWER_OR_EQUAL',
+  'EXISTS', 'DOESNT_EXIST',
+  'CONTAINS', 'DOESNT_CONTAIN',
+  'STARTS_WITH', 'DOESNT_START_WITH',
+  'ENDS_WITH', 'DOESNT_END_WITH',
+  'MATCHES_REGEX', 'DOESNT_MATCH_REGEX',
+  'IS_IN_SEGMENT', 'ISNT_IN_SEGMENT',
+  'IS_IN_NETWORK',
+];
+export const OperationTypes = Operations.reduce((ops, op) => (
+  { ...ops, [op]: op }
+), {});
 
-export const VariantTypes = Object.keys(VariantType)
-  .reduce((vts, vt) => ({ ...vts, [vt]: vt.toLowerCase() }), {});
+export const VariantTypes = { BOOLEAN: 'boolean', NUMBER: 'number', STRING: 'string' };
 
 export const PercentageRollout = 'ROLLOUT';
 
@@ -65,15 +76,18 @@ export const newRule = (rule = {}, variants) => {
   }
 };
 
-export const newConstraint = (constraint = {}) => ({
-  __new: !constraint.id,
-  id: constraint.id || uuid(),
-  property: constraint.property || '',
-  operation: constraint.operation || OperationTypes.ONE_OF,
-  values: constraint.values || [],
-  type: constraint.type !== undefined ? constraint.type :
-    constraint.value !== undefined ? typeof constraint.value : VariantTypes.STRING,
-});
+export const newConstraint = (constraint = {}) => {
+  const values = constraint.values || [];
+  return {
+    __new: !constraint.id,
+    id: constraint.id || uuid(),
+    property: constraint.property || '',
+    operation: constraint.operation || OperationTypes.ONE_OF,
+    values,
+    type: constraint.type !== undefined ? constraint.type :
+      values[0] !== undefined ? typeof values[0] : VariantTypes.STRING,
+  }
+};
 
 export const newDistribution = (distribution = {}) => ({
   __new: !distribution.id,
@@ -115,6 +129,32 @@ export const formatConstraint = constraint => ({
 export const formatDistribution = (distribution, variantsRef) => ({
   variantId: variantsRef[distribution.variant.id] || distribution.variant.id,
   percentage: distribution.percentage,
+});
+
+export const newSegment = (segment = {}) => ({
+  __new: !segment.id,
+  id: segment.id || uuid(),
+  name: segment.name || '',
+  description: segment.description || '',
+  rules: segment.rules ? segment.rules.map(r => newSegmentRule(r)) : [],
+});
+
+export const newSegmentRule = (rule = {}) => ({
+  __new: !rule.id,
+  id: rule.id || uuid(),
+  constraints: rule.constraints ?
+    rule.constraints.map(c => newConstraint(c)) :
+    [newConstraint()],
+});
+
+export const formatSegment = segment => ({
+  key: segment.key,
+  name: segment.name,
+  description: segment.description,
+});
+
+export const formatSegmentRule = rule => ({
+  constraints: rule.constraints.map(c => formatConstraint(c)),
 });
 
 const createNewVariants = (type) => {

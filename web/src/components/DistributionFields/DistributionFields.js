@@ -3,7 +3,7 @@ import { Chip, Grid, TextField, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import PropTypes from 'prop-types';
 import { isNumber } from 'lodash';
-import { VariantTypes } from '../../views/FlagForm/models';
+import { VariantTypes } from '../../helpers';
 import { BooleanType } from '../../views/FlagForm/copy';
 
 const useStyles = makeStyles(theme => ({
