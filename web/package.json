@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@apollo/react-hooks": "3.1.5",
-    "@material-ui/core": "4.9.11",
+    "@material-ui/core": "4.9.12",
     "@material-ui/icons": "4.9.1",
     "@material-ui/styles": "4.9.10",
     "@sindresorhus/slugify": "0.11.0",
