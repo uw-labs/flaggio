@@ -39,12 +39,12 @@ const useStyles = makeStyles(theme => ({
   propertyGrid: {
     justifyContent: 'space-between',
     display: 'flex',
-    alignItems: 'center',
   },
   constraintLogicLabel: {
     minWidth: theme.spacing(5),
     textAlign: 'center',
     paddingRight: theme.spacing(1),
+    marginTop: theme.spacing(2.5),
   },
 }));
 
