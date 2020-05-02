@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const FlagsToolbar = props => {
-  const { className, onSearch, ...rest } = props;
+  const { className, search, onSearch, ...rest } = props;
 
   const classes = useStyles();
 
@@ -34,6 +34,7 @@ const FlagsToolbar = props => {
       <div className={classes.row}>
         <SearchInput
           className={classes.searchInput}
+          search={search}
           onChange={onSearch}
           placeholder="Search flag"
         />
@@ -45,6 +46,7 @@ const FlagsToolbar = props => {
 
 FlagsToolbar.propTypes = {
   className: PropTypes.string,
+  search: PropTypes.string,
   onSearch: PropTypes.func.isRequired,
 };
 

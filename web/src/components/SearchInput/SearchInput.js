@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React  from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { debounce } from 'lodash';
@@ -27,10 +27,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const SearchInput = props => {
-  const { className, onChange, style, ...rest } = props;
+  const { className, search, onChange, style, ...rest } = props;
 
   const classes = useStyles();
-  const handler = useCallback(debounce(onChange, 300), []);
+  const handler = debounce(onChange, 300);
 
   return (
     <Paper
@@ -44,7 +44,8 @@ const SearchInput = props => {
         autoFocus
         className={classes.input}
         disableUnderline
-        onChange={e => handler(e.target.value || undefined)}
+        defaultValue={search}
+        onChange={e => handler(e.target.value)}
       />
     </Paper>
   );
@@ -52,6 +53,7 @@ const SearchInput = props => {
 
 SearchInput.propTypes = {
   className: PropTypes.string,
+  search: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   style: PropTypes.object,
 };

@@ -18,6 +18,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const rowsPerPageKey = 'rowsPerPage';
+const searchKey = 'flagSearch';
 const rowsPerPageOptions = [10, 25, 50, { value: -1, label: 'All' }];
 
 function EmptyMessage({ message }) {
@@ -30,7 +31,7 @@ function EmptyMessage({ message }) {
 
 const FlagList = () => {
   const classes = useStyles();
-  const [search, setSearch] = useState();
+  const [search, setSearch] = useState(sessionStorage.getItem(searchKey) || '');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(Number(localStorage.getItem(rowsPerPageKey) || 25));
   const { loading, error, data } = useQuery(FLAGS_QUERY, {
@@ -68,10 +69,14 @@ const FlagList = () => {
 
   return (
     <div className={classes.root}>
-      <FlagsToolbar onSearch={v => {
-        setSearch(v);
-        setPage(0)
-      }}/>
+      <FlagsToolbar
+        search={search}
+        onSearch={v => {
+          setSearch(v);
+          sessionStorage.setItem(searchKey, v);
+          setPage(0);
+        }}
+      />
       <div className={classes.content}>
         {content}
       </div>
