@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/styles';
-import { useMutation, useQuery } from '@apollo/react-hooks';
-import { FlagsTable, FlagsToolbar } from './components';
-import { FLAGS_QUERY, TOGGLE_FLAG_QUERY } from './queries';
+import { useQuery } from '@apollo/react-hooks';
+import { UsersTable, UsersToolbar } from './components';
+import { USERS_QUERY } from './queries';
 import { CircularProgress, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const rowsPerPageKey = 'rowsPerPage';
-const searchKey = 'flagSearch';
+const searchKey = 'userSearch';
 const rowsPerPageOptions = [10, 25, 50, { value: -1, label: 'All' }];
 
 function EmptyMessage({ message }) {
@@ -29,32 +29,30 @@ function EmptyMessage({ message }) {
   )
 }
 
-const FlagList = () => {
+const UserList = () => {
   const classes = useStyles();
   const [search, setSearch] = useState(sessionStorage.getItem(searchKey) || '');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(Number(localStorage.getItem(rowsPerPageKey) || 25));
-  const { loading, error, data } = useQuery(FLAGS_QUERY, {
+  const { loading, error, data } = useQuery(USERS_QUERY, {
     fetchPolicy: 'cache-and-network',
     variables: { search: search || undefined, offset: page * rowsPerPage, limit: rowsPerPage > 0 ? rowsPerPage : undefined },
   });
-  const [toggleFlag] = useMutation(TOGGLE_FLAG_QUERY);
   let content;
   switch (true) {
     case loading:
       content = <CircularProgress className={classes.progress}/>;
       break;
     case error:
-      content = <EmptyMessage message="There were an error while loading the flag list :("/>;
+      content = <EmptyMessage message="There were an error while loading the user list :("/>;
       break;
-    case page === 0 && (!data || !data.flags || !data.flags.total):
-      content = <EmptyMessage message="No flags for this project yet"/>;
+    case page === 0 && (!data || !data.users || !data.users.total):
+      content = <EmptyMessage message="No users for this project yet"/>;
       break;
     default:
       content = (
-        <FlagsTable
-          flags={data.flags}
-          onToggleFlag={toggleFlag}
+        <UsersTable
+          users={data.users}
           page={page}
           rowsPerPage={rowsPerPage}
           rowsPerPageOptions={rowsPerPageOptions}
@@ -69,7 +67,7 @@ const FlagList = () => {
 
   return (
     <div className={classes.root}>
-      <FlagsToolbar
+      <UsersToolbar
         search={search}
         onSearch={v => {
           setSearch(v);
@@ -84,4 +82,4 @@ const FlagList = () => {
   );
 };
 
-export default FlagList;
+export default UserList;

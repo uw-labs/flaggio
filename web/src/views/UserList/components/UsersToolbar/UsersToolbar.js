@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
-import AddFlagButton from './AddFlagButton';
 import { SearchInput } from '../../../../components';
 
 const useStyles = makeStyles(theme => ({
@@ -16,12 +15,9 @@ const useStyles = makeStyles(theme => ({
   spacer: {
     flexGrow: 1,
   },
-  searchInput: {
-    marginRight: theme.spacing(5),
-  },
 }));
 
-const FlagsToolbar = props => {
+const UsersToolbar = props => {
   const { className, search, onSearch, ...rest } = props;
 
   const classes = useStyles();
@@ -33,21 +29,19 @@ const FlagsToolbar = props => {
     >
       <div className={classes.row}>
         <SearchInput
-          className={classes.searchInput}
           defaultValue={search}
           onChange={onSearch}
-          placeholder="Search flag"
+          placeholder="Search user"
         />
-        <AddFlagButton/>
       </div>
     </div>
   );
 };
 
-FlagsToolbar.propTypes = {
+UsersToolbar.propTypes = {
   className: PropTypes.string,
   search: PropTypes.string,
   onSearch: PropTypes.func.isRequired,
 };
 
-export default FlagsToolbar;
+export default UsersToolbar;

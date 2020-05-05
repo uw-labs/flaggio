@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const SearchInput = props => {
-  const { className, search, onChange, style, ...rest } = props;
+  const { className, onChange, style, ...rest } = props;
 
   const classes = useStyles();
   const handler = debounce(onChange, 300);
@@ -44,7 +44,6 @@ const SearchInput = props => {
         autoFocus
         className={classes.input}
         disableUnderline
-        defaultValue={search}
         onChange={e => handler(e.target.value)}
       />
     </Paper>
@@ -53,7 +52,6 @@ const SearchInput = props => {
 
 SearchInput.propTypes = {
   className: PropTypes.string,
-  search: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   style: PropTypes.object,
 };

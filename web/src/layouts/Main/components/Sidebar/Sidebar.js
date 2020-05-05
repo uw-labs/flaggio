@@ -5,8 +5,9 @@ import { makeStyles } from '@material-ui/styles';
 import { Drawer } from '@material-ui/core';
 import FlagIcon from '@material-ui/icons/Flag';
 import PublicIcon from '@material-ui/icons/Public';
-
+import PeopleIcon from '@material-ui/icons/People';
 import { SidebarNav } from './components';
+
 
 const useStyles = makeStyles(theme => ({
   drawer: {
@@ -47,11 +48,11 @@ const Sidebar = props => {
       href: '/segments',
       icon: <PublicIcon/>,
     },
-    // {
-    //   title: 'Users',
-    //   href: '/users',
-    //   icon: <PeopleIcon />
-    // },
+    {
+      title: 'Users',
+      href: '/users',
+      icon: <PeopleIcon/>
+    },
   ];
 
   return (
