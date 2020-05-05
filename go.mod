@@ -14,7 +14,7 @@ require (
 	github.com/rs/cors v1.7.0
 	github.com/sirupsen/logrus v1.6.0
 	github.com/stretchr/testify v1.5.1
-	github.com/uber/jaeger-client-go v2.23.0+incompatible
+	github.com/uber/jaeger-client-go v2.23.1+incompatible
 	github.com/uber/jaeger-lib v2.2.0+incompatible
 	github.com/urfave/cli/v2 v2.2.0
 	github.com/vektah/gqlparser/v2 v2.0.1
