@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
 	"github.com/opentracing/opentracing-go"
 	internalerrors "github.com/victorkt/flaggio/internal/errors"
@@ -35,6 +36,8 @@ func (s *Server) handleEvaluate(w http.ResponseWriter, r *http.Request) {
 	// evaluate flag
 	eval, err := s.flagsService.Evaluate(ctx, flagKey, er)
 	if err != nil {
+		s.logger.WithError(err).WithField("req_id", middleware.GetReqID(ctx)).
+			Error("failed to evaluate flag")
 		_ = render.Render(w, r, formatErr(err))
 		return
 	}
@@ -68,6 +71,8 @@ func (s *Server) handleEvaluateAll(w http.ResponseWriter, r *http.Request) {
 	// evaluate flags
 	eval, err := s.flagsService.EvaluateAll(ctx, er)
 	if err != nil {
+		s.logger.WithError(err).WithField("req_id", middleware.GetReqID(ctx)).
+			Error("failed to evaluate all")
 		_ = render.Render(w, r, formatErr(err))
 		return
 	}

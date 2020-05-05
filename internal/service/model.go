@@ -51,7 +51,7 @@ func (er EvaluationRequest) Hash() (string, error) {
 		ordered[idx] = []interface{}{key, er.UserContext[key]}
 	}
 
-	// marshall ordered slice and hash it
+	// marshal ordered slice and hash it
 	bytes, err := msgpack.Marshal(ordered)
 	if err != nil {
 		return "", err

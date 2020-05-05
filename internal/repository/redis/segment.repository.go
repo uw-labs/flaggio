@@ -37,7 +37,7 @@ func (r *SegmentRepository) FindAll(ctx context.Context, offset, limit *int64) (
 			return nil, err
 		}
 		if cached != "" {
-			// cache hit, unmarshall and return result
+			// cache hit, unmarshal and return result
 			var s []*flaggio.Segment
 			if err := msgpack.Unmarshal([]byte(cached), &s); err == nil {
 				// return if no errors, otherwise defer to the store
@@ -52,7 +52,7 @@ func (r *SegmentRepository) FindAll(ctx context.Context, offset, limit *int64) (
 		return nil, err
 	}
 
-	// marshall and save result
+	// marshal and save result
 	if shouldCache {
 		b, err := msgpack.Marshal(res)
 		if err != nil {
@@ -80,7 +80,7 @@ func (r *SegmentRepository) FindByID(ctx context.Context, id string) (*flaggio.S
 		return nil, err
 	}
 	if cached != "" {
-		// cache hit, unmarshall and return result
+		// cache hit, unmarshal and return result
 		var s flaggio.Segment
 		if err := msgpack.Unmarshal([]byte(cached), &s); err == nil {
 			// return if no errors, otherwise defer to the store
@@ -94,7 +94,7 @@ func (r *SegmentRepository) FindByID(ctx context.Context, id string) (*flaggio.S
 		return nil, err
 	}
 
-	// marshall and save result
+	// marshal and save result
 	b, err := msgpack.Marshal(res)
 	if err != nil {
 		return nil, err

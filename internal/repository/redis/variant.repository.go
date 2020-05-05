@@ -77,23 +77,12 @@ func (r *VariantRepository) invalidateRelevantCacheKeys(ctx context.Context, fla
 		return err
 	}
 
-	redisCtx := r.redis.WithContext(ctx)
-
 	// invalidate all relevant keys
-	keysToInvalidate, err := redisCtx.Keys(flaggio.EvalCacheKey("*")).Result()
-	if err != nil {
-		return err
-	}
-	keysToInvalidate = append(
-		[]string{
-			flaggio.FlagCacheKey("*"),
-			flaggio.FlagCacheKey(flagID),
-			flaggio.FlagCacheKey("key", f.Key),
-		},
-		keysToInvalidate...,
-	)
-
-	return redisCtx.Del(keysToInvalidate...).Err()
+	return r.redis.WithContext(ctx).Del(
+		flaggio.FlagCacheKey("*"),
+		flaggio.FlagCacheKey(flagID),
+		flaggio.FlagCacheKey("key", f.Key),
+	).Err()
 }
 
 // NewVariantRepository returns a new variant repository that uses redis

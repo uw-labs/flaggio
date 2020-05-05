@@ -10,7 +10,7 @@ var _ QueryResolver = &queryResolver{}
 
 type queryResolver struct{ *Resolver }
 
-func (r *queryResolver) Ping(ctx context.Context) (bool, error) {
+func (r *queryResolver) Ping(_ context.Context) (bool, error) {
 	return true, nil
 }
 
@@ -46,4 +46,21 @@ func (r *queryResolver) Segments(ctx context.Context, offset, limit *int) ([]*fl
 
 func (r *queryResolver) Segment(ctx context.Context, id string) (*flaggio.Segment, error) {
 	return r.SegmentRepo.FindByID(ctx, id)
+}
+
+func (r *queryResolver) Users(ctx context.Context, search *string, offset, limit *int) (*flaggio.UserResults, error) {
+	var ofst, lmt *int64
+	if offset != nil {
+		v := int64(*offset)
+		ofst = &v
+	}
+	if limit != nil {
+		v := int64(*limit)
+		lmt = &v
+	}
+	return r.UserRepo.FindAll(ctx, search, ofst, lmt)
+}
+
+func (r *queryResolver) User(ctx context.Context, id string) (*flaggio.User, error) {
+	return r.UserRepo.FindByID(ctx, id)
 }

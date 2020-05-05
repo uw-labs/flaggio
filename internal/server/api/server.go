@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
+	"github.com/sirupsen/logrus"
 	"github.com/victorkt/flaggio/internal/service"
 )
 
@@ -11,10 +12,12 @@ import (
 func NewServer(
 	router chi.Router,
 	flagsService service.Flag,
+	logger *logrus.Entry,
 ) *Server {
 	srv := &Server{
 		router:       router,
 		flagsService: flagsService,
+		logger:       logger,
 	}
 	srv.routes()
 	return srv
@@ -24,6 +27,7 @@ func NewServer(
 type Server struct {
 	router       chi.Router
 	flagsService service.Flag
+	logger       *logrus.Entry
 }
 
 // ServeHTTP responds to an HTTP request

@@ -48,6 +48,14 @@ func startAdmin(ctx context.Context, wg *sync.WaitGroup, logger *logrus.Entry) e
 	if err != nil {
 		return err
 	}
+	evalRepo, err := mongo_repo.NewEvaluationRepository(ctx, db)
+	if err != nil {
+		return err
+	}
+	userRepo, err := mongo_repo.NewUserRepository(ctx, db)
+	if err != nil {
+		return err
+	}
 	variantRepo := mongo_repo.NewVariantRepository(flagRepo.(*mongo_repo.FlagRepository))
 	ruleRepo := mongo_repo.NewRuleRepository(
 		flagRepo.(*mongo_repo.FlagRepository), segmentRepo.(*mongo_repo.SegmentRepository))
@@ -56,14 +64,17 @@ func startAdmin(ctx context.Context, wg *sync.WaitGroup, logger *logrus.Entry) e
 		segmentRepo = redis_repo.NewSegmentRepository(redisClient, segmentRepo)
 		variantRepo = redis_repo.NewVariantRepository(redisClient, variantRepo, flagRepo)
 		ruleRepo = redis_repo.NewRuleRepository(redisClient, ruleRepo, flagRepo, segmentRepo)
+		evalRepo = redis_repo.NewEvaluationRepository(redisClient, evalRepo)
 	}
 
 	// setup graphql resolver
 	resolver := &admin.Resolver{
-		FlagRepo:    flagRepo,
-		VariantRepo: variantRepo,
-		RuleRepo:    ruleRepo,
-		SegmentRepo: segmentRepo,
+		FlagRepo:       flagRepo,
+		VariantRepo:    variantRepo,
+		RuleRepo:       ruleRepo,
+		SegmentRepo:    segmentRepo,
+		EvaluationRepo: evalRepo,
+		UserRepo:       userRepo,
 	}
 
 	// setup graphql server

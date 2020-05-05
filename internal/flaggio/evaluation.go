@@ -2,6 +2,7 @@ package flaggio
 
 import (
 	"net/http"
+	"time"
 )
 
 // Evaluation is the final result of a flag evaluation. It holds the
@@ -11,10 +12,15 @@ import (
 // Optionally, a stack trace of the evaluation process can be attached
 // to the object.
 type Evaluation struct {
-	FlagKey    string        `json:"flagKey"`
-	Value      interface{}   `json:"value,omitempty"`
-	Error      string        `json:"error,omitempty"`
-	StackTrace []*StackTrace `json:"stackTrace,omitempty"`
+	ID          string        `json:"-"`
+	FlagID      string        `json:"-"`
+	FlagVersion int           `json:"-"`
+	RequestHash string        `json:"-"`
+	CreatedAt   time.Time     `json:"-"`
+	FlagKey     string        `json:"flagKey"`
+	Value       interface{}   `json:"value,omitempty"`
+	Error       string        `json:"error,omitempty"`
+	StackTrace  []*StackTrace `json:"stackTrace,omitempty"`
 }
 
 // StackTrace contains detailed information about the evaluation process.

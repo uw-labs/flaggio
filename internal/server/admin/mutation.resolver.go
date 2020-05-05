@@ -10,7 +10,7 @@ var _ MutationResolver = &mutationResolver{}
 
 type mutationResolver struct{ *Resolver }
 
-func (r *mutationResolver) Ping(ctx context.Context) (bool, error) {
+func (r *mutationResolver) Ping(_ context.Context) (bool, error) {
 	return true, nil
 }
 
@@ -111,5 +111,20 @@ func (r *mutationResolver) UpdateSegment(ctx context.Context, id string, input f
 
 func (r *mutationResolver) DeleteSegment(ctx context.Context, id string) (string, error) {
 	err := r.SegmentRepo.Delete(ctx, id)
+	return id, err
+}
+
+func (r *mutationResolver) DeleteUser(ctx context.Context, id string) (string, error) {
+	if err := r.UserRepo.Delete(ctx, id); err != nil {
+		return id, err
+	}
+	if err := r.EvaluationRepo.DeleteAllByUserID(ctx, id); err != nil {
+		return id, err
+	}
+	return id, nil
+}
+
+func (r *mutationResolver) DeleteEvaluation(ctx context.Context, id string) (string, error) {
+	err := r.EvaluationRepo.DeleteByID(ctx, id)
 	return id, err
 }

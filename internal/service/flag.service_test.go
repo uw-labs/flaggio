@@ -29,35 +29,59 @@ func TestFlagService_Evaluate(t *testing.T) {
 	tests := []struct {
 		name               string
 		flagKey            string
+		flagResult         *flaggio.Flag
+		evaluationResult   *flaggio.Evaluation
 		evaluationRequest  *service.EvaluationRequest
 		expectedEvaluation *service.EvaluationResponse
-		run                func(t *testing.T, mockCtrl *gomock.Controller)
+		shouldReplaceEval  bool
 	}{
 		{
-			name:    "return correct evaluation without debug option",
-			flagKey: "a",
+			name:       "return correct evaluation without debug option",
+			flagKey:    "a",
+			flagResult: flags[0],
 			evaluationRequest: &service.EvaluationRequest{
 				UserID:      "user1",
 				UserContext: flaggio.UserContext{"name": "John"},
 			},
 			expectedEvaluation: &service.EvaluationResponse{
-				Evaluation: &flaggio.Evaluation{FlagKey: "a", Value: 20},
+				Evaluation: &flaggio.Evaluation{FlagID: "1", FlagKey: "a", Value: 20,
+					RequestHash: "5e83501f42ab66e04cd03a53d55399ffa7387a55"},
 			},
+			shouldReplaceEval: true,
 		},
 		{
-			name:    "return correct evaluation with debug option",
-			flagKey: "b",
+			name:       "return correct evaluation with debug option",
+			flagKey:    "b",
+			flagResult: flags[1],
 			evaluationRequest: &service.EvaluationRequest{
 				UserID:      "user2",
 				UserContext: flaggio.UserContext{"name": "John"},
 				Debug:       boolPtr(true),
 			},
 			expectedEvaluation: &service.EvaluationResponse{
-				Evaluation: &flaggio.Evaluation{FlagKey: "b", Value: 20, StackTrace: []*flaggio.StackTrace{
-					{Type: "*Flag", ID: stringPtr("1"), Answer: 20},
-				}},
+				Evaluation: &flaggio.Evaluation{FlagID: "2", FlagKey: "b", Value: 10,
+					RequestHash: "5e83501f42ab66e04cd03a53d55399ffa7387a55", StackTrace: []*flaggio.StackTrace{
+						{Type: "*Flag", ID: stringPtr("2"), Answer: 10},
+					}},
 				UserContext: &flaggio.UserContext{"name": "John"},
 			},
+			shouldReplaceEval: false,
+		},
+		{
+			name:       "return previous evaluation",
+			flagKey:    "b",
+			flagResult: flags[1],
+			evaluationResult: &flaggio.Evaluation{FlagID: "1", FlagKey: "a", Value: 10,
+				RequestHash: "5e83501f42ab66e04cd03a53d55399ffa7387a55"},
+			evaluationRequest: &service.EvaluationRequest{
+				UserID:      "user2",
+				UserContext: flaggio.UserContext{"name": "John"},
+			},
+			expectedEvaluation: &service.EvaluationResponse{
+				Evaluation: &flaggio.Evaluation{FlagID: "1", FlagKey: "a", Value: 10,
+					RequestHash: "5e83501f42ab66e04cd03a53d55399ffa7387a55"},
+			},
+			shouldReplaceEval: false,
 		},
 	}
 
@@ -70,16 +94,32 @@ func TestFlagService_Evaluate(t *testing.T) {
 			ctx := context.Background()
 			flagRepo := repository_mock.NewMockFlag(mockCtrl)
 			segmentRepo := repository_mock.NewMockSegment(mockCtrl)
-			flagService := service.NewFlagService(flagRepo, segmentRepo)
-			flagResults := flags[0]
-			segmentesults := make([]*flaggio.Segment, 0)
+			evalRepo := repository_mock.NewMockEvaluation(mockCtrl)
+			userRepo := repository_mock.NewMockUser(mockCtrl)
+			flagService := service.NewFlagService(flagRepo, segmentRepo, evalRepo, userRepo)
+			segmentResults := make([]*flaggio.Segment, 0)
+			hash, err := tt.evaluationRequest.Hash()
+			assert.NoError(t, err)
 
 			flagRepo.EXPECT().
 				FindByKey(gomock.AssignableToTypeOf(ctxInterface), tt.flagKey).
-				Times(1).Return(flagResults, nil)
-			segmentRepo.EXPECT().
-				FindAll(gomock.AssignableToTypeOf(ctxInterface), nil, nil).
-				Times(1).Return(segmentesults, nil)
+				Times(1).Return(tt.flagResult, nil)
+			if tt.evaluationResult == nil {
+				segmentRepo.EXPECT().
+					FindAll(gomock.AssignableToTypeOf(ctxInterface), nil, nil).
+					Times(1).Return(segmentResults, nil)
+			}
+			evalRepo.EXPECT().
+				FindByReqHashAndFlagKey(gomock.AssignableToTypeOf(ctxInterface), hash, tt.flagResult.Key).
+				Times(1).Return(tt.evaluationResult, nil)
+			if tt.shouldReplaceEval {
+				userRepo.EXPECT().
+					Replace(gomock.AssignableToTypeOf(ctxInterface), tt.evaluationRequest.UserID, tt.evaluationRequest.UserContext).
+					Times(1).Return(nil)
+				evalRepo.EXPECT().
+					ReplaceOne(gomock.AssignableToTypeOf(ctxInterface), tt.evaluationRequest.UserID, tt.expectedEvaluation.Evaluation).
+					Times(1).Return(nil)
+			}
 
 			result, err := flagService.Evaluate(ctx, tt.flagKey, tt.evaluationRequest)
 			assert.NoError(t, err)
@@ -101,8 +141,10 @@ func TestFlagService_EvaluateAll(t *testing.T) {
 	tests := []struct {
 		name               string
 		evaluationRequest  *service.EvaluationRequest
+		evaluationResults  *flaggio.EvaluationResults
 		expectedEvaluation *service.EvaluationsResponse
-		run                func(t *testing.T, mockCtrl *gomock.Controller)
+		outdatedEvals      flaggio.EvaluationList
+		shouldReplaceEval  bool
 	}{
 		{
 			name: "return correct evaluation without debug option",
@@ -110,12 +152,18 @@ func TestFlagService_EvaluateAll(t *testing.T) {
 				UserID:      "user1",
 				UserContext: flaggio.UserContext{"name": "John"},
 			},
+			evaluationResults: &flaggio.EvaluationResults{Evaluations: []*flaggio.Evaluation{}},
 			expectedEvaluation: &service.EvaluationsResponse{
 				Evaluations: flaggio.EvaluationList{
-					{FlagKey: "a", Value: 20},
-					{FlagKey: "b", Value: 10},
+					{FlagID: "1", FlagKey: "a", Value: 20, RequestHash: "5e83501f42ab66e04cd03a53d55399ffa7387a55"},
+					{FlagID: "2", FlagKey: "b", Value: 10, RequestHash: "5e83501f42ab66e04cd03a53d55399ffa7387a55"},
 				},
 			},
+			outdatedEvals: flaggio.EvaluationList{
+				{FlagID: "1", FlagKey: "a", Value: 20, RequestHash: "5e83501f42ab66e04cd03a53d55399ffa7387a55"},
+				{FlagID: "2", FlagKey: "b", Value: 10, RequestHash: "5e83501f42ab66e04cd03a53d55399ffa7387a55"},
+			},
+			shouldReplaceEval: true,
 		},
 		{
 			name: "return correct evaluation with debug option",
@@ -124,13 +172,35 @@ func TestFlagService_EvaluateAll(t *testing.T) {
 				UserContext: flaggio.UserContext{"name": "John"},
 				Debug:       boolPtr(true),
 			},
+			evaluationResults: &flaggio.EvaluationResults{Evaluations: []*flaggio.Evaluation{}},
 			expectedEvaluation: &service.EvaluationsResponse{
 				Evaluations: flaggio.EvaluationList{
-					{FlagKey: "a", Value: 20},
-					{FlagKey: "b", Value: 10},
+					{FlagID: "1", FlagKey: "a", Value: 20, RequestHash: "5e83501f42ab66e04cd03a53d55399ffa7387a55"},
+					{FlagID: "2", FlagKey: "b", Value: 10, RequestHash: "5e83501f42ab66e04cd03a53d55399ffa7387a55"},
 				},
 				UserContext: &flaggio.UserContext{"name": "John"},
 			},
+			shouldReplaceEval: false,
+		},
+		{
+			name: "return previous evaluation",
+			evaluationRequest: &service.EvaluationRequest{
+				UserID:      "user2",
+				UserContext: flaggio.UserContext{"name": "John"},
+			},
+			evaluationResults: &flaggio.EvaluationResults{Evaluations: []*flaggio.Evaluation{
+				{FlagID: "1", FlagKey: "a", Value: 10, RequestHash: "5e83501f42ab66e04cd03a53d55399ffa7387a55"},
+			}},
+			expectedEvaluation: &service.EvaluationsResponse{
+				Evaluations: flaggio.EvaluationList{
+					{FlagID: "1", FlagKey: "a", Value: 10, RequestHash: "5e83501f42ab66e04cd03a53d55399ffa7387a55"},
+					{FlagID: "2", FlagKey: "b", Value: 10, RequestHash: "5e83501f42ab66e04cd03a53d55399ffa7387a55"},
+				},
+			},
+			outdatedEvals: flaggio.EvaluationList{
+				{FlagID: "2", FlagKey: "b", Value: 10, RequestHash: "5e83501f42ab66e04cd03a53d55399ffa7387a55"},
+			},
+			shouldReplaceEval: true,
 		},
 	}
 
@@ -143,16 +213,31 @@ func TestFlagService_EvaluateAll(t *testing.T) {
 			ctx := context.Background()
 			flagRepo := repository_mock.NewMockFlag(mockCtrl)
 			segmentRepo := repository_mock.NewMockSegment(mockCtrl)
-			flagService := service.NewFlagService(flagRepo, segmentRepo)
+			evalRepo := repository_mock.NewMockEvaluation(mockCtrl)
+			userRepo := repository_mock.NewMockUser(mockCtrl)
+			flagService := service.NewFlagService(flagRepo, segmentRepo, evalRepo, userRepo)
 			flagResults := &flaggio.FlagResults{Flags: flags, Total: len(flags)}
-			segmentesults := make([]*flaggio.Segment, 0)
+			segmentResults := make([]*flaggio.Segment, 0)
+			hash, err := tt.evaluationRequest.Hash()
+			assert.NoError(t, err)
 
 			flagRepo.EXPECT().
 				FindAll(gomock.AssignableToTypeOf(ctxInterface), nil, nil, nil).
 				Times(1).Return(flagResults, nil)
 			segmentRepo.EXPECT().
 				FindAll(gomock.AssignableToTypeOf(ctxInterface), nil, nil).
-				Times(1).Return(segmentesults, nil)
+				Times(1).Return(segmentResults, nil)
+			evalRepo.EXPECT().
+				FindAllByReqHash(gomock.AssignableToTypeOf(ctxInterface), hash).
+				Times(1).Return(tt.evaluationResults.Evaluations, nil)
+			if tt.shouldReplaceEval {
+				userRepo.EXPECT().
+					Replace(gomock.AssignableToTypeOf(ctxInterface), tt.evaluationRequest.UserID, tt.evaluationRequest.UserContext).
+					Times(1).Return(nil)
+				evalRepo.EXPECT().
+					ReplaceAll(gomock.AssignableToTypeOf(ctxInterface), tt.evaluationRequest.UserID, hash, tt.outdatedEvals).
+					Times(1).Return(nil)
+			}
 
 			result, err := flagService.EvaluateAll(ctx, tt.evaluationRequest)
 			assert.NoError(t, err)

@@ -74,7 +74,7 @@ func TestVariantRepository_Create(t *testing.T) {
 	}{
 		// these tests are meant to be run in order
 		{
-			name: "clears all cached evaluations",
+			name: "doesn't clear cached evaluations",
 			run: func(t *testing.T, variantStoreRepo *repository_mock.MockVariant, flagStoreRepo *repository_mock.MockFlag) {
 				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 				defer cancel()
@@ -105,7 +105,7 @@ func TestVariantRepository_Create(t *testing.T) {
 				// check cached keys are cleared
 				cachedKeys, err = redisCtx.Keys(flaggio.EvalCacheKey("*")).Result()
 				assert.NoError(t, err)
-				assert.Len(t, cachedKeys, 0)
+				assert.Len(t, cachedKeys, 1)
 			},
 		},
 		{
@@ -170,7 +170,7 @@ func TestVariantRepository_Update(t *testing.T) {
 	}{
 		// these tests are meant to be run in order
 		{
-			name: "clears all cached evaluations",
+			name: "doesn't clear cached evaluations",
 			run: func(t *testing.T, variantStoreRepo *repository_mock.MockVariant, flagStoreRepo *repository_mock.MockFlag) {
 				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 				defer cancel()
@@ -200,7 +200,7 @@ func TestVariantRepository_Update(t *testing.T) {
 				// check cached keys are cleared
 				cachedKeys, err = redisCtx.Keys(flaggio.EvalCacheKey("*")).Result()
 				assert.NoError(t, err)
-				assert.Len(t, cachedKeys, 0)
+				assert.Len(t, cachedKeys, 1)
 			},
 		},
 		{
@@ -264,7 +264,7 @@ func TestVariantRepository_Delete(t *testing.T) {
 	}{
 		// these tests are meant to be run in order
 		{
-			name: "clears all cached evaluations",
+			name: "doesn't clear cached evaluations",
 			run: func(t *testing.T, variantStoreRepo *repository_mock.MockVariant, flagStoreRepo *repository_mock.MockFlag) {
 				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 				defer cancel()
@@ -294,7 +294,7 @@ func TestVariantRepository_Delete(t *testing.T) {
 				// check cached keys are cleared
 				cachedKeys, err = redisCtx.Keys(flaggio.EvalCacheKey("*")).Result()
 				assert.NoError(t, err)
-				assert.Len(t, cachedKeys, 0)
+				assert.Len(t, cachedKeys, 1)
 			},
 		},
 		{

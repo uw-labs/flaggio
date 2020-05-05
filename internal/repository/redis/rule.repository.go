@@ -114,7 +114,7 @@ func (r *RuleRepository) DeleteSegmentRule(ctx context.Context, segmentID, id st
 	span, ctx := opentracing.StartSpanFromContext(ctx, "RedisRuleRepository.DeleteSegmentRule")
 	defer span.Finish()
 
-	err := r.store.DeleteFlagRule(ctx, segmentID, id)
+	err := r.store.DeleteSegmentRule(ctx, segmentID, id)
 	if err != nil {
 		return err
 	}
@@ -130,23 +130,12 @@ func (r *RuleRepository) invalidateFlagRelevantCacheKeys(ctx context.Context, fl
 		return err
 	}
 
-	redisCtx := r.redis.WithContext(ctx)
-
 	// invalidate all relevant keys
-	keysToInvalidate, err := redisCtx.Keys(flaggio.EvalCacheKey("*")).Result()
-	if err != nil {
-		return err
-	}
-	keysToInvalidate = append(
-		[]string{
-			flaggio.FlagCacheKey("*"),
-			flaggio.FlagCacheKey(flagID),
-			flaggio.FlagCacheKey("key", f.Key),
-		},
-		keysToInvalidate...,
-	)
-
-	return redisCtx.Del(keysToInvalidate...).Err()
+	return r.redis.WithContext(ctx).Del(
+		flaggio.FlagCacheKey("*"),
+		flaggio.FlagCacheKey(flagID),
+		flaggio.FlagCacheKey("key", f.Key),
+	).Err()
 }
 
 func (r *RuleRepository) invalidateSegmentRelevantCacheKeys(ctx context.Context, segmentID string) error {

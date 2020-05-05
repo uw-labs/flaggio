@@ -152,11 +152,11 @@ func NewSegmentRepository(ctx context.Context, db *mongo.Database) (repository.S
 	col := db.Collection("segments")
 	_, err := col.Indexes().CreateMany(ctx, []mongo.IndexModel{
 		{
-			Keys:    bson.M{"rules._id": 1},
+			Keys:    bson.D{{Key: "rules._id", Value: 1}},
 			Options: options.Index().SetUnique(true).SetSparse(true).SetBackground(false),
 		},
 		{
-			Keys:    bson.M{"rules.constraints._id": 1},
+			Keys:    bson.D{{Key: "rules.constraints._id", Value: 1}},
 			Options: options.Index().SetUnique(true).SetSparse(true).SetBackground(false),
 		},
 	})

@@ -60,6 +60,7 @@ func (r *FlagRepository) FindAll(ctx context.Context, search *string, offset, li
 		return nil, err
 	}
 
+	// get the total results
 	total, err := r.col.CountDocuments(ctx, filter)
 	if err != nil {
 		return nil, err
@@ -214,31 +215,31 @@ func NewFlagRepository(ctx context.Context, db *mongo.Database) (repository.Flag
 	col := db.Collection("flags")
 	_, err := col.Indexes().CreateMany(ctx, []mongo.IndexModel{
 		{
-			Keys:    bson.M{"key": 1},
+			Keys:    bson.D{{Key: "key", Value: 1}},
 			Options: options.Index().SetUnique(true).SetBackground(false),
 		},
 		{
-			Keys:    bson.M{"variants._id": 1},
+			Keys:    bson.D{{Key: "variants._id", Value: 1}},
 			Options: options.Index().SetUnique(true).SetSparse(true).SetBackground(false),
 		},
 		{
-			Keys:    bson.M{"variants.key": 1},
+			Keys:    bson.D{{Key: "variants.key", Value: 1}},
 			Options: options.Index().SetUnique(true).SetSparse(true).SetBackground(false),
 		},
 		{
-			Keys:    bson.M{"rules._id": 1},
+			Keys:    bson.D{{Key: "rules._id", Value: 1}},
 			Options: options.Index().SetUnique(true).SetSparse(true).SetBackground(false),
 		},
 		{
-			Keys:    bson.M{"rules.distributions._id": 1},
+			Keys:    bson.D{{Key: "rules.distributions._id", Value: 1}},
 			Options: options.Index().SetUnique(true).SetSparse(true).SetBackground(false),
 		},
 		{
-			Keys:    bson.M{"rules.constraints._id": 1},
+			Keys:    bson.D{{Key: "rules.constraints._id", Value: 1}},
 			Options: options.Index().SetUnique(true).SetSparse(true).SetBackground(false),
 		},
 		{
-			Keys:    bson.M{"name": "text"},
+			Keys:    bson.D{{Key: "name", Value: "text"}},
 			Options: options.Index().SetBackground(false),
 		},
 	})

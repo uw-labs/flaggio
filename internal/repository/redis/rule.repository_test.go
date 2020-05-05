@@ -78,7 +78,7 @@ func TestRuleRepository_CreateFlagRule(t *testing.T) {
 	}{
 		// these tests are meant to be run in order
 		{
-			name: "clears all cached evaluations",
+			name: "doesn't clear cached evaluations",
 			run: func(t *testing.T, ruleStoreRepo *repository_mock.MockRule, flagStoreRepo *repository_mock.MockFlag, segmentStoreRepo *repository_mock.MockSegment) {
 				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 				defer cancel()
@@ -109,7 +109,7 @@ func TestRuleRepository_CreateFlagRule(t *testing.T) {
 				// check cached keys are cleared
 				cachedKeys, err = redisCtx.Keys(flaggio.EvalCacheKey("*")).Result()
 				assert.NoError(t, err)
-				assert.Len(t, cachedKeys, 0)
+				assert.Len(t, cachedKeys, 1)
 			},
 		},
 		{
@@ -175,7 +175,7 @@ func TestRuleRepository_UpdateFlagRule(t *testing.T) {
 	}{
 		// these tests are meant to be run in order
 		{
-			name: "clears all cached evaluations",
+			name: "doesn't clear cached evaluations",
 			run: func(t *testing.T, ruleStoreRepo *repository_mock.MockRule, flagStoreRepo *repository_mock.MockFlag, segmentStoreRepo *repository_mock.MockSegment) {
 				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 				defer cancel()
@@ -205,7 +205,7 @@ func TestRuleRepository_UpdateFlagRule(t *testing.T) {
 				// check cached keys are cleared
 				cachedKeys, err = redisCtx.Keys(flaggio.EvalCacheKey("*")).Result()
 				assert.NoError(t, err)
-				assert.Len(t, cachedKeys, 0)
+				assert.Len(t, cachedKeys, 1)
 			},
 		},
 		{
@@ -270,7 +270,7 @@ func TestRuleRepository_DeleteFlagRule(t *testing.T) {
 	}{
 		// these tests are meant to be run in order
 		{
-			name: "clears all cached evaluations",
+			name: "doesn't clear cached evaluations",
 			run: func(t *testing.T, ruleStoreRepo *repository_mock.MockRule, flagStoreRepo *repository_mock.MockFlag, segmentStoreRepo *repository_mock.MockSegment) {
 				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 				defer cancel()
@@ -300,7 +300,7 @@ func TestRuleRepository_DeleteFlagRule(t *testing.T) {
 				// check cached keys are cleared
 				cachedKeys, err = redisCtx.Keys(flaggio.EvalCacheKey("*")).Result()
 				assert.NoError(t, err)
-				assert.Len(t, cachedKeys, 0)
+				assert.Len(t, cachedKeys, 1)
 			},
 		},
 		{
@@ -578,7 +578,7 @@ func TestRuleRepository_UpdateSegmentRule(t *testing.T) {
 	}
 }
 
-func DeleteSegmentRule(t *testing.T) {
+func TestRuleRepository_DeleteSegmentRule(t *testing.T) {
 	// flush cache first
 	if err := redisClient.FlushAll().Err(); err != nil {
 		t.Fatalf("failed to flush cache: %s", err)

@@ -6,10 +6,16 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"time"
 )
 
 type Ruler interface {
 	IsRuler()
+}
+
+type EvaluationResults struct {
+	Evaluations []*Evaluation `json:"evaluations"`
+	Total       int           `json:"total"`
 }
 
 type FlagResults struct {
@@ -79,6 +85,18 @@ type UpdateSegmentRule struct {
 type UpdateVariant struct {
 	Description *string     `json:"description"`
 	Value       interface{} `json:"value"`
+}
+
+type User struct {
+	ID          string                 `json:"id"`
+	Context     map[string]interface{} `json:"context"`
+	UpdatedAt   time.Time              `json:"updatedAt"`
+	Evaluations *EvaluationResults     `json:"evaluations"`
+}
+
+type UserResults struct {
+	Users []*User `json:"users"`
+	Total int     `json:"total"`
 }
 
 type Operation string
