@@ -16,7 +16,6 @@ jobs:
       - name: Tidy
         run: |
           go mod tidy
-          go mod vendor
       - name: Set up Git
         env:
           GITHUB_TOKEN: ${{ secrets.DEPENDABOT_FIX_GITHUB_TOKEN }}
