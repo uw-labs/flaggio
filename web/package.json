@@ -32,7 +32,7 @@
     "@material-ui/icons": "4.9.1",
     "@material-ui/styles": "4.9.10",
     "@sindresorhus/slugify": "1.0.0",
-    "apollo-boost": "0.4.7",
+    "apollo-boost": "0.4.9",
     "clsx": "1.1.0",
     "graphql": "14.6.0",
     "history": "4.10.1",
