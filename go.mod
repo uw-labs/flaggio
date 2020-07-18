@@ -7,7 +7,7 @@ require (
 	github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd // indirect
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/go-chi/render v1.0.1
-	github.com/go-redis/redis/v7 v7.2.0
+	github.com/go-redis/redis/v7 v7.4.0
 	github.com/golang/mock v1.4.3
 	github.com/opentracing/opentracing-go v1.1.0
 	github.com/prometheus/client_golang v1.5.1 // indirect
