@@ -45,7 +45,7 @@
     "react-dom": "16.13.1",
     "react-perfect-scrollbar": "1.5.8",
     "react-router-dom": "5.2.0",
-    "react-scripts": "3.4.1",
+    "react-scripts": "3.4.3",
     "recompose": "0.30.0",
     "uuid": "8.2.0",
     "validate.js": "0.13.1"
