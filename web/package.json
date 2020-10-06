@@ -47,7 +47,7 @@
     "react-router-dom": "5.2.0",
     "react-scripts": "3.4.3",
     "recompose": "0.30.0",
-    "uuid": "8.3.0",
+    "uuid": "8.3.1",
     "validate.js": "0.13.1"
   },
   "devDependencies": {
