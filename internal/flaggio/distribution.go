@@ -35,8 +35,8 @@ func (dl DistributionList) Evaluate(usrContext map[string]interface{}) (EvalResu
 
 // Distribute selects a distribution randomly, respecting the configured probability.
 func (dl DistributionList) Distribute() *Variant {
-	r1 := rand.New(rand.NewSource(time.Now().UnixNano()))
-	num := 1 + r1.Intn(100) // random int between 1 and 100
+	r1 := rand.New(rand.NewSource(time.Now().UnixNano())) // nolint:gosec // not security critical
+	num := 1 + r1.Intn(100)                               // random int between 1 and 100
 
 	var total int
 	for _, dstrbtn := range dl {

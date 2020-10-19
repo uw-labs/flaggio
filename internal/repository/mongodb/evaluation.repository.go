@@ -77,8 +77,7 @@ func (r *EvaluationRepository) FindAllByReqHash(ctx context.Context, reqHash str
 
 	filter := bson.M{"requestHash": reqHash}
 	cursor, err := r.col.Find(ctx, filter, &options.FindOptions{
-		Sort:      bson.M{"flagKey": 1},
-		Collation: &options.Collation{Locale: "en"},
+		Sort: bson.M{"flagKey": 1},
 	})
 	if err != nil {
 		return nil, err
@@ -241,6 +240,14 @@ func NewEvaluationRepository(ctx context.Context, db *mongo.Database) (repositor
 		{
 			Keys:    bson.D{{Key: "userId", Value: 1}, {Key: "flagId", Value: 1}},
 			Options: options.Index().SetUnique(true).SetBackground(false),
+		},
+		{
+			Keys:    bson.D{{Key: "requestHash", Value: 1}},
+			Options: options.Index().SetBackground(true),
+		},
+		{
+			Keys:    bson.D{{Key: "flagId", Value: 1}},
+			Options: options.Index().SetBackground(true),
 		},
 	})
 	if err != nil {

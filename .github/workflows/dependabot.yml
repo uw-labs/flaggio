@@ -1,4 +1,4 @@
-name: Dependabot mod & vendor fix
+name: Dependabot mod fix
 on:
   push:
     branches:
