@@ -58,6 +58,45 @@ This is a graphql API that is able to perform CRUD operations for flags and segm
 
 This is a REST JSON API which takes the user context and returns the flag value.
 
+#### Request model
+
+|value|type|required|description|
+|-----|----|--------|-----------|
+|userId|string|yes|an arbitrary ID that identifies a unique user|
+|context|object|yes|a set of values associated with the user|
+|debug|boolean|no|returns additional debugging information when `true`|
+
+#### Example request
+
+```json
+{
+  "userId": "john@doe.com",
+  "context": {
+    "name": "john",
+    "age": 26,
+    "browser": "Firefox"
+  },
+  "debug": false
+}
+```
+
+#### Example response
+
+```json
+{
+  "evaluations": [
+    {
+      "flagKey": "showHeader",
+      "value": true
+    },
+    {
+      "flagKey": "backgroundColor",
+      "value": "#FFFFFF"
+    }
+  ]
+}
+```
+
 ## Configuration
 
 The flaggio CLI accepts the following options:
