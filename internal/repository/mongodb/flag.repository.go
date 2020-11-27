@@ -216,31 +216,30 @@ func NewFlagRepository(ctx context.Context, db *mongo.Database) (repository.Flag
 	_, err := col.Indexes().CreateMany(ctx, []mongo.IndexModel{
 		{
 			Keys:    bson.D{{Key: "key", Value: 1}},
-			Options: options.Index().SetUnique(true).SetBackground(false),
+			Options: options.Index().SetUnique(true),
 		},
 		{
 			Keys:    bson.D{{Key: "variants._id", Value: 1}},
-			Options: options.Index().SetUnique(true).SetSparse(true).SetBackground(false),
+			Options: options.Index().SetUnique(true).SetSparse(true),
 		},
 		{
 			Keys:    bson.D{{Key: "variants.key", Value: 1}},
-			Options: options.Index().SetUnique(true).SetSparse(true).SetBackground(false),
+			Options: options.Index().SetUnique(true).SetSparse(true),
 		},
 		{
 			Keys:    bson.D{{Key: "rules._id", Value: 1}},
-			Options: options.Index().SetUnique(true).SetSparse(true).SetBackground(false),
+			Options: options.Index().SetUnique(true).SetSparse(true),
 		},
 		{
 			Keys:    bson.D{{Key: "rules.distributions._id", Value: 1}},
-			Options: options.Index().SetUnique(true).SetSparse(true).SetBackground(false),
+			Options: options.Index().SetUnique(true).SetSparse(true),
 		},
 		{
 			Keys:    bson.D{{Key: "rules.constraints._id", Value: 1}},
-			Options: options.Index().SetUnique(true).SetSparse(true).SetBackground(false),
+			Options: options.Index().SetUnique(true).SetSparse(true),
 		},
 		{
-			Keys:    bson.D{{Key: "name", Value: "text"}},
-			Options: options.Index().SetBackground(false),
+			Keys: bson.D{{Key: "name", Value: "text"}},
 		},
 	})
 	if err != nil {

@@ -239,15 +239,13 @@ func NewEvaluationRepository(ctx context.Context, db *mongo.Database) (repositor
 	_, err := col.Indexes().CreateMany(ctx, []mongo.IndexModel{
 		{
 			Keys:    bson.D{{Key: "userId", Value: 1}, {Key: "flagId", Value: 1}},
-			Options: options.Index().SetUnique(true).SetBackground(false),
+			Options: options.Index().SetUnique(true),
 		},
 		{
-			Keys:    bson.D{{Key: "requestHash", Value: 1}},
-			Options: options.Index().SetBackground(true),
+			Keys: bson.D{{Key: "requestHash", Value: 1}},
 		},
 		{
-			Keys:    bson.D{{Key: "flagId", Value: 1}},
-			Options: options.Index().SetBackground(true),
+			Keys: bson.D{{Key: "flagId", Value: 1}},
 		},
 	})
 	if err != nil {
