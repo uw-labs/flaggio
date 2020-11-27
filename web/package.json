@@ -34,7 +34,7 @@
     "@sindresorhus/slugify": "1.1.0",
     "apollo-boost": "0.4.9",
     "clsx": "1.1.1",
-    "graphql": "14.6.0",
+    "graphql": "14.7.0",
     "history": "4.10.1",
     "lodash": "4.17.20",
     "material-ui-chip-input": "2.0.0-beta.2",
