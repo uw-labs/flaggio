@@ -1,4 +1,4 @@
-module github.com/victorkt/flaggio
+module github.com/uw-labs/flaggio
 
 go 1.13
 

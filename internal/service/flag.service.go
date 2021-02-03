@@ -5,9 +5,9 @@ import (
 	"errors"
 
 	"github.com/opentracing/opentracing-go"
-	apperrors "github.com/victorkt/flaggio/internal/errors"
-	"github.com/victorkt/flaggio/internal/flaggio"
-	"github.com/victorkt/flaggio/internal/repository"
+	apperrors "github.com/uw-labs/flaggio/internal/errors"
+	"github.com/uw-labs/flaggio/internal/flaggio"
+	"github.com/uw-labs/flaggio/internal/repository"
 )
 
 var _ Flag = (*flagService)(nil)

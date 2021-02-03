@@ -3,7 +3,7 @@ package mongodb
 import (
 	"time"
 
-	"github.com/victorkt/flaggio/internal/flaggio"
+	"github.com/uw-labs/flaggio/internal/flaggio"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 

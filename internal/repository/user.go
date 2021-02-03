@@ -1,11 +1,11 @@
 package repository
 
-//go:generate mockgen -destination=./mocks/user_mock.go -package=repository_mock github.com/victorkt/flaggio/internal/repository User
+//go:generate mockgen -destination=./mocks/user_mock.go -package=repository_mock github.com/uw-labs/flaggio/internal/repository User
 
 import (
 	"context"
 
-	"github.com/victorkt/flaggio/internal/flaggio"
+	"github.com/uw-labs/flaggio/internal/flaggio"
 )
 
 // User represents a set of operations available to list and manage users.

@@ -16,9 +16,9 @@ import (
 	"github.com/go-redis/redis/v7"
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
-	mongo_repo "github.com/victorkt/flaggio/internal/repository/mongodb"
-	redis_repo "github.com/victorkt/flaggio/internal/repository/redis"
-	"github.com/victorkt/flaggio/internal/server/admin"
+	mongo_repo "github.com/uw-labs/flaggio/internal/repository/mongodb"
+	redis_repo "github.com/uw-labs/flaggio/internal/repository/redis"
+	"github.com/uw-labs/flaggio/internal/server/admin"
 )
 
 func startAdmin(ctx context.Context, wg *sync.WaitGroup, logger *logrus.Entry) error {

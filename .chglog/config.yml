@@ -2,7 +2,7 @@ style: github
 template: CHANGELOG.tpl.md
 info:
   title: CHANGELOG
-  repository_url: https://github.com/victorkt/flaggio
+  repository_url: https://github.com/uw-labs/flaggio
 options:
   commits:
     # filters:

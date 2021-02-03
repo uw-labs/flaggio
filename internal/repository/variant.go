@@ -1,11 +1,11 @@
 package repository
 
-//go:generate mockgen -destination=./mocks/variant_mock.go -package=repository_mock github.com/victorkt/flaggio/internal/repository Variant
+//go:generate mockgen -destination=./mocks/variant_mock.go -package=repository_mock github.com/uw-labs/flaggio/internal/repository Variant
 
 import (
 	"context"
 
-	"github.com/victorkt/flaggio/internal/flaggio"
+	"github.com/uw-labs/flaggio/internal/flaggio"
 )
 
 // Variant represents a set of operations available to list and manage variants.

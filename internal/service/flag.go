@@ -1,6 +1,6 @@
 package service
 
-//go:generate mockgen -destination=./mocks/flag_mock.go -package=service_mock github.com/victorkt/flaggio/internal/service Flag
+//go:generate mockgen -destination=./mocks/flag_mock.go -package=service_mock github.com/uw-labs/flaggio/internal/service Flag
 
 import (
 	"context"

@@ -1,11 +1,11 @@
 package repository
 
-//go:generate mockgen -destination=./mocks/flag_mock.go -package=repository_mock github.com/victorkt/flaggio/internal/repository Flag
+//go:generate mockgen -destination=./mocks/flag_mock.go -package=repository_mock github.com/uw-labs/flaggio/internal/repository Flag
 
 import (
 	"context"
 
-	"github.com/victorkt/flaggio/internal/flaggio"
+	"github.com/uw-labs/flaggio/internal/flaggio"
 )
 
 // Flag represents a set of operations available to list and manage flags.

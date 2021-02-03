@@ -9,9 +9,9 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
 	"github.com/opentracing/opentracing-go"
-	internalerrors "github.com/victorkt/flaggio/internal/errors"
-	"github.com/victorkt/flaggio/internal/flaggio"
-	"github.com/victorkt/flaggio/internal/service"
+	internalerrors "github.com/uw-labs/flaggio/internal/errors"
+	"github.com/uw-labs/flaggio/internal/flaggio"
+	"github.com/uw-labs/flaggio/internal/service"
 )
 
 // POST /evaluate/{id}

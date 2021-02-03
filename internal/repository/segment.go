@@ -1,11 +1,11 @@
 package repository
 
-//go:generate mockgen -destination=./mocks/segment_mock.go -package=repository_mock github.com/victorkt/flaggio/internal/repository Segment
+//go:generate mockgen -destination=./mocks/segment_mock.go -package=repository_mock github.com/uw-labs/flaggio/internal/repository Segment
 
 import (
 	"context"
 
-	"github.com/victorkt/flaggio/internal/flaggio"
+	"github.com/uw-labs/flaggio/internal/flaggio"
 )
 
 // Segment represents a set of operations available to list and manage segments.

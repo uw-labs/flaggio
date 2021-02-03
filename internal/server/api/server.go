@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/sirupsen/logrus"
-	"github.com/victorkt/flaggio/internal/service"
+	"github.com/uw-labs/flaggio/internal/service"
 )
 
 // NewServer returns a new server object

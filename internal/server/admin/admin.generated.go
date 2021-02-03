@@ -16,7 +16,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/introspection"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
-	"github.com/victorkt/flaggio/internal/flaggio"
+	"github.com/uw-labs/flaggio/internal/flaggio"
 )
 
 // region    ************************** generated!.gotpl **************************
@@ -1148,7 +1148,7 @@ func (ec *executionContext) field_Mutation_createFlagRule_args(ctx context.Conte
 	var arg1 flaggio.NewFlagRule
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNNewFlagRule2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐNewFlagRule(ctx, tmp)
+		arg1, err = ec.unmarshalNNewFlagRule2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐNewFlagRule(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1163,7 +1163,7 @@ func (ec *executionContext) field_Mutation_createFlag_args(ctx context.Context, 
 	var arg0 flaggio.NewFlag
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewFlag2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐNewFlag(ctx, tmp)
+		arg0, err = ec.unmarshalNNewFlag2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐNewFlag(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1187,7 +1187,7 @@ func (ec *executionContext) field_Mutation_createSegmentRule_args(ctx context.Co
 	var arg1 flaggio.NewSegmentRule
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNNewSegmentRule2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐNewSegmentRule(ctx, tmp)
+		arg1, err = ec.unmarshalNNewSegmentRule2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐNewSegmentRule(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1202,7 +1202,7 @@ func (ec *executionContext) field_Mutation_createSegment_args(ctx context.Contex
 	var arg0 flaggio.NewSegment
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewSegment2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐNewSegment(ctx, tmp)
+		arg0, err = ec.unmarshalNNewSegment2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐNewSegment(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1226,7 +1226,7 @@ func (ec *executionContext) field_Mutation_createVariant_args(ctx context.Contex
 	var arg1 flaggio.NewVariant
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNNewVariant2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐNewVariant(ctx, tmp)
+		arg1, err = ec.unmarshalNNewVariant2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐNewVariant(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1391,7 +1391,7 @@ func (ec *executionContext) field_Mutation_updateFlagRule_args(ctx context.Conte
 	var arg2 flaggio.UpdateFlagRule
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg2, err = ec.unmarshalNUpdateFlagRule2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐUpdateFlagRule(ctx, tmp)
+		arg2, err = ec.unmarshalNUpdateFlagRule2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐUpdateFlagRule(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1415,7 +1415,7 @@ func (ec *executionContext) field_Mutation_updateFlag_args(ctx context.Context, 
 	var arg1 flaggio.UpdateFlag
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNUpdateFlag2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐUpdateFlag(ctx, tmp)
+		arg1, err = ec.unmarshalNUpdateFlag2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐUpdateFlag(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1448,7 +1448,7 @@ func (ec *executionContext) field_Mutation_updateSegmentRule_args(ctx context.Co
 	var arg2 flaggio.UpdateSegmentRule
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg2, err = ec.unmarshalNUpdateSegmentRule2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐUpdateSegmentRule(ctx, tmp)
+		arg2, err = ec.unmarshalNUpdateSegmentRule2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐUpdateSegmentRule(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1472,7 +1472,7 @@ func (ec *executionContext) field_Mutation_updateSegment_args(ctx context.Contex
 	var arg1 flaggio.UpdateSegment
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNUpdateSegment2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐUpdateSegment(ctx, tmp)
+		arg1, err = ec.unmarshalNUpdateSegment2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐUpdateSegment(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1505,7 +1505,7 @@ func (ec *executionContext) field_Mutation_updateVariant_args(ctx context.Contex
 	var arg2 flaggio.UpdateVariant
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg2, err = ec.unmarshalNUpdateVariant2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐUpdateVariant(ctx, tmp)
+		arg2, err = ec.unmarshalNUpdateVariant2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐUpdateVariant(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1837,7 +1837,7 @@ func (ec *executionContext) _Constraint_operation(ctx context.Context, field gra
 	}
 	res := resTmp.(flaggio.Operation)
 	fc.Result = res
-	return ec.marshalNOperation2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐOperation(ctx, field.Selections, res)
+	return ec.marshalNOperation2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐOperation(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Constraint_values(ctx context.Context, field graphql.CollectedField, obj *flaggio.Constraint) (ret graphql.Marshaler) {
@@ -1942,7 +1942,7 @@ func (ec *executionContext) _Distribution_variant(ctx context.Context, field gra
 	}
 	res := resTmp.(*flaggio.Variant)
 	fc.Result = res
-	return ec.marshalNVariant2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx, field.Selections, res)
+	return ec.marshalNVariant2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Distribution_percentage(ctx context.Context, field graphql.CollectedField, obj *flaggio.Distribution) (ret graphql.Marshaler) {
@@ -2219,7 +2219,7 @@ func (ec *executionContext) _EvaluationResults_evaluations(ctx context.Context, 
 	}
 	res := resTmp.([]*flaggio.Evaluation)
 	fc.Result = res
-	return ec.marshalNEvaluation2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐEvaluationᚄ(ctx, field.Selections, res)
+	return ec.marshalNEvaluation2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐEvaluationᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _EvaluationResults_total(ctx context.Context, field graphql.CollectedField, obj *flaggio.EvaluationResults) (ret graphql.Marshaler) {
@@ -2461,7 +2461,7 @@ func (ec *executionContext) _Flag_variants(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.([]*flaggio.Variant)
 	fc.Result = res
-	return ec.marshalNVariant2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐVariantᚄ(ctx, field.Selections, res)
+	return ec.marshalNVariant2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐVariantᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Flag_rules(ctx context.Context, field graphql.CollectedField, obj *flaggio.Flag) (ret graphql.Marshaler) {
@@ -2496,7 +2496,7 @@ func (ec *executionContext) _Flag_rules(ctx context.Context, field graphql.Colle
 	}
 	res := resTmp.([]*flaggio.FlagRule)
 	fc.Result = res
-	return ec.marshalNFlagRule2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlagRuleᚄ(ctx, field.Selections, res)
+	return ec.marshalNFlagRule2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐFlagRuleᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Flag_defaultVariantWhenOn(ctx context.Context, field graphql.CollectedField, obj *flaggio.Flag) (ret graphql.Marshaler) {
@@ -2528,7 +2528,7 @@ func (ec *executionContext) _Flag_defaultVariantWhenOn(ctx context.Context, fiel
 	}
 	res := resTmp.(*flaggio.Variant)
 	fc.Result = res
-	return ec.marshalOVariant2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx, field.Selections, res)
+	return ec.marshalOVariant2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Flag_defaultVariantWhenOff(ctx context.Context, field graphql.CollectedField, obj *flaggio.Flag) (ret graphql.Marshaler) {
@@ -2560,7 +2560,7 @@ func (ec *executionContext) _Flag_defaultVariantWhenOff(ctx context.Context, fie
 	}
 	res := resTmp.(*flaggio.Variant)
 	fc.Result = res
-	return ec.marshalOVariant2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx, field.Selections, res)
+	return ec.marshalOVariant2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Flag_createdAt(ctx context.Context, field graphql.CollectedField, obj *flaggio.Flag) (ret graphql.Marshaler) {
@@ -2662,7 +2662,7 @@ func (ec *executionContext) _FlagResults_flags(ctx context.Context, field graphq
 	}
 	res := resTmp.([]*flaggio.Flag)
 	fc.Result = res
-	return ec.marshalNFlag2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlagᚄ(ctx, field.Selections, res)
+	return ec.marshalNFlag2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐFlagᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FlagResults_total(ctx context.Context, field graphql.CollectedField, obj *flaggio.FlagResults) (ret graphql.Marshaler) {
@@ -2764,7 +2764,7 @@ func (ec *executionContext) _FlagRule_constraints(ctx context.Context, field gra
 	}
 	res := resTmp.([]*flaggio.Constraint)
 	fc.Result = res
-	return ec.marshalOConstraint2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐConstraintᚄ(ctx, field.Selections, res)
+	return ec.marshalOConstraint2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐConstraintᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FlagRule_distributions(ctx context.Context, field graphql.CollectedField, obj *flaggio.FlagRule) (ret graphql.Marshaler) {
@@ -2796,7 +2796,7 @@ func (ec *executionContext) _FlagRule_distributions(ctx context.Context, field g
 	}
 	res := resTmp.([]*flaggio.Distribution)
 	fc.Result = res
-	return ec.marshalODistribution2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐDistributionᚄ(ctx, field.Selections, res)
+	return ec.marshalODistribution2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐDistributionᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_ping(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2873,7 +2873,7 @@ func (ec *executionContext) _Mutation_createFlag(ctx context.Context, field grap
 	}
 	res := resTmp.(*flaggio.Flag)
 	fc.Result = res
-	return ec.marshalNFlag2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlag(ctx, field.Selections, res)
+	return ec.marshalNFlag2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐFlag(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_updateFlag(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2915,7 +2915,7 @@ func (ec *executionContext) _Mutation_updateFlag(ctx context.Context, field grap
 	}
 	res := resTmp.(*flaggio.Flag)
 	fc.Result = res
-	return ec.marshalNFlag2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlag(ctx, field.Selections, res)
+	return ec.marshalNFlag2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐFlag(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_deleteFlag(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2999,7 +2999,7 @@ func (ec *executionContext) _Mutation_createVariant(ctx context.Context, field g
 	}
 	res := resTmp.(*flaggio.Variant)
 	fc.Result = res
-	return ec.marshalNVariant2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx, field.Selections, res)
+	return ec.marshalNVariant2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_updateVariant(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3041,7 +3041,7 @@ func (ec *executionContext) _Mutation_updateVariant(ctx context.Context, field g
 	}
 	res := resTmp.(*flaggio.Variant)
 	fc.Result = res
-	return ec.marshalNVariant2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx, field.Selections, res)
+	return ec.marshalNVariant2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_deleteVariant(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3125,7 +3125,7 @@ func (ec *executionContext) _Mutation_createFlagRule(ctx context.Context, field 
 	}
 	res := resTmp.(*flaggio.FlagRule)
 	fc.Result = res
-	return ec.marshalNFlagRule2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlagRule(ctx, field.Selections, res)
+	return ec.marshalNFlagRule2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐFlagRule(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_updateFlagRule(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3167,7 +3167,7 @@ func (ec *executionContext) _Mutation_updateFlagRule(ctx context.Context, field 
 	}
 	res := resTmp.(*flaggio.FlagRule)
 	fc.Result = res
-	return ec.marshalNFlagRule2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlagRule(ctx, field.Selections, res)
+	return ec.marshalNFlagRule2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐFlagRule(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_deleteFlagRule(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3251,7 +3251,7 @@ func (ec *executionContext) _Mutation_createSegmentRule(ctx context.Context, fie
 	}
 	res := resTmp.(*flaggio.SegmentRule)
 	fc.Result = res
-	return ec.marshalNSegmentRule2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐSegmentRule(ctx, field.Selections, res)
+	return ec.marshalNSegmentRule2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐSegmentRule(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_updateSegmentRule(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3293,7 +3293,7 @@ func (ec *executionContext) _Mutation_updateSegmentRule(ctx context.Context, fie
 	}
 	res := resTmp.(*flaggio.SegmentRule)
 	fc.Result = res
-	return ec.marshalNSegmentRule2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐSegmentRule(ctx, field.Selections, res)
+	return ec.marshalNSegmentRule2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐSegmentRule(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_deleteSegmentRule(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3377,7 +3377,7 @@ func (ec *executionContext) _Mutation_createSegment(ctx context.Context, field g
 	}
 	res := resTmp.(*flaggio.Segment)
 	fc.Result = res
-	return ec.marshalNSegment2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐSegment(ctx, field.Selections, res)
+	return ec.marshalNSegment2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐSegment(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_updateSegment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3419,7 +3419,7 @@ func (ec *executionContext) _Mutation_updateSegment(ctx context.Context, field g
 	}
 	res := resTmp.(*flaggio.Segment)
 	fc.Result = res
-	return ec.marshalNSegment2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐSegment(ctx, field.Selections, res)
+	return ec.marshalNSegment2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐSegment(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_deleteSegment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3622,7 +3622,7 @@ func (ec *executionContext) _Query_flags(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.(*flaggio.FlagResults)
 	fc.Result = res
-	return ec.marshalNFlagResults2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlagResults(ctx, field.Selections, res)
+	return ec.marshalNFlagResults2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐFlagResults(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_flag(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3661,7 +3661,7 @@ func (ec *executionContext) _Query_flag(ctx context.Context, field graphql.Colle
 	}
 	res := resTmp.(*flaggio.Flag)
 	fc.Result = res
-	return ec.marshalOFlag2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlag(ctx, field.Selections, res)
+	return ec.marshalOFlag2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐFlag(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_segments(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3703,7 +3703,7 @@ func (ec *executionContext) _Query_segments(ctx context.Context, field graphql.C
 	}
 	res := resTmp.([]*flaggio.Segment)
 	fc.Result = res
-	return ec.marshalNSegment2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐSegmentᚄ(ctx, field.Selections, res)
+	return ec.marshalNSegment2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐSegmentᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_segment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3742,7 +3742,7 @@ func (ec *executionContext) _Query_segment(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(*flaggio.Segment)
 	fc.Result = res
-	return ec.marshalOSegment2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐSegment(ctx, field.Selections, res)
+	return ec.marshalOSegment2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐSegment(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_users(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3784,7 +3784,7 @@ func (ec *executionContext) _Query_users(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.(*flaggio.UserResults)
 	fc.Result = res
-	return ec.marshalNUserResults2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐUserResults(ctx, field.Selections, res)
+	return ec.marshalNUserResults2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐUserResults(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_user(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3823,7 +3823,7 @@ func (ec *executionContext) _Query_user(ctx context.Context, field graphql.Colle
 	}
 	res := resTmp.(*flaggio.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐUser(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -4031,7 +4031,7 @@ func (ec *executionContext) _Segment_rules(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.([]*flaggio.SegmentRule)
 	fc.Result = res
-	return ec.marshalNSegmentRule2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐSegmentRuleᚄ(ctx, field.Selections, res)
+	return ec.marshalNSegmentRule2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐSegmentRuleᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Segment_createdAt(ctx context.Context, field graphql.CollectedField, obj *flaggio.Segment) (ret graphql.Marshaler) {
@@ -4165,7 +4165,7 @@ func (ec *executionContext) _SegmentRule_constraints(ctx context.Context, field 
 	}
 	res := resTmp.([]*flaggio.Constraint)
 	fc.Result = res
-	return ec.marshalOConstraint2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐConstraintᚄ(ctx, field.Selections, res)
+	return ec.marshalOConstraint2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐConstraintᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _User_id(ctx context.Context, field graphql.CollectedField, obj *flaggio.User) (ret graphql.Marshaler) {
@@ -4312,7 +4312,7 @@ func (ec *executionContext) _User_evaluations(ctx context.Context, field graphql
 	}
 	res := resTmp.(*flaggio.EvaluationResults)
 	fc.Result = res
-	return ec.marshalNEvaluationResults2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐEvaluationResults(ctx, field.Selections, res)
+	return ec.marshalNEvaluationResults2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐEvaluationResults(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _UserResults_users(ctx context.Context, field graphql.CollectedField, obj *flaggio.UserResults) (ret graphql.Marshaler) {
@@ -4347,7 +4347,7 @@ func (ec *executionContext) _UserResults_users(ctx context.Context, field graphq
 	}
 	res := resTmp.([]*flaggio.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐUserᚄ(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐUserᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _UserResults_total(ctx context.Context, field graphql.CollectedField, obj *flaggio.UserResults) (ret graphql.Marshaler) {
@@ -5592,7 +5592,7 @@ func (ec *executionContext) unmarshalInputNewConstraint(ctx context.Context, obj
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("operation"))
-			it.Operation, err = ec.unmarshalNOperation2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐOperation(ctx, v)
+			it.Operation, err = ec.unmarshalNOperation2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐOperation(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5684,7 +5684,7 @@ func (ec *executionContext) unmarshalInputNewFlagRule(ctx context.Context, obj i
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("constraints"))
-			it.Constraints, err = ec.unmarshalNNewConstraint2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐNewConstraintᚄ(ctx, v)
+			it.Constraints, err = ec.unmarshalNNewConstraint2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐNewConstraintᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5692,7 +5692,7 @@ func (ec *executionContext) unmarshalInputNewFlagRule(ctx context.Context, obj i
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("distributions"))
-			it.Distributions, err = ec.unmarshalNNewDistribution2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐNewDistributionᚄ(ctx, v)
+			it.Distributions, err = ec.unmarshalNNewDistribution2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐNewDistributionᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5740,7 +5740,7 @@ func (ec *executionContext) unmarshalInputNewSegmentRule(ctx context.Context, ob
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("constraints"))
-			it.Constraints, err = ec.unmarshalNNewConstraint2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐNewConstraintᚄ(ctx, v)
+			it.Constraints, err = ec.unmarshalNNewConstraint2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐNewConstraintᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5848,7 +5848,7 @@ func (ec *executionContext) unmarshalInputUpdateFlagRule(ctx context.Context, ob
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("constraints"))
-			it.Constraints, err = ec.unmarshalNNewConstraint2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐNewConstraintᚄ(ctx, v)
+			it.Constraints, err = ec.unmarshalNNewConstraint2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐNewConstraintᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5856,7 +5856,7 @@ func (ec *executionContext) unmarshalInputUpdateFlagRule(ctx context.Context, ob
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("distributions"))
-			it.Distributions, err = ec.unmarshalNNewDistribution2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐNewDistributionᚄ(ctx, v)
+			it.Distributions, err = ec.unmarshalNNewDistribution2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐNewDistributionᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5904,7 +5904,7 @@ func (ec *executionContext) unmarshalInputUpdateSegmentRule(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("constraints"))
-			it.Constraints, err = ec.unmarshalNNewConstraint2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐNewConstraintᚄ(ctx, v)
+			it.Constraints, err = ec.unmarshalNNewConstraint2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐNewConstraintᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7029,7 +7029,7 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalNConstraint2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐConstraint(ctx context.Context, sel ast.SelectionSet, v *flaggio.Constraint) graphql.Marshaler {
+func (ec *executionContext) marshalNConstraint2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐConstraint(ctx context.Context, sel ast.SelectionSet, v *flaggio.Constraint) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -7039,7 +7039,7 @@ func (ec *executionContext) marshalNConstraint2ᚖgithubᚗcomᚋvictorktᚋflag
 	return ec._Constraint(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNDistribution2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐDistribution(ctx context.Context, sel ast.SelectionSet, v *flaggio.Distribution) graphql.Marshaler {
+func (ec *executionContext) marshalNDistribution2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐDistribution(ctx context.Context, sel ast.SelectionSet, v *flaggio.Distribution) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -7049,7 +7049,7 @@ func (ec *executionContext) marshalNDistribution2ᚖgithubᚗcomᚋvictorktᚋfl
 	return ec._Distribution(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNEvaluation2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐEvaluationᚄ(ctx context.Context, sel ast.SelectionSet, v []*flaggio.Evaluation) graphql.Marshaler {
+func (ec *executionContext) marshalNEvaluation2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐEvaluationᚄ(ctx context.Context, sel ast.SelectionSet, v []*flaggio.Evaluation) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -7073,7 +7073,7 @@ func (ec *executionContext) marshalNEvaluation2ᚕᚖgithubᚗcomᚋvictorktᚋf
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNEvaluation2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐEvaluation(ctx, sel, v[i])
+			ret[i] = ec.marshalNEvaluation2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐEvaluation(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -7086,7 +7086,7 @@ func (ec *executionContext) marshalNEvaluation2ᚕᚖgithubᚗcomᚋvictorktᚋf
 	return ret
 }
 
-func (ec *executionContext) marshalNEvaluation2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐEvaluation(ctx context.Context, sel ast.SelectionSet, v *flaggio.Evaluation) graphql.Marshaler {
+func (ec *executionContext) marshalNEvaluation2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐEvaluation(ctx context.Context, sel ast.SelectionSet, v *flaggio.Evaluation) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -7096,11 +7096,11 @@ func (ec *executionContext) marshalNEvaluation2ᚖgithubᚗcomᚋvictorktᚋflag
 	return ec._Evaluation(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNEvaluationResults2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐEvaluationResults(ctx context.Context, sel ast.SelectionSet, v flaggio.EvaluationResults) graphql.Marshaler {
+func (ec *executionContext) marshalNEvaluationResults2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐEvaluationResults(ctx context.Context, sel ast.SelectionSet, v flaggio.EvaluationResults) graphql.Marshaler {
 	return ec._EvaluationResults(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNEvaluationResults2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐEvaluationResults(ctx context.Context, sel ast.SelectionSet, v *flaggio.EvaluationResults) graphql.Marshaler {
+func (ec *executionContext) marshalNEvaluationResults2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐEvaluationResults(ctx context.Context, sel ast.SelectionSet, v *flaggio.EvaluationResults) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -7110,11 +7110,11 @@ func (ec *executionContext) marshalNEvaluationResults2ᚖgithubᚗcomᚋvictorkt
 	return ec._EvaluationResults(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNFlag2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlag(ctx context.Context, sel ast.SelectionSet, v flaggio.Flag) graphql.Marshaler {
+func (ec *executionContext) marshalNFlag2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐFlag(ctx context.Context, sel ast.SelectionSet, v flaggio.Flag) graphql.Marshaler {
 	return ec._Flag(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNFlag2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlagᚄ(ctx context.Context, sel ast.SelectionSet, v []*flaggio.Flag) graphql.Marshaler {
+func (ec *executionContext) marshalNFlag2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐFlagᚄ(ctx context.Context, sel ast.SelectionSet, v []*flaggio.Flag) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -7138,7 +7138,7 @@ func (ec *executionContext) marshalNFlag2ᚕᚖgithubᚗcomᚋvictorktᚋflaggio
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNFlag2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlag(ctx, sel, v[i])
+			ret[i] = ec.marshalNFlag2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐFlag(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -7151,7 +7151,7 @@ func (ec *executionContext) marshalNFlag2ᚕᚖgithubᚗcomᚋvictorktᚋflaggio
 	return ret
 }
 
-func (ec *executionContext) marshalNFlag2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlag(ctx context.Context, sel ast.SelectionSet, v *flaggio.Flag) graphql.Marshaler {
+func (ec *executionContext) marshalNFlag2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐFlag(ctx context.Context, sel ast.SelectionSet, v *flaggio.Flag) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -7161,11 +7161,11 @@ func (ec *executionContext) marshalNFlag2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋ
 	return ec._Flag(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNFlagResults2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlagResults(ctx context.Context, sel ast.SelectionSet, v flaggio.FlagResults) graphql.Marshaler {
+func (ec *executionContext) marshalNFlagResults2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐFlagResults(ctx context.Context, sel ast.SelectionSet, v flaggio.FlagResults) graphql.Marshaler {
 	return ec._FlagResults(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNFlagResults2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlagResults(ctx context.Context, sel ast.SelectionSet, v *flaggio.FlagResults) graphql.Marshaler {
+func (ec *executionContext) marshalNFlagResults2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐFlagResults(ctx context.Context, sel ast.SelectionSet, v *flaggio.FlagResults) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -7175,11 +7175,11 @@ func (ec *executionContext) marshalNFlagResults2ᚖgithubᚗcomᚋvictorktᚋfla
 	return ec._FlagResults(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNFlagRule2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlagRule(ctx context.Context, sel ast.SelectionSet, v flaggio.FlagRule) graphql.Marshaler {
+func (ec *executionContext) marshalNFlagRule2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐFlagRule(ctx context.Context, sel ast.SelectionSet, v flaggio.FlagRule) graphql.Marshaler {
 	return ec._FlagRule(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNFlagRule2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlagRuleᚄ(ctx context.Context, sel ast.SelectionSet, v []*flaggio.FlagRule) graphql.Marshaler {
+func (ec *executionContext) marshalNFlagRule2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐFlagRuleᚄ(ctx context.Context, sel ast.SelectionSet, v []*flaggio.FlagRule) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -7203,7 +7203,7 @@ func (ec *executionContext) marshalNFlagRule2ᚕᚖgithubᚗcomᚋvictorktᚋfla
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNFlagRule2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlagRule(ctx, sel, v[i])
+			ret[i] = ec.marshalNFlagRule2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐFlagRule(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -7216,7 +7216,7 @@ func (ec *executionContext) marshalNFlagRule2ᚕᚖgithubᚗcomᚋvictorktᚋfla
 	return ret
 }
 
-func (ec *executionContext) marshalNFlagRule2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlagRule(ctx context.Context, sel ast.SelectionSet, v *flaggio.FlagRule) graphql.Marshaler {
+func (ec *executionContext) marshalNFlagRule2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐFlagRule(ctx context.Context, sel ast.SelectionSet, v *flaggio.FlagRule) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -7277,7 +7277,7 @@ func (ec *executionContext) marshalNMap2map(ctx context.Context, sel ast.Selecti
 	return res
 }
 
-func (ec *executionContext) unmarshalNNewConstraint2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐNewConstraintᚄ(ctx context.Context, v interface{}) ([]*flaggio.NewConstraint, error) {
+func (ec *executionContext) unmarshalNNewConstraint2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐNewConstraintᚄ(ctx context.Context, v interface{}) ([]*flaggio.NewConstraint, error) {
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -7290,7 +7290,7 @@ func (ec *executionContext) unmarshalNNewConstraint2ᚕᚖgithubᚗcomᚋvictork
 	res := make([]*flaggio.NewConstraint, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNNewConstraint2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐNewConstraint(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNNewConstraint2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐNewConstraint(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -7298,12 +7298,12 @@ func (ec *executionContext) unmarshalNNewConstraint2ᚕᚖgithubᚗcomᚋvictork
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalNNewConstraint2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐNewConstraint(ctx context.Context, v interface{}) (*flaggio.NewConstraint, error) {
+func (ec *executionContext) unmarshalNNewConstraint2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐNewConstraint(ctx context.Context, v interface{}) (*flaggio.NewConstraint, error) {
 	res, err := ec.unmarshalInputNewConstraint(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNNewDistribution2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐNewDistributionᚄ(ctx context.Context, v interface{}) ([]*flaggio.NewDistribution, error) {
+func (ec *executionContext) unmarshalNNewDistribution2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐNewDistributionᚄ(ctx context.Context, v interface{}) ([]*flaggio.NewDistribution, error) {
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -7316,7 +7316,7 @@ func (ec *executionContext) unmarshalNNewDistribution2ᚕᚖgithubᚗcomᚋvicto
 	res := make([]*flaggio.NewDistribution, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNNewDistribution2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐNewDistribution(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNNewDistribution2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐNewDistribution(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -7324,51 +7324,51 @@ func (ec *executionContext) unmarshalNNewDistribution2ᚕᚖgithubᚗcomᚋvicto
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalNNewDistribution2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐNewDistribution(ctx context.Context, v interface{}) (*flaggio.NewDistribution, error) {
+func (ec *executionContext) unmarshalNNewDistribution2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐNewDistribution(ctx context.Context, v interface{}) (*flaggio.NewDistribution, error) {
 	res, err := ec.unmarshalInputNewDistribution(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNNewFlag2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐNewFlag(ctx context.Context, v interface{}) (flaggio.NewFlag, error) {
+func (ec *executionContext) unmarshalNNewFlag2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐNewFlag(ctx context.Context, v interface{}) (flaggio.NewFlag, error) {
 	res, err := ec.unmarshalInputNewFlag(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNNewFlagRule2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐNewFlagRule(ctx context.Context, v interface{}) (flaggio.NewFlagRule, error) {
+func (ec *executionContext) unmarshalNNewFlagRule2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐNewFlagRule(ctx context.Context, v interface{}) (flaggio.NewFlagRule, error) {
 	res, err := ec.unmarshalInputNewFlagRule(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNNewSegment2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐNewSegment(ctx context.Context, v interface{}) (flaggio.NewSegment, error) {
+func (ec *executionContext) unmarshalNNewSegment2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐNewSegment(ctx context.Context, v interface{}) (flaggio.NewSegment, error) {
 	res, err := ec.unmarshalInputNewSegment(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNNewSegmentRule2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐNewSegmentRule(ctx context.Context, v interface{}) (flaggio.NewSegmentRule, error) {
+func (ec *executionContext) unmarshalNNewSegmentRule2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐNewSegmentRule(ctx context.Context, v interface{}) (flaggio.NewSegmentRule, error) {
 	res, err := ec.unmarshalInputNewSegmentRule(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNNewVariant2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐNewVariant(ctx context.Context, v interface{}) (flaggio.NewVariant, error) {
+func (ec *executionContext) unmarshalNNewVariant2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐNewVariant(ctx context.Context, v interface{}) (flaggio.NewVariant, error) {
 	res, err := ec.unmarshalInputNewVariant(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNOperation2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐOperation(ctx context.Context, v interface{}) (flaggio.Operation, error) {
+func (ec *executionContext) unmarshalNOperation2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐOperation(ctx context.Context, v interface{}) (flaggio.Operation, error) {
 	var res flaggio.Operation
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNOperation2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐOperation(ctx context.Context, sel ast.SelectionSet, v flaggio.Operation) graphql.Marshaler {
+func (ec *executionContext) marshalNOperation2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐOperation(ctx context.Context, sel ast.SelectionSet, v flaggio.Operation) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) marshalNSegment2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐSegment(ctx context.Context, sel ast.SelectionSet, v flaggio.Segment) graphql.Marshaler {
+func (ec *executionContext) marshalNSegment2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐSegment(ctx context.Context, sel ast.SelectionSet, v flaggio.Segment) graphql.Marshaler {
 	return ec._Segment(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNSegment2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐSegmentᚄ(ctx context.Context, sel ast.SelectionSet, v []*flaggio.Segment) graphql.Marshaler {
+func (ec *executionContext) marshalNSegment2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐSegmentᚄ(ctx context.Context, sel ast.SelectionSet, v []*flaggio.Segment) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -7392,7 +7392,7 @@ func (ec *executionContext) marshalNSegment2ᚕᚖgithubᚗcomᚋvictorktᚋflag
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNSegment2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐSegment(ctx, sel, v[i])
+			ret[i] = ec.marshalNSegment2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐSegment(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -7405,7 +7405,7 @@ func (ec *executionContext) marshalNSegment2ᚕᚖgithubᚗcomᚋvictorktᚋflag
 	return ret
 }
 
-func (ec *executionContext) marshalNSegment2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐSegment(ctx context.Context, sel ast.SelectionSet, v *flaggio.Segment) graphql.Marshaler {
+func (ec *executionContext) marshalNSegment2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐSegment(ctx context.Context, sel ast.SelectionSet, v *flaggio.Segment) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -7415,11 +7415,11 @@ func (ec *executionContext) marshalNSegment2ᚖgithubᚗcomᚋvictorktᚋflaggio
 	return ec._Segment(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNSegmentRule2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐSegmentRule(ctx context.Context, sel ast.SelectionSet, v flaggio.SegmentRule) graphql.Marshaler {
+func (ec *executionContext) marshalNSegmentRule2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐSegmentRule(ctx context.Context, sel ast.SelectionSet, v flaggio.SegmentRule) graphql.Marshaler {
 	return ec._SegmentRule(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNSegmentRule2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐSegmentRuleᚄ(ctx context.Context, sel ast.SelectionSet, v []*flaggio.SegmentRule) graphql.Marshaler {
+func (ec *executionContext) marshalNSegmentRule2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐSegmentRuleᚄ(ctx context.Context, sel ast.SelectionSet, v []*flaggio.SegmentRule) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -7443,7 +7443,7 @@ func (ec *executionContext) marshalNSegmentRule2ᚕᚖgithubᚗcomᚋvictorktᚋ
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNSegmentRule2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐSegmentRule(ctx, sel, v[i])
+			ret[i] = ec.marshalNSegmentRule2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐSegmentRule(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -7456,7 +7456,7 @@ func (ec *executionContext) marshalNSegmentRule2ᚕᚖgithubᚗcomᚋvictorktᚋ
 	return ret
 }
 
-func (ec *executionContext) marshalNSegmentRule2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐSegmentRule(ctx context.Context, sel ast.SelectionSet, v *flaggio.SegmentRule) graphql.Marshaler {
+func (ec *executionContext) marshalNSegmentRule2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐSegmentRule(ctx context.Context, sel ast.SelectionSet, v *flaggio.SegmentRule) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -7496,32 +7496,32 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 	return res
 }
 
-func (ec *executionContext) unmarshalNUpdateFlag2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐUpdateFlag(ctx context.Context, v interface{}) (flaggio.UpdateFlag, error) {
+func (ec *executionContext) unmarshalNUpdateFlag2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐUpdateFlag(ctx context.Context, v interface{}) (flaggio.UpdateFlag, error) {
 	res, err := ec.unmarshalInputUpdateFlag(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNUpdateFlagRule2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐUpdateFlagRule(ctx context.Context, v interface{}) (flaggio.UpdateFlagRule, error) {
+func (ec *executionContext) unmarshalNUpdateFlagRule2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐUpdateFlagRule(ctx context.Context, v interface{}) (flaggio.UpdateFlagRule, error) {
 	res, err := ec.unmarshalInputUpdateFlagRule(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNUpdateSegment2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐUpdateSegment(ctx context.Context, v interface{}) (flaggio.UpdateSegment, error) {
+func (ec *executionContext) unmarshalNUpdateSegment2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐUpdateSegment(ctx context.Context, v interface{}) (flaggio.UpdateSegment, error) {
 	res, err := ec.unmarshalInputUpdateSegment(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNUpdateSegmentRule2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐUpdateSegmentRule(ctx context.Context, v interface{}) (flaggio.UpdateSegmentRule, error) {
+func (ec *executionContext) unmarshalNUpdateSegmentRule2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐUpdateSegmentRule(ctx context.Context, v interface{}) (flaggio.UpdateSegmentRule, error) {
 	res, err := ec.unmarshalInputUpdateSegmentRule(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNUpdateVariant2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐUpdateVariant(ctx context.Context, v interface{}) (flaggio.UpdateVariant, error) {
+func (ec *executionContext) unmarshalNUpdateVariant2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐUpdateVariant(ctx context.Context, v interface{}) (flaggio.UpdateVariant, error) {
 	res, err := ec.unmarshalInputUpdateVariant(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNUser2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐUserᚄ(ctx context.Context, sel ast.SelectionSet, v []*flaggio.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐUserᚄ(ctx context.Context, sel ast.SelectionSet, v []*flaggio.User) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -7545,7 +7545,7 @@ func (ec *executionContext) marshalNUser2ᚕᚖgithubᚗcomᚋvictorktᚋflaggio
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNUser2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐUser(ctx, sel, v[i])
+			ret[i] = ec.marshalNUser2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐUser(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -7558,7 +7558,7 @@ func (ec *executionContext) marshalNUser2ᚕᚖgithubᚗcomᚋvictorktᚋflaggio
 	return ret
 }
 
-func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐUser(ctx context.Context, sel ast.SelectionSet, v *flaggio.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐUser(ctx context.Context, sel ast.SelectionSet, v *flaggio.User) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -7568,11 +7568,11 @@ func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋ
 	return ec._User(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNUserResults2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐUserResults(ctx context.Context, sel ast.SelectionSet, v flaggio.UserResults) graphql.Marshaler {
+func (ec *executionContext) marshalNUserResults2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐUserResults(ctx context.Context, sel ast.SelectionSet, v flaggio.UserResults) graphql.Marshaler {
 	return ec._UserResults(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNUserResults2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐUserResults(ctx context.Context, sel ast.SelectionSet, v *flaggio.UserResults) graphql.Marshaler {
+func (ec *executionContext) marshalNUserResults2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐUserResults(ctx context.Context, sel ast.SelectionSet, v *flaggio.UserResults) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -7582,11 +7582,11 @@ func (ec *executionContext) marshalNUserResults2ᚖgithubᚗcomᚋvictorktᚋfla
 	return ec._UserResults(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNVariant2githubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx context.Context, sel ast.SelectionSet, v flaggio.Variant) graphql.Marshaler {
+func (ec *executionContext) marshalNVariant2githubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx context.Context, sel ast.SelectionSet, v flaggio.Variant) graphql.Marshaler {
 	return ec._Variant(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNVariant2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐVariantᚄ(ctx context.Context, sel ast.SelectionSet, v []*flaggio.Variant) graphql.Marshaler {
+func (ec *executionContext) marshalNVariant2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐVariantᚄ(ctx context.Context, sel ast.SelectionSet, v []*flaggio.Variant) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -7610,7 +7610,7 @@ func (ec *executionContext) marshalNVariant2ᚕᚖgithubᚗcomᚋvictorktᚋflag
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNVariant2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx, sel, v[i])
+			ret[i] = ec.marshalNVariant2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -7623,7 +7623,7 @@ func (ec *executionContext) marshalNVariant2ᚕᚖgithubᚗcomᚋvictorktᚋflag
 	return ret
 }
 
-func (ec *executionContext) marshalNVariant2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx context.Context, sel ast.SelectionSet, v *flaggio.Variant) graphql.Marshaler {
+func (ec *executionContext) marshalNVariant2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx context.Context, sel ast.SelectionSet, v *flaggio.Variant) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -7901,7 +7901,7 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return graphql.MarshalBoolean(*v)
 }
 
-func (ec *executionContext) marshalOConstraint2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐConstraintᚄ(ctx context.Context, sel ast.SelectionSet, v []*flaggio.Constraint) graphql.Marshaler {
+func (ec *executionContext) marshalOConstraint2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐConstraintᚄ(ctx context.Context, sel ast.SelectionSet, v []*flaggio.Constraint) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -7928,7 +7928,7 @@ func (ec *executionContext) marshalOConstraint2ᚕᚖgithubᚗcomᚋvictorktᚋf
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNConstraint2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐConstraint(ctx, sel, v[i])
+			ret[i] = ec.marshalNConstraint2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐConstraint(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -7941,7 +7941,7 @@ func (ec *executionContext) marshalOConstraint2ᚕᚖgithubᚗcomᚋvictorktᚋf
 	return ret
 }
 
-func (ec *executionContext) marshalODistribution2ᚕᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐDistributionᚄ(ctx context.Context, sel ast.SelectionSet, v []*flaggio.Distribution) graphql.Marshaler {
+func (ec *executionContext) marshalODistribution2ᚕᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐDistributionᚄ(ctx context.Context, sel ast.SelectionSet, v []*flaggio.Distribution) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -7968,7 +7968,7 @@ func (ec *executionContext) marshalODistribution2ᚕᚖgithubᚗcomᚋvictorkt�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNDistribution2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐDistribution(ctx, sel, v[i])
+			ret[i] = ec.marshalNDistribution2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐDistribution(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -7981,7 +7981,7 @@ func (ec *executionContext) marshalODistribution2ᚕᚖgithubᚗcomᚋvictorkt�
 	return ret
 }
 
-func (ec *executionContext) marshalOFlag2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐFlag(ctx context.Context, sel ast.SelectionSet, v *flaggio.Flag) graphql.Marshaler {
+func (ec *executionContext) marshalOFlag2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐFlag(ctx context.Context, sel ast.SelectionSet, v *flaggio.Flag) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -8018,7 +8018,7 @@ func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.Sele
 	return graphql.MarshalInt(*v)
 }
 
-func (ec *executionContext) marshalOSegment2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐSegment(ctx context.Context, sel ast.SelectionSet, v *flaggio.Segment) graphql.Marshaler {
+func (ec *executionContext) marshalOSegment2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐSegment(ctx context.Context, sel ast.SelectionSet, v *flaggio.Segment) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -8064,14 +8064,14 @@ func (ec *executionContext) marshalOTime2ᚖtimeᚐTime(ctx context.Context, sel
 	return graphql.MarshalTime(*v)
 }
 
-func (ec *executionContext) marshalOUser2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐUser(ctx context.Context, sel ast.SelectionSet, v *flaggio.User) graphql.Marshaler {
+func (ec *executionContext) marshalOUser2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐUser(ctx context.Context, sel ast.SelectionSet, v *flaggio.User) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._User(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOVariant2ᚖgithubᚗcomᚋvictorktᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx context.Context, sel ast.SelectionSet, v *flaggio.Variant) graphql.Marshaler {
+func (ec *executionContext) marshalOVariant2ᚖgithubᚗcomᚋuw-labsᚋflaggioᚋinternalᚋflaggioᚐVariant(ctx context.Context, sel ast.SelectionSet, v *flaggio.Variant) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
