@@ -6,10 +6,9 @@ package service_mock
 
 import (
 	context "context"
-	reflect "reflect"
-
 	gomock "github.com/golang/mock/gomock"
 	service "github.com/uw-labs/flaggio/internal/service"
+	reflect "reflect"
 )
 
 // MockFlag is a mock of Flag interface

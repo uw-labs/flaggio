@@ -5,10 +5,9 @@
 package flaggio_mock
 
 import (
-	reflect "reflect"
-
 	gomock "github.com/golang/mock/gomock"
 	flaggio "github.com/uw-labs/flaggio/internal/flaggio"
+	reflect "reflect"
 )
 
 // MockEvaluator is a mock of Evaluator interface

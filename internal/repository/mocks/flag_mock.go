@@ -6,10 +6,9 @@ package repository_mock
 
 import (
 	context "context"
-	reflect "reflect"
-
 	gomock "github.com/golang/mock/gomock"
 	flaggio "github.com/uw-labs/flaggio/internal/flaggio"
+	reflect "reflect"
 )
 
 // MockFlag is a mock of Flag interface
