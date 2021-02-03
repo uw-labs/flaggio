@@ -1,11 +1,11 @@
 package repository
 
-//go:generate mockgen -destination=./mocks/rule_mock.go -package=repository_mock github.com/victorkt/flaggio/internal/repository Rule
+//go:generate mockgen -destination=./mocks/rule_mock.go -package=repository_mock github.com/uw-labs/flaggio/internal/repository Rule
 
 import (
 	"context"
 
-	"github.com/victorkt/flaggio/internal/flaggio"
+	"github.com/uw-labs/flaggio/internal/flaggio"
 )
 
 // Rule represents a set of operations available to list and manage rules.

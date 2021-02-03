@@ -6,8 +6,8 @@ import (
 
 	"github.com/go-redis/redis/v7"
 	"github.com/opentracing/opentracing-go"
-	"github.com/victorkt/flaggio/internal/flaggio"
-	"github.com/victorkt/flaggio/internal/repository"
+	"github.com/uw-labs/flaggio/internal/flaggio"
+	"github.com/uw-labs/flaggio/internal/repository"
 )
 
 var _ repository.Variant = (*VariantRepository)(nil)

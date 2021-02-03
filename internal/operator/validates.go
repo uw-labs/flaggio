@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/sirupsen/logrus"
-	"github.com/victorkt/flaggio/internal/errors"
+	"github.com/uw-labs/flaggio/internal/errors"
 )
 
 // Validator validates the user context somehow and returns true when

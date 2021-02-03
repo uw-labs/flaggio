@@ -4,8 +4,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/victorkt/flaggio/internal/errors"
-	"github.com/victorkt/flaggio/internal/flaggio"
+
+	"github.com/uw-labs/flaggio/internal/errors"
+	"github.com/uw-labs/flaggio/internal/flaggio"
 )
 
 func TestFlag_GetID(t *testing.T) {

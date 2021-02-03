@@ -1,6 +1,6 @@
 package flaggio
 
-//go:generate mockgen -destination=./mocks/evaluator_mock.go -package=flaggio_mock github.com/victorkt/flaggio/internal/flaggio Evaluator,Identifier
+//go:generate mockgen -destination=./mocks/evaluator_mock.go -package=flaggio_mock github.com/uw-labs/flaggio/internal/flaggio Evaluator,Identifier
 
 import (
 	"fmt"

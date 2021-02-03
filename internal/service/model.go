@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"sort"
 
+	"github.com/uw-labs/flaggio/internal/flaggio"
 	"github.com/victorkt/clientip"
-	"github.com/victorkt/flaggio/internal/flaggio"
 	"github.com/vmihailenco/msgpack/v4"
 )
 

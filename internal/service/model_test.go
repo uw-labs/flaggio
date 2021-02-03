@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/victorkt/flaggio/internal/flaggio"
-	"github.com/victorkt/flaggio/internal/service"
+	"github.com/uw-labs/flaggio/internal/flaggio"
+	"github.com/uw-labs/flaggio/internal/service"
 )
 
 func TestEvaluationRequest_Hash(t *testing.T) {

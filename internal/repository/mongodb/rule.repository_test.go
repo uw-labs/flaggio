@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/victorkt/flaggio/internal/flaggio"
-	mongo_repo "github.com/victorkt/flaggio/internal/repository/mongodb"
+	"github.com/uw-labs/flaggio/internal/flaggio"
+	mongo_repo "github.com/uw-labs/flaggio/internal/repository/mongodb"
 )
 
 func TestFlagRuleRepository(t *testing.T) {

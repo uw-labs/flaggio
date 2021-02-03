@@ -1,7 +1,7 @@
 package admin
 
 import (
-	"github.com/victorkt/flaggio/internal/repository"
+	"github.com/uw-labs/flaggio/internal/repository"
 )
 
 var _ ResolverRoot = (*Resolver)(nil)

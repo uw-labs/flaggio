@@ -5,8 +5,8 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	"github.com/victorkt/flaggio/internal/flaggio"
-	flaggio_mock "github.com/victorkt/flaggio/internal/flaggio/mocks"
+	"github.com/uw-labs/flaggio/internal/flaggio"
+	flaggio_mock "github.com/uw-labs/flaggio/internal/flaggio/mocks"
 )
 
 func TestEvaluate(t *testing.T) {

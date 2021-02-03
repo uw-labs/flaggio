@@ -7,9 +7,9 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	"github.com/victorkt/flaggio/internal/flaggio"
-	repository_mock "github.com/victorkt/flaggio/internal/repository/mocks"
-	"github.com/victorkt/flaggio/internal/service"
+	"github.com/uw-labs/flaggio/internal/flaggio"
+	repository_mock "github.com/uw-labs/flaggio/internal/repository/mocks"
+	"github.com/uw-labs/flaggio/internal/service"
 )
 
 var (

@@ -3,7 +3,7 @@ package admin
 import (
 	"context"
 
-	"github.com/victorkt/flaggio/internal/flaggio"
+	"github.com/uw-labs/flaggio/internal/flaggio"
 )
 
 var _ QueryResolver = &queryResolver{}

@@ -4,7 +4,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/victorkt/flaggio/internal/errors"
+	"github.com/uw-labs/flaggio/internal/errors"
 )
 
 var _ Evaluator = (*DistributionList)(nil)

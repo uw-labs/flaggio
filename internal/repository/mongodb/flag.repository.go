@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/opentracing/opentracing-go"
-	"github.com/victorkt/flaggio/internal/errors"
-	"github.com/victorkt/flaggio/internal/flaggio"
-	"github.com/victorkt/flaggio/internal/repository"
+	"github.com/uw-labs/flaggio/internal/errors"
+	"github.com/uw-labs/flaggio/internal/flaggio"
+	"github.com/uw-labs/flaggio/internal/repository"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"

@@ -3,8 +3,8 @@ package flaggio
 import (
 	"fmt"
 
-	"github.com/victorkt/flaggio/internal/errors"
-	"github.com/victorkt/flaggio/internal/operator"
+	"github.com/uw-labs/flaggio/internal/errors"
+	"github.com/uw-labs/flaggio/internal/operator"
 )
 
 var _ operator.Validator = (*Constraint)(nil)

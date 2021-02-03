@@ -8,8 +8,6 @@ update_configs:
       - "go"
     commit_message:
       prefix: "deps"
-    default_reviewers:
-      - "victorkt"
   - package_manager: "javascript"
     directory: "/web"
     update_schedule: "weekly"
@@ -20,5 +18,3 @@ update_configs:
     commit_message:
       prefix: "deps"
       prefix_development: "chore"
-    default_reviewers:
-      - "victorkt"

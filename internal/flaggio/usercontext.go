@@ -26,7 +26,7 @@ func (a UserContext) UnmarshalJSON(b []byte) error {
 		} else if b, err := strconv.ParseBool(strV); err == nil {
 			a[k] = b
 		} else {
-			// everything else is treated as a string, even null
+			// everything else is treated as a string, even null.
 			// strings will still be quoted on the json.RawMessage so we
 			// try to unmarshal them. it will fail for objects and arrays
 			// in that case, ignore the error and return the raw string
