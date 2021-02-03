@@ -8,9 +8,9 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	"github.com/victorkt/flaggio/internal/flaggio"
-	repository_mock "github.com/victorkt/flaggio/internal/repository/mocks"
-	redis_repo "github.com/victorkt/flaggio/internal/repository/redis"
+	"github.com/uw-labs/flaggio/internal/flaggio"
+	repository_mock "github.com/uw-labs/flaggio/internal/repository/mocks"
+	redis_repo "github.com/uw-labs/flaggio/internal/repository/redis"
 )
 
 var (
