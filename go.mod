@@ -20,7 +20,6 @@ require (
 	github.com/vektah/gqlparser/v2 v2.1.0
 	github.com/victorkt/clientip v0.2.0
 	github.com/vmihailenco/msgpack/v4 v4.3.12
-	github.com/xdg/stringprep v1.0.0 // indirect
-	go.mongodb.org/mongo-driver v1.4.3
+	go.mongodb.org/mongo-driver v1.5.1
 	go.uber.org/atomic v1.6.0 // indirect
 )
