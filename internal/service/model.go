@@ -6,9 +6,10 @@ import (
 	"net/http"
 	"sort"
 
-	"github.com/uw-labs/flaggio/internal/flaggio"
 	"github.com/victorkt/clientip"
 	"github.com/vmihailenco/msgpack/v4"
+
+	"github.com/uw-labs/flaggio/internal/flaggio"
 )
 
 // EvaluationRequest is the evaluation request object
@@ -34,6 +35,10 @@ func (er EvaluationRequest) IsDebug() bool {
 	return er.Debug != nil && *er.Debug
 }
 
+var hashContextBlacklist = map[string]struct{}{
+	"$ip": {},
+}
+
 // Hash returns a hash string representation of EvaluationRequest
 // This function will return the same hash regardless of the order
 // the user context comes in.
@@ -41,6 +46,9 @@ func (er EvaluationRequest) Hash() (string, error) {
 	// sort user context keys
 	var contextKeys []string
 	for key := range er.UserContext {
+		if _, blacklisted := hashContextBlacklist[key]; blacklisted {
+			continue
+		}
 		contextKeys = append(contextKeys, key)
 	}
 	sort.Strings(contextKeys)
