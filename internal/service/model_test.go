@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
 	"github.com/uw-labs/flaggio/internal/flaggio"
 	"github.com/uw-labs/flaggio/internal/service"
 )
@@ -33,6 +34,21 @@ func TestEvaluationRequest_Hash(t *testing.T) {
 			req: service.EvaluationRequest{
 				UserID: "123",
 				UserContext: flaggio.UserContext{
+					"cde": "456",
+					"abc": 123,
+					"ghi": nil,
+					"efg": true,
+				},
+				Debug: nil,
+			},
+			expectedHash: "78c77cefc3d6a062e7c29140c4aef97be2d8e0c4",
+		},
+		{
+			name: "ignores blacklisted context attributes",
+			req: service.EvaluationRequest{
+				UserID: "123",
+				UserContext: flaggio.UserContext{
+					"$ip": "127.0.0.1",
 					"cde": "456",
 					"abc": 123,
 					"ghi": nil,
