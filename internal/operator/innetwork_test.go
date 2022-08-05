@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
 	"github.com/uw-labs/flaggio/internal/operator"
 )
 
@@ -46,10 +47,17 @@ func TestInNetwork(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			name:           "unknown type",
+			name:           "unknown config type",
 			usrContext:     map[string]interface{}{"$ip": "abcdef"},
 			property:       "$ip",
 			values:         []interface{}{struct{}{}},
+			expectedResult: false,
+		},
+		{
+			name:           "non-string user type",
+			usrContext:     map[string]interface{}{"$ip": nil},
+			property:       "$ip",
+			values:         []interface{}{"2001:0db9:0:0:0:0:0:0/32"},
 			expectedResult: false,
 		},
 	}

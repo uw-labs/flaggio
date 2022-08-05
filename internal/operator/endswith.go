@@ -8,11 +8,7 @@ import (
 // any of the configured values on the flag.
 func EndsWith(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
-		ok, err := endsWith(v, usrValue)
-		if err != nil {
-			return false, err
-		}
-		if ok {
+		if endsWith(v, usrValue) {
 			return true, nil
 		}
 	}
@@ -23,28 +19,24 @@ func EndsWith(usrValue interface{}, validValues []interface{}) (bool, error) {
 // any of the configured values on the flag.
 func DoesntEndWith(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
-		ok, err := endsWith(v, usrValue)
-		if err != nil {
-			return false, err
-		}
-		if ok {
+		if endsWith(v, usrValue) {
 			return false, nil
 		}
 	}
 	return true, nil
 }
 
-func endsWith(cnstrnValue, userValue interface{}) (bool, error) {
+func endsWith(cnstrnValue, userValue interface{}) bool {
 	str, err := toString(userValue)
 	if err != nil {
-		return false, err
+		return false
 	}
 	switch v := cnstrnValue.(type) {
 	case string:
-		return strings.HasSuffix(str, v), nil
+		return strings.HasSuffix(str, v)
 	case []byte:
-		return strings.HasSuffix(str, string(v)), nil
+		return strings.HasSuffix(str, string(v))
 	default:
-		return false, nil
+		return false
 	}
 }

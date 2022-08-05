@@ -37,7 +37,7 @@ func DoesntMatchRegex(usrValue interface{}, validValues []interface{}) (bool, er
 func matches(cnstrnValue, userValue interface{}) (bool, error) {
 	str, err := toString(userValue)
 	if err != nil {
-		return false, err
+		return false, nil
 	}
 	switch v := cnstrnValue.(type) {
 	case string:

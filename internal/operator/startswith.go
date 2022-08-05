@@ -8,11 +8,7 @@ import (
 // any of the configured values on the flag.
 func StartsWith(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
-		ok, err := startsWith(v, usrValue)
-		if err != nil {
-			return false, err
-		}
-		if ok {
+		if startsWith(v, usrValue) {
 			return true, nil
 		}
 	}
@@ -23,28 +19,24 @@ func StartsWith(usrValue interface{}, validValues []interface{}) (bool, error) {
 // any of the configured values on the flag.
 func DoesntStartWith(usrValue interface{}, validValues []interface{}) (bool, error) {
 	for _, v := range validValues {
-		ok, err := startsWith(v, usrValue)
-		if err != nil {
-			return false, err
-		}
-		if ok {
+		if startsWith(v, usrValue) {
 			return false, nil
 		}
 	}
 	return true, nil
 }
 
-func startsWith(cnstrnValue, userValue interface{}) (bool, error) {
+func startsWith(cnstrnValue, userValue interface{}) bool {
 	str, err := toString(userValue)
 	if err != nil {
-		return false, err
+		return false
 	}
 	switch v := cnstrnValue.(type) {
 	case string:
-		return strings.HasPrefix(str, v), nil
+		return strings.HasPrefix(str, v)
 	case []byte:
-		return strings.HasPrefix(str, string(v)), nil
+		return strings.HasPrefix(str, string(v))
 	default:
-		return false, nil
+		return false
 	}
 }
