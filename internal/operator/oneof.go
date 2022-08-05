@@ -1,6 +1,7 @@
 package operator
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 )
@@ -61,7 +62,7 @@ func equals(cnstrnValue, userValue interface{}) (bool, error) {
 		if !ok {
 			return false, nil
 		}
-		return string(v) == string(uv), nil
+		return bytes.Equal(v, uv), nil
 	default:
 		return false, nil
 	}

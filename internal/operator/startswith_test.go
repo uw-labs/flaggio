@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
 	"github.com/uw-labs/flaggio/internal/operator"
 )
 
@@ -38,10 +39,17 @@ func TestStartsWith(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			name:           "unknown type",
+			name:           "unknown config type",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{struct{}{}},
+			expectedResult: false,
+		},
+		{
+			name:           "non-string user type",
+			usrContext:     map[string]interface{}{"prop": nil},
+			property:       "prop",
+			values:         []interface{}{"cde"},
 			expectedResult: false,
 		},
 	}
@@ -87,10 +95,17 @@ func TestDoesntStartWith(t *testing.T) {
 		},
 		// ========================================================================
 		{
-			name:           "unknown type",
+			name:           "unknown config type",
 			usrContext:     map[string]interface{}{"prop": "abcdef"},
 			property:       "prop",
 			values:         []interface{}{struct{}{}},
+			expectedResult: true,
+		},
+		{
+			name:           "non-string user type",
+			usrContext:     map[string]interface{}{"prop": nil},
+			property:       "prop",
+			values:         []interface{}{"cde"},
 			expectedResult: true,
 		},
 	}

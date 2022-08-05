@@ -15,11 +15,12 @@ import (
 
 func newHTTPServer(ctx context.Context, addr string, handler http.Handler, logger *logrus.Entry, wg *sync.WaitGroup) *http.Server {
 	srv := &http.Server{
-		Addr:         addr,
-		Handler:      handler,
-		WriteTimeout: 10 * time.Second,
-		ReadTimeout:  10 * time.Second,
-		IdleTimeout:  15 * time.Second,
+		Addr:              addr,
+		Handler:           handler,
+		WriteTimeout:      10 * time.Second,
+		ReadTimeout:       10 * time.Second,
+		IdleTimeout:       15 * time.Second,
+		ReadHeaderTimeout: 10 * time.Second,
 	}
 
 	wg.Add(1)

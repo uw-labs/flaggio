@@ -22,7 +22,7 @@ func InNetwork(usrValue interface{}, validValues []interface{}) (bool, error) {
 func inNetwork(cnstrnValue, userValue interface{}) (bool, error) {
 	u, err := toString(userValue)
 	if err != nil {
-		return false, err
+		return false, nil
 	}
 	v, ok := cnstrnValue.(string)
 	if !ok {
