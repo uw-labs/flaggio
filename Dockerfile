@@ -1,7 +1,7 @@
 ######################################
 # STEP 1 build go executable binary
 ######################################
-FROM golang:1.14-alpine AS go_builder
+FROM golang:1.18-alpine AS go_builder
 
 RUN apk update && apk add --no-cache git make ca-certificates tzdata && update-ca-certificates
 WORKDIR /flaggio
@@ -18,7 +18,7 @@ RUN make install && \
 ######################################
 # STEP 2 build frontend app
 ######################################
-FROM node:12-alpine AS node_builder
+FROM node:16-alpine AS node_builder
 
 ENV NODE_ENV production
 
