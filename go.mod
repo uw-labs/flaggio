@@ -10,7 +10,7 @@ require (
 	github.com/go-redis/redis/v7 v7.4.0
 	github.com/golang/mock v1.4.4
 	github.com/opentracing/opentracing-go v1.2.0
-	github.com/prometheus/client_golang v1.5.1 // indirect
+	github.com/prometheus/client_golang v1.11.1 // indirect
 	github.com/rs/cors v1.7.0
 	github.com/sirupsen/logrus v1.7.0
 	github.com/stretchr/testify v1.6.1
